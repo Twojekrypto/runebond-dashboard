@@ -67,8 +67,8 @@ lpEffectiveAPY      = bondingYieldOnTotal + feeYieldOnTotal
 4. **CoinGecko rate-limits** — obsłuż brak ceny gracefully
 5. **BigInt na datach Midgard** — daty w nanosekundach, użyj BigInt do porównań
 6. **`file://` origin** — niektóre endpointy mogą blokować, serwuj przez HTTP
-7. **Rate Limits na Midgard API (HTTP 429)** — przy paginacji akcji (`/actions` w pętli `do...while`) konieczne jest implementowanie własnego mechanizmu `fetchWithRetry` z opóźnieniem (np. `setTimeout`) — w przeciwnym razie szybka iteracja stron wywoła kod 429 z publicznych endpointów i zablokuje wykonanie całego fetchowania.
-8. **Tight Looping** — wstrzykuj arbitralne małe opóźnienia (`await new Promise(r => setTimeout(r, 200))`) w pętle sieciowe klienta.
+7. **Pobieranie Paginowanych Danych Historycznych** — zawsze stosuj `localStorage` dla danych ciągłych jak historyczne transakcje, odczytuj z niego i doczytuj tylko najnowszą różnicę z API. Obcina to drastycznie zapotrzebowanie na powolne paginowanie całych historii i łagodzi zużycie zapytań (omijanie rate limist 429).
+8. **Asynchroniczność Renderowania** — Wyciągaj małe żądania (szybki fetch) ze wspólnych wielkich paczek (Promise.all), żeby móc szybciej wyrenderować część UI użytkownikowi przed dokończeniem cięższego procesu. Używaj flag sterujących jak `isLoaded` do zachowania logiki dom-u dla brakujących jeszcze wartości w tle.
 
 ---
 

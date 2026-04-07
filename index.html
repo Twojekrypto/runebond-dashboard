@@ -407,6 +407,7 @@
     let redemptionCount30d = 0;
     let redemptionDays = 30;
     let deposits30dE8 = 0;
+    let redemptionsLoaded = false;
 
     async function fetchAPY() {
       const [earningsRes, networkRes] = await Promise.all([
@@ -469,25 +470,81 @@
       document.getElementById('rune-balance').textContent = formatRune(lpBalanceE8);
     }
 
+    async function getCachedActions(cacheKey, maxAgeNs = 0n) {
+      try {
+        const cached = localStorage.getItem(cacheKey);
+        if (!cached) return [];
+        const parsed = JSON.parse(cached);
+        if (maxAgeNs > 0n) {
+           return parsed.filter(a => BigInt(a.date) >= maxAgeNs);
+        }
+        return parsed;
+      } catch (e) { return []; }
+    }
+
+    async function fetchActionsIncremental(cacheKey, urlBase, maxAgeNs = 0n) {
+      const cachedActions = await getCachedActions(cacheKey, maxAgeNs);
+      let newestCachedDateNs = 0n;
+      if (cachedActions.length > 0) {
+        newestCachedDateNs = cachedActions.reduce((max, a) => {
+           const d = BigInt(a.date);
+           return d > max ? d : max;
+        }, 0n);
+      }
+
+      let newActions = [];
+      let nextPageToken = '';
+      do {
+        const url = urlBase + (nextPageToken ? `&nextPageToken=${nextPageToken}` : '');
+        const r = await fetchWithRetry(url);
+        const d = await r.json();
+        const actions = d.actions || [];
+        
+        let reachedCache = false;
+        let reachedTimeLimit = false;
+
+        for (const a of actions) {
+          const dateNs = BigInt(a.date);
+          if (maxAgeNs > 0n && dateNs < maxAgeNs) {
+            reachedTimeLimit = true;
+            break;
+          }
+          if (dateNs <= newestCachedDateNs) {
+             reachedCache = true;
+             break; 
+          }
+          newActions.push(a);
+        }
+
+        if (reachedCache || reachedTimeLimit) break;
+        nextPageToken = d.meta?.nextPageToken || '';
+      } while (nextPageToken);
+
+      const combined = [...newActions, ...cachedActions];
+      const unique = [];
+      const seen = new Set();
+      for (const a of combined) {
+        const key = a.date + '_' + (a.in?.[0]?.txID || a.type);
+        if (!seen.has(key)) {
+           seen.add(key);
+           unique.push(a);
+        }
+      }
+      
+      unique.sort((a, b) => Number(BigInt(b.date) - BigInt(a.date)));
+
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify(unique));
+      } catch(e) { }
+      
+      return unique;
+    }
+
     async function fetchRedemptionVolume() {
       try {
         const thirtyDaysAgoNs = BigInt(Date.now() - 30 * 24 * 60 * 60 * 1000) * 1000000n;
-        let allActions = [];
-        let nextPageToken = '';
-
-        do {
-          if (nextPageToken) await new Promise(res => setTimeout(res, 200));
-          const url = `${MIDGARD}/actions?address=${LP_ADDRESS}&limit=50` +
-            (nextPageToken ? `&nextPageToken=${nextPageToken}` : '');
-          const r = await fetchWithRetry(url);
-          const d = await r.json();
-          const actions = d.actions || [];
-          allActions = allActions.concat(actions);
-          nextPageToken = d.meta?.nextPageToken || '';
-
-          const lastAction = actions[actions.length - 1];
-          if (lastAction && BigInt(lastAction.date) < thirtyDaysAgoNs) break;
-        } while (nextPageToken);
+        const urlBase = `${MIDGARD}/actions?address=${LP_ADDRESS}&limit=50`;
+        const allActions = await fetchActionsIncremental('runebond_all_actions', urlBase, thirtyDaysAgoNs);
 
         const rebonds = allActions.filter(a => {
           if (a.type !== 'rebond') return false;
@@ -516,6 +573,8 @@
           const coins = a.out?.[0]?.coins || [];
           return sum + coins.reduce((s, c) => s + Number(c.amount), 0);
         }, 0);
+        
+        redemptionsLoaded = true;
       } catch (err) {
         console.warn('fetchRedemptionVolume failed (CORS?):', err.message);
       }
@@ -544,34 +603,43 @@
       document.getElementById('bonding-yield-rune').textContent =
         `~${bondingEarningsAnnual.toFixed(0)} ᚱ/yr from ${bondedRune.toFixed(0)} ᚱ bonded`;
 
-      // Fee income
-      const feeIncome30d = feeIncome30dE8 / 1e8;
-      const feeIncomeAnnual = feeIncome30d * (365 / redemptionDays);
-      const feeYieldOnTotal = (feeIncomeAnnual / totalRune) * 100;
-      document.getElementById('fee-yield-pct').textContent = feeYieldOnTotal.toFixed(2) + '%';
-      document.getElementById('fee-yield-rune').textContent =
-        `${feeIncome30d.toFixed(2)} ᚱ last 30d · ~${feeIncomeAnnual.toFixed(0)} ᚱ/yr`;
+      if (redemptionsLoaded) {
+        // Fee income
+        const feeIncome30d = feeIncome30dE8 / 1e8;
+        const feeIncomeAnnual = feeIncome30d * (365 / redemptionDays);
+        const feeYieldOnTotal = (feeIncomeAnnual / totalRune) * 100;
+        document.getElementById('fee-yield-pct').textContent = feeYieldOnTotal.toFixed(2) + '%';
+        document.getElementById('fee-yield-rune').textContent =
+          `${feeIncome30d.toFixed(2)} ᚱ last 30d · ~${feeIncomeAnnual.toFixed(0)} ᚱ/yr`;
 
-      // Redemption
-      document.getElementById('redemption-volume').textContent = formatRune(redemptionVolume30dE8);
-      document.getElementById('redemption-count').textContent =
-        `${redemptionCount30d} claims · 5% fee on each`;
+        // Redemption
+        document.getElementById('redemption-volume').textContent = formatRune(redemptionVolume30dE8);
+        document.getElementById('redemption-count').textContent =
+          `${redemptionCount30d} claims · 5% fee on each`;
 
-      // LP Effective APY
-      const lpEffectiveAPY = bondingYieldOnTotal + feeYieldOnTotal;
-      document.getElementById('lp-effective-apy').textContent = lpEffectiveAPY.toFixed(2) + '%';
+        // LP Effective APY
+        const lpEffectiveAPY = bondingYieldOnTotal + feeYieldOnTotal;
+        document.getElementById('lp-effective-apy').textContent = lpEffectiveAPY.toFixed(2) + '%';
+      }
+      
       document.getElementById('proj-capital').textContent = formatRune(totalCapitalE8);
     }
 
     async function fetchAll() {
       try {
         await fetchRunePrice();
-        await Promise.all([fetchAPY(), fetchBonds(), fetchBalance(), fetchRedemptionVolume()]);
+        // Szybkie zapytania
+        await Promise.all([fetchAPY(), fetchBonds(), fetchBalance()]);
         calculateLPMetrics();
-        // Fetch depositors separately (uses same actions data pattern)
-        await fetchDepositors();
-        document.getElementById('last-update').textContent =
-          'Last updated ' + new Date().toLocaleTimeString();
+        
+        // Wolniejsze zapytania w tle z uzyciem cache
+        Promise.all([fetchRedemptionVolume(), fetchDepositors()]).then(() => {
+          calculateLPMetrics();
+          document.getElementById('last-update').textContent =
+            'Last updated ' + new Date().toLocaleTimeString();
+        }).catch(err => {
+          console.error('Background fetch error:', err);
+        });
       } catch (err) {
         console.error('Fetch error:', err);
       }
@@ -581,19 +649,8 @@
     async function fetchDepositors() {
       try {
         // Fetch ALL send actions (no time limit) to find all depositors
-        let allSends = [];
-        let nextPageToken = '';
-
-        do {
-          if (nextPageToken) await new Promise(res => setTimeout(res, 200));
-          const url = `${MIDGARD}/actions?address=${LP_ADDRESS}&type=send&limit=50` +
-            (nextPageToken ? `&nextPageToken=${nextPageToken}` : '');
-          const r = await fetchWithRetry(url);
-          const d = await r.json();
-          const actions = d.actions || [];
-          allSends = allSends.concat(actions);
-          nextPageToken = d.meta?.nextPageToken || '';
-        } while (nextPageToken);
+        const urlBase = `${MIDGARD}/actions?address=${LP_ADDRESS}&type=send&limit=50`;
+        const allSends = await fetchActionsIncremental('runebond_send_actions', urlBase, 0n);
 
         // Find deposits: sends WHERE out.address === LP_ADDRESS (someone sent TO LP)
         const deposits = allSends.filter(a => {
