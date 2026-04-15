@@ -69,6 +69,7 @@ lpEffectiveAPY      = bondingYieldOnTotal + feeYieldOnTotal
 6. **`file://` origin** — niektóre endpointy mogą blokować, serwuj przez HTTP
 7. **Pobieranie Paginowanych Danych Historycznych** — zawsze stosuj `localStorage` dla danych ciągłych jak historyczne transakcje, odczytuj z niego i doczytuj tylko najnowszą różnicę z API. Obcina to drastycznie zapotrzebowanie na powolne paginowanie całych historii i łagodzi zużycie zapytań (omijanie rate limist 429).
 8. **Asynchroniczność Renderowania** — Wyciągaj małe żądania (szybki fetch) ze wspólnych wielkich paczek (Promise.all), żeby móc szybciej wyrenderować część UI użytkownikowi przed dokończeniem cięższego procesu. Używaj flag sterujących jak `isLoaded` do zachowania logiki dom-u dla brakujących jeszcze wartości w tle.
+9. **Migracja API THORChain (2026-04)** — `midgard.ninerealms.com` i `thornode.ninerealms.com` robią teraz 301 redirect na `gateway.liquify.com`. Problem: odpowiedź 301 nie zawiera nagłówka `Access-Control-Allow-Origin`, więc przeglądarka blokuje redirect (CORS error). Fix: bezpośrednie URLe `gateway.liquify.com/chain/thorchain_midgard/v2/` i `gateway.liquify.com/chain/thorchain_api/`. Te zwracają `ACAO: *`.
 
 ---
 

@@ -345,9 +345,10 @@
     const LP_FEE = 0.05;
 
     // Auto-detect: use local proxy on localhost (bypasses CORS), direct URLs in production
+    // NOTE: ninerealms.com now 301-redirects to gateway.liquify.com (breaks CORS in browser)
     const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-    const MIDGARD = isLocal ? '/api/midgard' : 'https://midgard.ninerealms.com/v2';
-    const THORNODE = isLocal ? '/api/thornode' : 'https://thornode.ninerealms.com';
+    const MIDGARD = isLocal ? '/api/midgard' : 'https://gateway.liquify.com/chain/thorchain_midgard/v2';
+    const THORNODE = isLocal ? '/api/thornode' : 'https://gateway.liquify.com/chain/thorchain_api';
     const COINGECKO = isLocal ? '/api/coingecko' : 'https://api.coingecko.com/api/v3';
 
     let runePrice = null;
