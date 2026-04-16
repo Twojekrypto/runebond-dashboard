@@ -467,6 +467,7 @@
     let bondingAPY = 0;
     let feeIncome30dE8 = 0;
     let redemptionVolume30dE8 = 0;
+    let payoutVolume30dE8 = 0;
     let redemptionCount30d = 0;
     let redemptionDays = 30;
     let deposits30dE8 = 0;
@@ -620,21 +621,24 @@
         const pathBase = `/actions?address=${LP_ADDRESS}&limit=50`;
         const allActions = await fetchActionsIncremental('runebond_all_actions', pathBase, thirtyDaysAgoNs);
 
-        const rebonds = allActions.filter(a => {
-          if (a.type !== 'rebond') return false;
+        const outgoingPayouts = allActions.filter(a => {
+          if (a.type !== 'send') return false;
           if (BigInt(a.date) < thirtyDaysAgoNs) return false;
-          if (a.metadata?.rebond?.newBondAddress !== LP_ADDRESS) return false;
+          if (a.in?.[0]?.address !== LP_ADDRESS) return false;
+          const outAddr = a.out?.[0]?.address;
+          if (!outAddr || outAddr === LP_ADDRESS) return false;
           return true;
         });
 
-        redemptionVolume30dE8 = rebonds.reduce((sum, a) => {
-          const coins = a.in?.[0]?.coins || [];
+        payoutVolume30dE8 = outgoingPayouts.reduce((sum, a) => {
+          const coins = a.out?.[0]?.coins || [];
           return sum + coins.reduce((s, c) => s + Number(c.amount), 0);
         }, 0);
 
-        redemptionCount30d = rebonds.length;
+        redemptionVolume30dE8 = Math.round(payoutVolume30dE8 / (1 - LP_FEE));
+        feeIncome30dE8 = redemptionVolume30dE8 - payoutVolume30dE8;
+        redemptionCount30d = outgoingPayouts.length;
         redemptionDays = 30;
-        feeIncome30dE8 = Math.round(redemptionVolume30dE8 * LP_FEE);
 
         const incomingDeposits = allActions.filter(a => {
           if (a.type !== 'send') return false;
@@ -691,11 +695,14 @@
         const feeIncomeAnnual = feeIncome30d * (365 / redemptionDays);
         feeYieldOnTotal = (feeIncomeAnnual / totalRune) * 100;
         setText('fee-yield-pct', formatPercent(feeYieldOnTotal));
-        setText('fee-yield-rune', `${feeIncome30d.toFixed(2)} ᚱ last 30d · ~${feeIncomeAnnual.toFixed(0)} ᚱ/yr`);
+        setText(
+          'fee-yield-rune',
+          `${feeIncome30d.toFixed(2)} ᚱ retained last 30d · ~${(payoutVolume30dE8 / 1e8).toFixed(2)} ᚱ paid out net`
+        );
 
         setText('redemption-volume', formatRune(redemptionVolume30dE8));
-        setText('redemption-count', `${redemptionCount30d} claims · 5% fee on each`);
-        setText('apy-note', 'Bonding yield + 5% fee income');
+        setText('redemption-count', `${redemptionCount30d} payouts · gross volume inferred from net sends`);
+        setText('apy-note', 'Bonding yield + 5% fee income from user payouts');
       } else if (redemptionStatus === 'error') {
         setText('fee-yield-pct', '—');
         setText('fee-yield-rune', '30d claim history unavailable');
