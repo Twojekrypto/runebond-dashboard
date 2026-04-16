@@ -133,6 +133,8 @@
     .footer{text-align:center;margin-top:64px;padding-top:28px;border-top:1px solid var(--border);color:var(--text3);font-size:12px;display:flex;flex-direction:column;align-items:center;gap:8px}
     .footer .refresh-btn{color:var(--accent);cursor:pointer;background:var(--accent-dim);border:1px solid rgba(0,228,184,.2);border-radius:100px;padding:6px 18px;font:inherit;font-size:11px;font-weight:600;letter-spacing:.5px;transition:all .3s}
     .footer .refresh-btn:hover{background:rgba(0,228,184,.2);border-color:var(--accent);transform:translateY(-1px)}
+    .footer .refresh-btn:disabled{opacity:.55;cursor:wait;transform:none}
+    .footer .refresh-btn:disabled:hover{background:var(--accent-dim);border-color:rgba(0,228,184,.2);transform:none}
     .last-update{font-size:11px;color:var(--text3)}
 
     /* ─── Responsive ─── */
@@ -176,7 +178,7 @@
       <div class="apy-card">
         <div class="apy-label">Projected LP APY</div>
         <div class="apy-value" id="lp-effective-apy"><span class="loading">Loading…</span></div>
-        <div class="apy-sub">Bonding yield + 5% fee income on <span class="net" id="proj-capital">—</span> capital</div>
+        <div class="apy-sub"><span id="apy-note">Bonding yield + 5% fee income</span> on <span class="net" id="proj-capital">—</span> capital</div>
       </div>
     </div>
 
@@ -224,7 +226,7 @@
         <span class="stat-icon">📊</span>
         <div class="stat-label">Network Bonding APY</div>
         <div class="stat-value" id="network-apy"><span class="loading">Loading</span></div>
-        <div class="stat-usd">30-day avg across all bonded RUNE</div>
+        <div class="stat-usd" id="network-apy-note">Midgard reported network APY</div>
       </div>
       <div class="stat-card">
         <span class="stat-icon">📈</span>
@@ -344,14 +346,34 @@
     const LP_ADDRESS = 'thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l';
     const LP_FEE = 0.05;
 
-    // Auto-detect: use local proxy on localhost (bypasses CORS), direct URLs in production
-    // NOTE: ninerealms.com now 301-redirects to gateway.liquify.com (breaks CORS in browser)
     const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-    const MIDGARD = isLocal ? '/api/midgard' : 'https://gateway.liquify.com/chain/thorchain_midgard/v2';
-    const THORNODE = isLocal ? '/api/thornode' : 'https://gateway.liquify.com/chain/thorchain_api';
-    const COINGECKO = isLocal ? '/api/coingecko' : 'https://api.coingecko.com/api/v3';
+    const MIDGARD_BASES = isLocal
+      ? ['/api/midgard']
+      : ['https://gateway.liquify.com/chain/thorchain_midgard/v2'];
+    const THORNODE_BASES = isLocal
+      ? ['/api/thornode']
+      : ['https://thornode.thorchain.liquify.com', 'https://gateway.liquify.com/chain/thorchain_api'];
+    const COINGECKO_BASES = isLocal
+      ? ['/api/coingecko']
+      : ['https://api.coingecko.com/api/v3'];
 
     let runePrice = null;
+    let refreshPromise = null;
+
+    const endpointState = {
+      midgard: { bases: MIDGARD_BASES, preferred: MIDGARD_BASES[0] },
+      thornode: { bases: THORNODE_BASES, preferred: THORNODE_BASES[0] },
+      coingecko: { bases: COINGECKO_BASES, preferred: COINGECKO_BASES[0] }
+    };
+
+    function setText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+
+    function formatPercent(value, digits = 2) {
+      return Number(value).toFixed(digits) + '%';
+    }
 
     function formatRune(amountE8) {
       const val = Number(amountE8) / 1e8;
@@ -370,18 +392,14 @@
       return addr.slice(0, 10) + '…' + addr.slice(-6);
     }
 
-    async function fetchRunePrice() {
-      try {
-        const r = await fetch(`${COINGECKO}/simple/price?ids=thorchain&vs_currencies=usd`);
-        const d = await r.json();
-        runePrice = d.thorchain?.usd || null;
-      } catch { runePrice = null; }
+    function getOrderedBases(config) {
+      return [config.preferred, ...config.bases.filter(base => base !== config.preferred)];
     }
 
     async function fetchWithRetry(url, maxRetries = 5) {
       for (let attempt = 0; attempt < maxRetries; attempt++) {
         try {
-          const r = await fetch(url);
+          const r = await fetch(url, { cache: 'no-store' });
           if (r.status === 429) {
             await new Promise(res => setTimeout(res, 1500 * (attempt + 1)));
             continue;
@@ -399,6 +417,50 @@
       throw new Error(`Rate limit exceeded after ${maxRetries} retries`);
     }
 
+    async function fetchJSON(url, maxRetries = 5) {
+      const response = await fetchWithRetry(url, maxRetries);
+      return response.json();
+    }
+
+    async function fetchFromPreferredBase(config, path, maxRetries = 5) {
+      let lastError = null;
+
+      for (const base of getOrderedBases(config)) {
+        try {
+          const data = await fetchJSON(`${base}${path}`, maxRetries);
+          config.preferred = base;
+          return data;
+        } catch (error) {
+          lastError = error;
+          console.warn(`Endpoint fallback for ${base}${path}:`, error.message);
+        }
+      }
+
+      throw lastError || new Error(`Unable to load ${path}`);
+    }
+
+    async function fetchMidgard(path, maxRetries = 5) {
+      return fetchFromPreferredBase(endpointState.midgard, path, maxRetries);
+    }
+
+    async function fetchThornode(path, maxRetries = 5) {
+      return fetchFromPreferredBase(endpointState.thornode, path, maxRetries);
+    }
+
+    async function fetchCoinGecko(path, maxRetries = 2) {
+      return fetchFromPreferredBase(endpointState.coingecko, path, maxRetries);
+    }
+
+    async function fetchRunePrice() {
+      try {
+        const d = await fetchCoinGecko('/simple/price?ids=thorchain&vs_currencies=usd', 2);
+        runePrice = d.thorchain?.usd || null;
+      } catch (error) {
+        runePrice = null;
+        throw error;
+      }
+    }
+
     // Global state
     let lpBondedE8 = 0;
     let lpBalanceE8 = 0;
@@ -409,14 +471,13 @@
     let redemptionDays = 30;
     let deposits30dE8 = 0;
     let redemptionsLoaded = false;
+    let redemptionStatus = 'idle';
 
     async function fetchAPY() {
-      const [earningsRes, networkRes] = await Promise.all([
-        fetch(`${MIDGARD}/history/earnings?interval=day&count=30`),
-        fetch(`${MIDGARD}/network`)
+      const [earningsData, networkData] = await Promise.all([
+        fetchMidgard('/history/earnings?interval=day&count=30'),
+        fetchMidgard('/network')
       ]);
-      const earningsData = await earningsRes.json();
-      const networkData = await networkRes.json();
 
       const intervals = earningsData.intervals || [];
       const totalBondingEarnings30d = intervals.reduce(
@@ -424,27 +485,35 @@
       );
       const totalActiveBond = Number(networkData.bondMetrics?.totalActiveBond || 0);
       const days = intervals.length || 30;
-      bondingAPY = totalActiveBond > 0
+      const derivedBondingAPY = totalActiveBond > 0
         ? (totalBondingEarnings30d / totalActiveBond) * (365 / days)
         : 0;
-      document.getElementById('network-apy').textContent = (bondingAPY * 100).toFixed(2) + '%';
+      const reportedBondingAPY = Number(networkData.bondingAPY || 0);
+
+      // Midgard already exposes network bonding APY directly. Prefer it over
+      // mixing 30d earnings with today's active bond, which can overstate yield.
+      bondingAPY = reportedBondingAPY > 0 ? reportedBondingAPY : derivedBondingAPY;
+      setText('network-apy', formatPercent(bondingAPY * 100));
+      setText(
+        'network-apy-note',
+        reportedBondingAPY > 0 ? 'Midgard reported network APY' : `30-day earnings estimate over ${days} days`
+      );
     }
 
     async function fetchBonds() {
-      const r = await fetch(`${MIDGARD}/bonds/${LP_ADDRESS}`);
-      const d = await r.json();
+      const d = await fetchMidgard(`/bonds/${LP_ADDRESS}`);
 
       lpBondedE8 = Number(d.totalBonded || 0);
-      document.getElementById('total-bonded').textContent = formatRune(lpBondedE8);
+      setText('total-bonded', formatRune(lpBondedE8));
 
       const nodes = d.nodes || [];
       const activeNodes = nodes.filter(n => n.status === 'Active');
       const standbyNodes = nodes.filter(n => n.status !== 'Active');
       const withBond = nodes.filter(n => Number(n.bond) > 0);
 
-      document.getElementById('active-nodes').textContent = activeNodes.length;
-      document.getElementById('node-breakdown').textContent = `${withBond.length} bonded · ${standbyNodes.length} standby`;
-      document.getElementById('node-count').textContent = `${nodes.length} nodes · ${withBond.length} with bond`;
+      setText('active-nodes', activeNodes.length);
+      setText('node-breakdown', `${withBond.length} bonded · ${standbyNodes.length} standby`);
+      setText('node-count', `${nodes.length} nodes · ${withBond.length} with bond`);
 
       const sorted = [...nodes].sort((a, b) => Number(b.bond) - Number(a.bond));
 
@@ -464,14 +533,13 @@
     }
 
     async function fetchBalance() {
-      const r = await fetch(`${THORNODE}/cosmos/bank/v1beta1/balances/${LP_ADDRESS}`);
-      const d = await r.json();
+      const d = await fetchThornode(`/cosmos/bank/v1beta1/balances/${LP_ADDRESS}`);
       const rune = d.balances?.find(b => b.denom === 'rune');
       lpBalanceE8 = Number(rune ? rune.amount : '0');
-      document.getElementById('rune-balance').textContent = formatRune(lpBalanceE8);
+      setText('rune-balance', formatRune(lpBalanceE8));
     }
 
-    async function getCachedActions(cacheKey, maxAgeNs = 0n) {
+    function getCachedActions(cacheKey, maxAgeNs = 0n) {
       try {
         const cached = localStorage.getItem(cacheKey);
         if (!cached) return [];
@@ -483,8 +551,8 @@
       } catch (e) { return []; }
     }
 
-    async function fetchActionsIncremental(cacheKey, urlBase, maxAgeNs = 0n) {
-      const cachedActions = await getCachedActions(cacheKey, maxAgeNs);
+    async function fetchActionsIncremental(cacheKey, pathBase, maxAgeNs = 0n) {
+      const cachedActions = getCachedActions(cacheKey, maxAgeNs);
       let newestCachedDateNs = 0n;
       if (cachedActions.length > 0) {
         newestCachedDateNs = cachedActions.reduce((max, a) => {
@@ -496,11 +564,10 @@
       let newActions = [];
       let nextPageToken = '';
       do {
-        const url = urlBase + (nextPageToken ? `&nextPageToken=${nextPageToken}` : '');
-        const r = await fetchWithRetry(url);
-        const d = await r.json();
+        const path = pathBase + (nextPageToken ? `&nextPageToken=${encodeURIComponent(nextPageToken)}` : '');
+        const d = await fetchMidgard(path);
         const actions = d.actions || [];
-        
+
         let reachedCache = false;
         let reachedTimeLimit = false;
 
@@ -531,8 +598,13 @@
            unique.push(a);
         }
       }
-      
-      unique.sort((a, b) => Number(BigInt(b.date) - BigInt(a.date)));
+
+      unique.sort((a, b) => {
+        const dateA = BigInt(a.date);
+        const dateB = BigInt(b.date);
+        if (dateA === dateB) return 0;
+        return dateA > dateB ? -1 : 1;
+      });
 
       try {
         localStorage.setItem(cacheKey, JSON.stringify(unique));
@@ -542,10 +614,11 @@
     }
 
     async function fetchRedemptionVolume() {
+      redemptionStatus = 'loading';
       try {
         const thirtyDaysAgoNs = BigInt(Date.now() - 30 * 24 * 60 * 60 * 1000) * 1000000n;
-        const urlBase = `${MIDGARD}/actions?address=${LP_ADDRESS}&limit=50`;
-        const allActions = await fetchActionsIncremental('runebond_all_actions', urlBase, thirtyDaysAgoNs);
+        const pathBase = `/actions?address=${LP_ADDRESS}&limit=50`;
+        const allActions = await fetchActionsIncremental('runebond_all_actions', pathBase, thirtyDaysAgoNs);
 
         const rebonds = allActions.filter(a => {
           if (a.type !== 'rebond') return false;
@@ -574,84 +647,131 @@
           const coins = a.out?.[0]?.coins || [];
           return sum + coins.reduce((s, c) => s + Number(c.amount), 0);
         }, 0);
-        
+
         redemptionsLoaded = true;
+        redemptionStatus = 'ready';
       } catch (err) {
-        console.warn('fetchRedemptionVolume failed (CORS?):', err.message);
+        redemptionsLoaded = false;
+        redemptionStatus = 'error';
+        console.warn('fetchRedemptionVolume failed:', err.message);
+        throw err;
       }
     }
 
     function calculateLPMetrics() {
       const totalCapitalE8 = lpBondedE8 + lpBalanceE8;
-      if (totalCapitalE8 === 0 || bondingAPY === 0) return;
+      if (totalCapitalE8 === 0) return;
 
       const bondedRune = lpBondedE8 / 1e8;
-      const liquidRune = lpBalanceE8 / 1e8;
       const totalRune = totalCapitalE8 / 1e8;
 
-      document.getElementById('total-capital').textContent = formatRune(totalCapitalE8);
-      document.getElementById('total-capital-usd').textContent = formatUSD(totalCapitalE8);
+      setText('total-capital', formatRune(totalCapitalE8));
+      setText('total-capital-usd', formatUSD(totalCapitalE8));
 
       const bondedPct = (lpBondedE8 / totalCapitalE8 * 100).toFixed(1);
       const liquidPct = (lpBalanceE8 / totalCapitalE8 * 100).toFixed(1);
-      document.getElementById('bonded-pct').textContent = `${bondedPct}% of capital` + (runePrice ? ' · ' + formatUSD(lpBondedE8) : '');
-      document.getElementById('liquid-pct').textContent = `${liquidPct}% of capital` + (runePrice ? ' · ' + formatUSD(lpBalanceE8) : '');
+      setText('bonded-pct', `${bondedPct}% of capital` + (runePrice ? ' · ' + formatUSD(lpBondedE8) : ''));
+      setText('liquid-pct', `${liquidPct}% of capital` + (runePrice ? ' · ' + formatUSD(lpBalanceE8) : ''));
 
-      // Bonding yield
-      const bondingEarningsAnnual = bondedRune * bondingAPY;
-      const bondingYieldOnTotal = (bondingEarningsAnnual / totalRune) * 100;
-      document.getElementById('bonding-yield-pct').textContent = bondingYieldOnTotal.toFixed(2) + '%';
-      document.getElementById('bonding-yield-rune').textContent =
-        `~${bondingEarningsAnnual.toFixed(0)} ᚱ/yr from ${bondedRune.toFixed(0)} ᚱ bonded`;
+      let bondingYieldOnTotal = null;
+      if (bondingAPY > 0) {
+        const bondingEarningsAnnual = bondedRune * bondingAPY;
+        bondingYieldOnTotal = (bondingEarningsAnnual / totalRune) * 100;
+        setText('bonding-yield-pct', formatPercent(bondingYieldOnTotal));
+        setText('bonding-yield-rune', `~${bondingEarningsAnnual.toFixed(0)} ᚱ/yr from ${bondedRune.toFixed(0)} ᚱ bonded`);
+      } else {
+        setText('bonding-yield-pct', '—');
+        setText('bonding-yield-rune', 'Network bonding APY unavailable');
+      }
+
+      let feeYieldOnTotal = null;
 
       if (redemptionsLoaded) {
-        // Fee income
         const feeIncome30d = feeIncome30dE8 / 1e8;
         const feeIncomeAnnual = feeIncome30d * (365 / redemptionDays);
-        const feeYieldOnTotal = (feeIncomeAnnual / totalRune) * 100;
-        document.getElementById('fee-yield-pct').textContent = feeYieldOnTotal.toFixed(2) + '%';
-        document.getElementById('fee-yield-rune').textContent =
-          `${feeIncome30d.toFixed(2)} ᚱ last 30d · ~${feeIncomeAnnual.toFixed(0)} ᚱ/yr`;
+        feeYieldOnTotal = (feeIncomeAnnual / totalRune) * 100;
+        setText('fee-yield-pct', formatPercent(feeYieldOnTotal));
+        setText('fee-yield-rune', `${feeIncome30d.toFixed(2)} ᚱ last 30d · ~${feeIncomeAnnual.toFixed(0)} ᚱ/yr`);
 
-        // Redemption
-        document.getElementById('redemption-volume').textContent = formatRune(redemptionVolume30dE8);
-        document.getElementById('redemption-count').textContent =
-          `${redemptionCount30d} claims · 5% fee on each`;
-
-        // LP Effective APY
-        const lpEffectiveAPY = bondingYieldOnTotal + feeYieldOnTotal;
-        document.getElementById('lp-effective-apy').textContent = lpEffectiveAPY.toFixed(2) + '%';
+        setText('redemption-volume', formatRune(redemptionVolume30dE8));
+        setText('redemption-count', `${redemptionCount30d} claims · 5% fee on each`);
+        setText('apy-note', 'Bonding yield + 5% fee income');
+      } else if (redemptionStatus === 'error') {
+        setText('fee-yield-pct', '—');
+        setText('fee-yield-rune', '30d claim history unavailable');
+        setText('redemption-volume', '—');
+        setText('redemption-count', 'Could not load recent claims');
+        setText('apy-note', bondingYieldOnTotal !== null ? 'Bonding yield only (fee history unavailable)' : 'Fee history unavailable');
+      } else {
+        setText('fee-yield-pct', 'Loading…');
+        setText('fee-yield-rune', 'Fetching 30d claim history…');
+        setText('redemption-volume', '—');
+        setText('redemption-count', 'Fetching recent claims…');
+        setText('apy-note', bondingYieldOnTotal !== null ? 'Bonding yield loaded, fee history loading' : 'Loading live APY inputs');
       }
-      
-      document.getElementById('proj-capital').textContent = formatRune(totalCapitalE8);
+
+      const lpEffectiveAPY = (bondingYieldOnTotal || 0) + (feeYieldOnTotal || 0);
+      setText('lp-effective-apy', lpEffectiveAPY > 0 ? formatPercent(lpEffectiveAPY) : '—');
+      setText('proj-capital', formatRune(totalCapitalE8));
     }
 
     async function fetchAll() {
-      try {
-        await fetchRunePrice();
-        // Szybkie zapytania
-        await Promise.all([fetchAPY(), fetchBonds(), fetchBalance()]);
+      if (refreshPromise) return refreshPromise;
+
+      const refreshButton = document.querySelector('.refresh-btn');
+      refreshButton.disabled = true;
+      refreshButton.textContent = 'Refreshing…';
+      setText('last-update', 'Refreshing live data…');
+
+      refreshPromise = (async () => {
+        const startedAt = new Date();
+        const coreResults = await Promise.allSettled([
+          fetchAPY(),
+          fetchBonds(),
+          fetchBalance(),
+          fetchRunePrice()
+        ]);
+
         calculateLPMetrics();
-        
-        // Wolniejsze zapytania w tle z uzyciem cache
-        Promise.all([fetchRedemptionVolume(), fetchDepositors()]).then(() => {
-          calculateLPMetrics();
-          document.getElementById('last-update').textContent =
-            'Last updated ' + new Date().toLocaleTimeString();
-        }).catch(err => {
-          console.error('Background fetch error:', err);
-        });
-      } catch (err) {
+        const coreWarnings = coreResults.filter(result => result.status === 'rejected').length;
+        setText('last-update', coreWarnings
+          ? `Core data refreshed with ${coreWarnings} warning${coreWarnings > 1 ? 's' : ''}; loading history…`
+          : 'Core data refreshed; loading history…');
+
+        const backgroundResults = await Promise.allSettled([
+          fetchRedemptionVolume(),
+          fetchDepositors()
+        ]);
+
+        calculateLPMetrics();
+
+        const backgroundWarnings = backgroundResults.filter(result => result.status === 'rejected').length;
+        const totalWarnings = coreWarnings + backgroundWarnings;
+        const stamp = startedAt.toLocaleTimeString();
+        setText(
+          'last-update',
+          totalWarnings
+            ? `Last updated ${stamp} · ${totalWarnings} source warning${totalWarnings > 1 ? 's' : ''}`
+            : `Last updated ${stamp}`
+        );
+      })().catch(err => {
         console.error('Fetch error:', err);
-      }
+        setText('last-update', `Update failed · ${err.message}`);
+      }).finally(() => {
+        refreshButton.disabled = false;
+        refreshButton.textContent = '↻ Refresh Data';
+        refreshPromise = null;
+      });
+
+      return refreshPromise;
     }
 
     // Depositors tracking
     async function fetchDepositors() {
       try {
         // Fetch ALL send actions (no time limit) to find all depositors
-        const urlBase = `${MIDGARD}/actions?address=${LP_ADDRESS}&type=send&limit=50`;
-        const allSends = await fetchActionsIncremental('runebond_send_actions', urlBase, 0n);
+        const pathBase = `/actions?address=${LP_ADDRESS}&type=send&limit=50`;
+        const allSends = await fetchActionsIncremental('runebond_send_actions', pathBase, 0n);
 
         // Find deposits: sends WHERE out.address === LP_ADDRESS (someone sent TO LP)
         const deposits = allSends.filter(a => {
@@ -717,18 +837,18 @@
         renderDepositors(providers, totalDeposited);
       } catch (err) {
         console.error('fetchDepositors failed:', err);
-        document.getElementById('providers-count').textContent = 'Error loading';
+        setText('providers-count', 'Error loading');
         document.getElementById('providers-tbody').innerHTML = 
           `<tr><td colspan="5" style="text-align:center;color:var(--red);padding:32px">
             Failed to load provider data: ${err.message}<br>
             <small style="color:var(--text3)">Try refreshing — API may be temporarily unavailable</small>
           </td></tr>`;
+        throw err;
       }
     }
 
     function renderDepositors(providers, totalDeposited) {
-      document.getElementById('providers-count').textContent =
-        `${providers.length} providers · ${formatRune(totalDeposited)} total deposited`;
+      setText('providers-count', `${providers.length} providers · ${formatRune(totalDeposited)} total deposited`);
 
       const tbody = document.getElementById('providers-tbody');
       if (providers.length === 0) {
