@@ -371,6 +371,12 @@
       if (el) el.textContent = text;
     }
 
+    function setLoadingHeroAPY(message = 'Loading…') {
+      const el = document.getElementById('lp-effective-apy');
+      if (!el) return;
+      el.innerHTML = `<span class="loading">${message}</span>`;
+    }
+
     function formatPercent(value, digits = 2) {
       return Number(value).toFixed(digits) + '%';
     }
@@ -718,7 +724,13 @@
       }
 
       const lpEffectiveAPY = (bondingYieldOnTotal || 0) + (feeYieldOnTotal || 0);
-      setText('lp-effective-apy', lpEffectiveAPY > 0 ? formatPercent(lpEffectiveAPY) : '—');
+      if (redemptionsLoaded) {
+        setText('lp-effective-apy', lpEffectiveAPY > 0 ? formatPercent(lpEffectiveAPY) : '—');
+      } else if (redemptionStatus === 'error') {
+        setText('lp-effective-apy', bondingYieldOnTotal !== null ? formatPercent(bondingYieldOnTotal) : '—');
+      } else {
+        setLoadingHeroAPY();
+      }
       setText('proj-capital', formatRune(totalCapitalE8));
     }
 
