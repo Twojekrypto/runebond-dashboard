@@ -62,17 +62,18 @@
 
     /* ─── APY Hero ─── */
     .apy-hero{text-align:left;margin-bottom:56px;animation:fadeUp .6s ease-out}
-    .apy-card{display:grid;grid-template-columns:minmax(0,0.95fr) minmax(0,1.35fr);gap:28px;width:100%;background:linear-gradient(160deg,rgba(8,23,39,0.92),rgba(12,30,48,0.88));border:1px solid rgba(0,228,184,0.18);border-radius:var(--radius);padding:34px;backdrop-filter:blur(24px);position:relative;overflow:hidden;box-shadow:var(--shadow)}
+    .apy-card{display:grid;gap:22px;width:100%;background:linear-gradient(160deg,rgba(8,23,39,0.92),rgba(12,30,48,0.88));border:1px solid rgba(0,228,184,0.18);border-radius:var(--radius);padding:34px;backdrop-filter:blur(24px);position:relative;overflow:hidden;box-shadow:var(--shadow)}
     .apy-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 12% 10%,rgba(0,228,184,.12),transparent 28%),radial-gradient(circle at 90% 8%,rgba(124,115,255,.14),transparent 26%);pointer-events:none}
-    .hero-intro{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:100%}
-    .hero-intro h2{font-size:clamp(28px,4vw,40px);font-weight:700;line-height:1.03;letter-spacing:-1.4px;max-width:11ch;margin:10px 0 14px}
+    .hero-top{position:relative;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,0.95fr);gap:18px;align-items:stretch}
+    .hero-intro{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:100%;padding:2px 0}
+    .hero-intro h2{font-size:clamp(30px,4vw,42px);font-weight:700;line-height:1.03;letter-spacing:-1.4px;max-width:15ch;margin:10px 0 14px}
     .hero-intro p{color:var(--text2);font-size:14px;line-height:1.75;max-width:38ch}
     .hero-chip-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
     .hero-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);font-size:11px;letter-spacing:.4px;color:var(--text2)}
     .hero-chip strong{color:var(--text)}
-    .apy-grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) minmax(220px,0.8fr);gap:16px}
-    .hero-metric,.hero-rail{position:relative;border-radius:22px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));padding:24px 24px 22px;backdrop-filter:blur(24px)}
-    .hero-metric::after,.hero-rail::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent 22%);opacity:.5;pointer-events:none}
+    .apy-grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .hero-metric,.hero-rail,.rail-item{position:relative;border-radius:22px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));padding:24px 24px 22px;backdrop-filter:blur(24px)}
+    .hero-metric::after,.hero-rail::after,.rail-item::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent 22%);opacity:.5;pointer-events:none}
     .hero-metric-investor{border-color:rgba(247,198,109,.18);background:linear-gradient(180deg,rgba(247,198,109,.08),rgba(255,255,255,.03))}
     .apy-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:var(--text3);margin-bottom:12px}
     .apy-value{font-size:clamp(44px,7vw,74px);font-weight:800;letter-spacing:-2.8px;background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 40%,var(--purple) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:.96}
@@ -80,13 +81,11 @@
     .apy-sub{font-size:13px;color:var(--text2);margin-top:12px;line-height:1.55}
     .apy-sub .net{color:var(--accent);font-weight:600}
     .apy-value .loading{font-size:20px;font-weight:500;-webkit-text-fill-color:var(--text3);background:none}
-    .hero-rail{display:flex;flex-direction:column;justify-content:space-between}
+    .hero-rail{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:12px}
     .rail-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text3)}
-    .rail-value{font-size:28px;font-weight:800;letter-spacing:-1px;margin-top:10px}
-    .rail-divider{height:1px;background:linear-gradient(90deg,rgba(255,255,255,.16),transparent);margin:18px 0}
-    .rail-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:var(--text2);padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-    .rail-row:last-child{border-bottom:none;padding-bottom:0}
-    .rail-row strong{color:var(--text);font-size:14px}
+    .rail-item{padding:18px 18px 16px}
+    .rail-value{font-size:24px;font-weight:800;letter-spacing:-1px;margin-top:8px;color:var(--text)}
+    .rail-detail{font-size:12px;color:var(--text3);margin-top:8px;line-height:1.45}
 
     /* ─── Section Headers ─── */
     .section-header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
@@ -113,16 +112,6 @@
     .fee-banner .fee-text strong{color:var(--amber);font-weight:700}
     .fee-banner .fee-text .arr{color:var(--text3);margin:0 2px}
 
-    /* ─── How It Works ─── */
-    .how-it-works{margin-bottom:48px;animation:fadeUp .85s ease-out}
-    .flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;justify-content:center}
-    .flow-step{flex:1;min-width:170px;max-width:230px;text-align:center;padding:28px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);position:relative;backdrop-filter:blur(20px);transition:all .35s cubic-bezier(.4,0,.2,1)}
-    .flow-step:hover{border-color:rgba(0,228,184,.2);transform:translateY(-2px)}
-    .flow-step .icon{font-size:28px;margin-bottom:14px;display:block}
-    .flow-step .step-title{font-size:13px;font-weight:700;margin-bottom:8px;letter-spacing:-.2px}
-    .flow-step .step-desc{font-size:11px;color:var(--text3);line-height:1.6}
-    .flow-arrow{display:flex;align-items:center;justify-content:center;width:44px;flex-shrink:0;font-size:18px;color:var(--accent);opacity:.5}
-
     /* ─── Nodes Table ─── */
     .nodes-section{animation:fadeUp .9s ease-out}
     .table-wrap{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));border:1px solid var(--border);border-radius:24px;overflow:hidden;backdrop-filter:blur(20px);box-shadow:0 18px 50px rgba(0,0,0,.18)}
@@ -130,6 +119,7 @@
     .table-header span:first-child{font-size:14px;font-weight:600}
     .table-header .count{font-size:12px;color:var(--text3);background:var(--surface2);padding:4px 12px;border-radius:100px}
     .table-scroll{overflow:auto}
+    .nodes-section .table-scroll{max-height:612px}
     table{width:100%;min-width:760px;border-collapse:collapse}
     th{text-align:left;padding:14px 24px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text3);border-bottom:1px solid var(--border);background:rgba(8,17,29,.92);backdrop-filter:blur(16px);position:sticky;top:0;z-index:1}
     td{padding:16px 24px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04);transition:background .2s}
@@ -168,9 +158,7 @@
 
     /* ─── Responsive ─── */
     @media(max-width:1140px){
-      .apy-card{grid-template-columns:1fr}
-      .apy-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .hero-rail{grid-column:1/-1}
+      .hero-top{grid-template-columns:1fr}
       .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
     @media(max-width:768px){
@@ -178,13 +166,12 @@
       .apy-card{padding:24px}
       .hero-intro h2{max-width:none}
       .apy-grid{grid-template-columns:1fr}
-      .flow-arrow{width:auto;padding:8px 0;transform:rotate(90deg)}
-      .flow{flex-direction:column;align-items:center}
-      .flow-step{max-width:100%;width:100%}
+      .hero-rail{grid-template-columns:1fr}
       th,td{padding:12px 16px}
       .stats{grid-template-columns:1fr}
       .row-num{display:none}
       .fee-banner{flex-direction:column;align-items:flex-start}
+      .nodes-section .table-scroll{max-height:560px}
     }
     @media(max-width:480px){
       .apy-value{font-size:48px}
@@ -213,16 +200,40 @@
     <!-- APY Hero -->
     <div class="apy-hero">
       <div class="apy-card">
-        <div class="hero-intro">
-          <div>
-            <div class="apy-label">Yield Split</div>
-            <h2>Gross LP engine. Investor net return.</h2>
-            <p>Runebond keeps half of total LP profit, so investors only receive the pool half of the gross yield generated by bonding and redemption fees.</p>
+        <div class="hero-top">
+          <div class="hero-intro">
+            <div>
+              <div class="apy-label">Yield Split</div>
+              <h2>Gross LP engine. Investor net return.</h2>
+              <p>Runebond keeps half of total LP profit, so investors only receive the pool half of the gross yield generated by bonding and redemption fees.</p>
+            </div>
+            <div class="hero-chip-row">
+              <span class="hero-chip"><strong>Investors</strong> receive 50%</span>
+              <span class="hero-chip"><strong>Runebond</strong> captures 50%</span>
+            </div>
           </div>
-          <div class="hero-chip-row">
-            <span class="hero-chip"><strong>Investors</strong> receive 50%</span>
-            <span class="hero-chip"><strong>Runebond</strong> captures 50%</span>
-          </div>
+          <aside class="hero-rail">
+            <div class="rail-item">
+              <div class="rail-label">Capital tracked</div>
+              <div class="rail-value" id="proj-capital">—</div>
+              <div class="rail-detail">Bonded plus liquid RUNE backing the LP right now.</div>
+            </div>
+            <div class="rail-item">
+              <div class="rail-label">Investor split</div>
+              <div class="rail-value" id="investor-share-pct">50%</div>
+              <div class="rail-detail">Positive yield credited to the investor pool.</div>
+            </div>
+            <div class="rail-item">
+              <div class="rail-label">Runebond split</div>
+              <div class="rail-value" id="runebond-share-pct">50%</div>
+              <div class="rail-detail">Positive yield retained by the Runebond operator.</div>
+            </div>
+            <div class="rail-item">
+              <div class="rail-label">Runebond capture APY</div>
+              <div class="rail-value" id="runebond-apy">—</div>
+              <div class="rail-detail">Operator side of the gross LP yield after the split.</div>
+            </div>
+          </aside>
         </div>
         <div class="apy-grid">
           <article class="hero-metric">
@@ -235,16 +246,6 @@
             <div class="apy-value investor" id="investors-apy"><span class="loading">Loading…</span></div>
             <div class="apy-sub">Net APY delivered to the investor pool after Runebond takes its 50% share.</div>
           </article>
-          <aside class="hero-rail">
-            <div>
-              <div class="rail-label">Capital tracked</div>
-              <div class="rail-value" id="proj-capital">—</div>
-            </div>
-            <div class="rail-divider"></div>
-            <div class="rail-row"><span>Investor split</span><strong id="investor-share-pct">50%</strong></div>
-            <div class="rail-row"><span>Runebond split</span><strong id="runebond-share-pct">50%</strong></div>
-            <div class="rail-row"><span>Runebond capture APY</span><strong id="runebond-apy">—</strong></div>
-          </aside>
         </div>
       </div>
     </div>
@@ -315,36 +316,6 @@
       </div>
     </div>
 
-    <!-- How It Works -->
-    <div class="how-it-works">
-      <div class="section-header"><h2>How It Works</h2></div>
-      <div class="flow">
-        <div class="flow-step">
-          <span class="icon">📤</span>
-          <div class="step-title">Send bRUNE</div>
-          <div class="step-desc">Users send bonded RUNE to the LP address for conversion</div>
-        </div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-step">
-          <span class="icon">⚙️</span>
-          <div class="step-title">LP Claims</div>
-          <div class="step-desc">LP claims bonding rewards from THORChain validators</div>
-        </div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-step">
-          <span class="icon">💰</span>
-          <div class="step-title">5% Fee</div>
-          <div class="step-desc">LP retains 5% as a service fee for the process</div>
-        </div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-step">
-          <span class="icon">📥</span>
-          <div class="step-title">Receive RUNE</div>
-          <div class="step-desc">Users receive native RUNE minus the 5% LP fee</div>
-        </div>
-      </div>
-    </div>
-
     <!-- Nodes Table -->
     <div class="nodes-section">
       <div class="section-header"><h2>Node Positions</h2></div>
@@ -388,12 +359,13 @@
                 <th>Address</th>
                 <th>Deposited</th>
                 <th>Pool Share</th>
+                <th>Gross Yield</th>
+                <th>Investor Yield</th>
                 <th>Investor Value</th>
-                <th>Net Growth</th>
               </tr>
             </thead>
             <tbody id="providers-tbody">
-              <tr><td colspan="5" style="text-align:center;color:var(--text3);padding:48px">
+              <tr><td colspan="6" style="text-align:center;color:var(--text3);padding:48px">
                 <span class="loading" style="font-size:14px">Loading provider data…</span>
               </td></tr>
             </tbody>
@@ -909,7 +881,7 @@
         individualDeposits.forEach(d => {
           if (!depositorMap[d.sender]) {
             depositorMap[d.sender] = { 
-              totalE8: 0, earningsE8: 0, 
+              totalE8: 0, grossEarningsE8: 0, investorEarningsE8: 0,
               firstDateMs: d.dateMs, lastDateMs: d.dateMs, txCount: 0 
             };
           }
@@ -918,7 +890,8 @@
           // Time-weighted share of earnings for this individual deposit
           const weight = d.amount * d.daysInLP;
           const earningsShare = totalWeight > 0 ? weight / totalWeight : 0;
-          depositorMap[d.sender].earningsE8 += investorEarningsPoolE8 * earningsShare;
+          depositorMap[d.sender].grossEarningsE8 += grossProfitE8 * earningsShare;
+          depositorMap[d.sender].investorEarningsE8 += investorEarningsPoolE8 * earningsShare;
           // Track dates
           if (d.dateMs < depositorMap[d.sender].firstDateMs) {
             depositorMap[d.sender].firstDateMs = d.dateMs;
@@ -932,11 +905,12 @@
           .filter(([, data]) => data.totalE8 >= 1e8) // min 1 RUNE
           .map(([addr, data]) => {
             const share = totalDeposited > 0 ? data.totalE8 / totalDeposited : 0;
-            const currentValueE8 = data.totalE8 + data.earningsE8;
-            const growthPct = data.totalE8 > 0 ? (data.earningsE8 / data.totalE8) * 100 : 0;
+            const currentValueE8 = data.totalE8 + data.investorEarningsE8;
+            const grossGrowthPct = data.totalE8 > 0 ? (data.grossEarningsE8 / data.totalE8) * 100 : 0;
+            const investorGrowthPct = data.totalE8 > 0 ? (data.investorEarningsE8 / data.totalE8) * 100 : 0;
             const firstDate = new Date(data.firstDateMs);
             const daysIn = Math.max(1, (now - data.firstDateMs) / (24 * 60 * 60 * 1000));
-            return { addr, ...data, share, currentValueE8, growthE8: data.earningsE8, growthPct, firstDate, daysIn };
+            return { addr, ...data, share, currentValueE8, grossGrowthPct, investorGrowthPct, firstDate, daysIn };
           })
           .sort((a, b) => b.totalE8 - a.totalE8);
 
@@ -945,7 +919,7 @@
         console.error('fetchDepositors failed:', err);
         setText('providers-count', 'Error loading');
         document.getElementById('providers-tbody').innerHTML = 
-          `<tr><td colspan="5" style="text-align:center;color:var(--red);padding:32px">
+          `<tr><td colspan="6" style="text-align:center;color:var(--red);padding:32px">
             Failed to load provider data: ${err.message}<br>
             <small style="color:var(--text3)">Try refreshing — API may be temporarily unavailable</small>
           </td></tr>`;
@@ -958,15 +932,18 @@
 
       const tbody = document.getElementById('providers-tbody');
       if (providers.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:32px">No deposit data available</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:32px">No deposit data available</td></tr>';
         return;
       }
 
       tbody.innerHTML = providers.map(p => {
         const sharePct = (p.share * 100).toFixed(1);
-        const growthClass = p.growthE8 >= 0 ? 'growth-pos' : 'growth-neg';
-        const growthSign = p.growthE8 >= 0 ? '+' : '';
-        const growthRune = p.growthE8 / 1e8;
+        const grossGrowthClass = p.grossEarningsE8 >= 0 ? 'growth-pos' : 'growth-neg';
+        const grossGrowthSign = p.grossEarningsE8 >= 0 ? '+' : '';
+        const grossGrowthRune = p.grossEarningsE8 / 1e8;
+        const investorGrowthClass = p.investorEarningsE8 >= 0 ? 'growth-pos' : 'growth-neg';
+        const investorGrowthSign = p.investorEarningsE8 >= 0 ? '+' : '';
+        const investorGrowthRune = p.investorEarningsE8 / 1e8;
         const dateStr = p.firstDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
         return `<tr>
@@ -979,11 +956,15 @@
             <div class="share-pct">${sharePct}%</div>
             <div class="share-bar"><div class="fill" style="width:${sharePct}%"></div></div>
           </td>
-          <td class="current-val">${formatRune(Math.round(p.currentValueE8))}</td>
           <td>
-            <div class="${growthClass}">${growthSign}${growthRune.toFixed(1)} ᚱ</div>
-            <div style="font-size:10px;color:var(--text3)">${growthSign}${p.growthPct.toFixed(1)}%</div>
+            <div class="${grossGrowthClass}">${grossGrowthSign}${grossGrowthRune.toFixed(1)} ᚱ</div>
+            <div style="font-size:10px;color:var(--text3)">${grossGrowthSign}${p.grossGrowthPct.toFixed(1)}% gross</div>
           </td>
+          <td>
+            <div class="${investorGrowthClass}">${investorGrowthSign}${investorGrowthRune.toFixed(1)} ᚱ</div>
+            <div style="font-size:10px;color:var(--text3)">${investorGrowthSign}${p.investorGrowthPct.toFixed(1)}% investor</div>
+          </td>
+          <td class="current-val">${formatRune(Math.round(p.currentValueE8))}</td>
         </tr>`;
       }).join('');
     }
