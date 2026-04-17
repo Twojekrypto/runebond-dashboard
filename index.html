@@ -105,13 +105,6 @@
     .stat-usd{font-size:12px;color:var(--text3);margin-top:6px;line-height:1.5}
     .stat-value .loading{color:var(--text3);font-size:16px;font-weight:500;background:linear-gradient(90deg,var(--text3) 25%,var(--text2) 50%,var(--text3) 75%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 1.5s infinite}
 
-    /* ─── Fee Banner ─── */
-    .fee-banner{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:18px 22px;background:linear-gradient(135deg,rgba(247,198,109,.08),rgba(124,115,255,.06));border:1px solid rgba(247,198,109,.14);border-radius:22px;margin-bottom:40px;animation:fadeUp .75s ease-out}
-    .fee-banner .fee-icon{font-size:22px}
-    .fee-banner .fee-text{font-size:13px;color:var(--text2);letter-spacing:.2px}
-    .fee-banner .fee-text strong{color:var(--amber);font-weight:700}
-    .fee-banner .fee-text .arr{color:var(--text3);margin:0 2px}
-
     /* ─── Nodes Table ─── */
     .nodes-section{animation:fadeUp .9s ease-out}
     .table-wrap{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));border:1px solid var(--border);border-radius:24px;overflow:hidden;backdrop-filter:blur(20px);box-shadow:0 18px 50px rgba(0,0,0,.18)}
@@ -170,7 +163,6 @@
       th,td{padding:12px 16px}
       .stats{grid-template-columns:1fr}
       .row-num{display:none}
-      .fee-banner{flex-direction:column;align-items:flex-start}
       .nodes-section .table-scroll{max-height:560px}
     }
     @media(max-width:480px){
@@ -247,14 +239,6 @@
             <div class="apy-sub">Net APY delivered to the investor pool after Runebond takes its 50% share.</div>
           </article>
         </div>
-      </div>
-    </div>
-
-    <!-- Fee Banner -->
-    <div class="fee-banner">
-      <span class="fee-icon">⚡</span>
-      <div class="fee-text">
-        Users redeem <strong>bRUNE</strong> <span class="arr">→</span> LP pays out <strong>95% RUNE</strong> <span class="arr">→</span> LP retains <strong>5% fee</strong> <span class="arr">→</span> total LP profit is split <strong>50 / 50</strong> between investors and Runebond
       </div>
     </div>
 
