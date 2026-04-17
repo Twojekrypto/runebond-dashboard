@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Runebond APY Dashboard</title>
-  <meta name="description" content="Live APY dashboard for Runebond LP — track bonded RUNE, node positions, and reward claims in real-time.">
+  <meta name="description" content="Live operating view for the Runebond LP — track investor APY, gross LP yield, bonded capital, and the 30-day fee engine in real time.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -46,19 +46,27 @@
     .container{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:56px 32px 110px}
 
     /* ─── Header ─── */
-    .header{text-align:center;margin-bottom:56px;animation:fadeUp .5s ease-out}
-    .logo-badge{display:inline-flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:8px 20px 8px 14px;margin-bottom:28px;backdrop-filter:blur(24px)}
+    .header{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,0.85fr);gap:24px;align-items:end;margin-bottom:42px;animation:fadeUp .5s ease-out}
+    .header-main{max-width:760px}
+    .header-aside{display:flex;justify-content:flex-end}
+    .logo-badge{display:inline-flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:8px 20px 8px 14px;margin-bottom:22px;backdrop-filter:blur(24px)}
     .logo-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);position:relative}
     .logo-badge .dot::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1.5px solid var(--accent);animation:pulse-ring 2s ease-out infinite}
     .logo-badge span{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:2px}
     .header h1,.section-header h2,.hero-intro h2{font-family:'Space Grotesk',sans-serif}
     .header h1{font-size:clamp(34px,5vw,52px);font-weight:700;letter-spacing:-1.8px;margin-bottom:14px;line-height:1.04}
     .header h1 .accent{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-    .header .subtitle{color:var(--text2);font-size:15px;max-width:620px;margin:0 auto;line-height:1.75}
-    .header .address{display:inline-block;margin-top:20px;padding:10px 18px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-xs);font-size:12px;font-family:'SF Mono','Fira Code',monospace;color:var(--text2);word-break:break-all;backdrop-filter:blur(16px);transition:border-color .3s}
+    .header .subtitle{color:var(--text2);font-size:15px;max-width:58ch;line-height:1.75}
+    .header .address{display:flex;flex-direction:column;gap:8px;align-items:flex-start;margin-top:18px;padding:14px 18px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));border:1px solid var(--border);border-radius:18px;font-size:12px;font-family:'SF Mono','Fira Code',monospace;color:var(--text2);word-break:break-all;backdrop-filter:blur(16px);transition:border-color .3s}
     .header .address:hover{border-color:rgba(0,228,184,.3)}
+    .header .address-label{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text3)}
     .header .address a{color:var(--accent);text-decoration:none;transition:opacity .2s}
     .header .address a:hover{opacity:.8}
+    .header-note{width:100%;max-width:360px;padding:18px 20px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));border:1px solid var(--border);border-radius:22px;backdrop-filter:blur(20px);box-shadow:0 16px 40px rgba(0,0,0,.16)}
+    .header-note-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:14px}
+    .header-focus{list-style:none;display:grid;gap:10px}
+    .header-focus li{font-size:13px;line-height:1.55;color:var(--text2);padding-left:16px;position:relative}
+    .header-focus li::before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));box-shadow:0 0 10px rgba(0,228,184,.25)}
 
     /* ─── APY Hero ─── */
     .apy-hero{text-align:left;margin-bottom:56px;animation:fadeUp .6s ease-out}
@@ -66,8 +74,8 @@
     .apy-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 12% 10%,rgba(0,228,184,.12),transparent 28%),radial-gradient(circle at 90% 8%,rgba(124,115,255,.14),transparent 26%);pointer-events:none}
     .hero-top{position:relative;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,0.95fr);gap:18px;align-items:stretch}
     .hero-intro{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:100%;padding:2px 0}
-    .hero-intro h2{font-size:clamp(30px,4vw,42px);font-weight:700;line-height:1.03;letter-spacing:-1.4px;max-width:15ch;margin:10px 0 14px}
-    .hero-intro p{color:var(--text2);font-size:14px;line-height:1.75;max-width:38ch}
+    .hero-intro h2{font-size:clamp(30px,4vw,42px);font-weight:700;line-height:1.03;letter-spacing:-1.4px;max-width:14ch;margin:10px 0 14px}
+    .hero-intro p{color:var(--text2);font-size:14px;line-height:1.75;max-width:42ch}
     .hero-chip-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
     .hero-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);font-size:11px;letter-spacing:.4px;color:var(--text2)}
     .hero-chip strong{color:var(--text)}
@@ -151,12 +159,16 @@
 
     /* ─── Responsive ─── */
     @media(max-width:1140px){
+      .header{grid-template-columns:1fr}
+      .header-aside{justify-content:flex-start}
+      .header-note{max-width:none}
       .hero-top{grid-template-columns:1fr}
       .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
     @media(max-width:768px){
       .container{padding:28px 16px 64px}
       .apy-card{padding:24px}
+      .header{gap:18px}
       .hero-intro h2{max-width:none}
       .apy-grid{grid-template-columns:1fr}
       .hero-rail{grid-template-columns:1fr}
@@ -176,16 +188,30 @@
 
     <!-- Header -->
     <header class="header">
-      <div class="logo-badge">
-        <div class="dot"></div>
-        <span>Live</span>
+      <div class="header-main">
+        <div class="logo-badge">
+          <div class="dot"></div>
+          <span>Live</span>
+        </div>
+        <h1>Runebond <span class="accent">APY Dashboard</span></h1>
+        <p class="subtitle">Track the numbers that actually move the pool: investor APY, gross LP yield, capital mix, and fee flow coming from recent exits.</p>
+        <div class="address">
+          <span class="address-label">Tracked LP address</span>
+          <a href="https://thorchain.net/address/thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l" target="_blank" rel="noopener">
+            thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l
+          </a>
+        </div>
       </div>
-      <h1>Runebond <span class="accent">APY Dashboard</span></h1>
-      <p class="subtitle">Real-time yield tracking for the Runebond liquidity provider, powered by THORChain on-chain data.</p>
-      <div class="address">
-        <a href="https://thorchain.net/address/thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l" target="_blank" rel="noopener">
-          thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l
-        </a>
+      <div class="header-aside">
+        <div class="header-note">
+          <div class="header-note-label">What matters here</div>
+          <ul class="header-focus">
+            <li>Investor APY after the 50 / 50 split</li>
+            <li>Gross LP APY before the split</li>
+            <li>Bonded versus liquid capital backing the pool</li>
+            <li>30-day fee contribution inferred from exits</li>
+          </ul>
+        </div>
       </div>
     </header>
 
@@ -195,35 +221,35 @@
         <div class="hero-top">
           <div class="hero-intro">
             <div>
-              <div class="apy-label">Yield Split</div>
-              <h2>Gross LP engine. Investor net return.</h2>
-              <p>Runebond keeps half of total LP profit, so investors only receive the pool half of the gross yield generated by bonding and redemption fees.</p>
+              <div class="apy-label">Live Yield View</div>
+              <h2>The investor side and the LP engine, side by side.</h2>
+              <p>The gross LP APY comes from two drivers only: bonded RUNE yield and fee retained from recent redemptions. Investors receive half of that positive yield.</p>
             </div>
             <div class="hero-chip-row">
-              <span class="hero-chip"><strong>Investors</strong> receive 50%</span>
-              <span class="hero-chip"><strong>Runebond</strong> captures 50%</span>
+              <span class="hero-chip"><strong>Investor APY</strong> is 50% of positive LP yield</span>
+              <span class="hero-chip"><strong>Fee signal</strong> is inferred from 30d net payouts</span>
             </div>
           </div>
           <aside class="hero-rail">
             <div class="rail-item">
               <div class="rail-label">Capital tracked</div>
               <div class="rail-value" id="proj-capital">—</div>
-              <div class="rail-detail">Bonded plus liquid RUNE backing the LP right now.</div>
+              <div class="rail-detail" id="hero-capital-note">Bonded plus liquid RUNE backing the LP right now.</div>
             </div>
             <div class="rail-item">
-              <div class="rail-label">Investor split</div>
-              <div class="rail-value" id="investor-share-pct">50%</div>
-              <div class="rail-detail">Positive yield credited to the investor pool.</div>
+              <div class="rail-label">Bonding contribution</div>
+              <div class="rail-value" id="hero-bonding-yield">—</div>
+              <div class="rail-detail" id="hero-bonding-note">Yield coming from the bonded RUNE side of the LP.</div>
             </div>
             <div class="rail-item">
-              <div class="rail-label">Runebond split</div>
-              <div class="rail-value" id="runebond-share-pct">50%</div>
-              <div class="rail-detail">Positive yield retained by the Runebond operator.</div>
+              <div class="rail-label">30d fee contribution</div>
+              <div class="rail-value" id="hero-fee-yield">—</div>
+              <div class="rail-detail" id="hero-fee-note">Fee retained from recent exits and net payouts.</div>
             </div>
             <div class="rail-item">
               <div class="rail-label">Runebond capture APY</div>
               <div class="rail-value" id="runebond-apy">—</div>
-              <div class="rail-detail">Operator side of the gross LP yield after the split.</div>
+              <div class="rail-detail">Operator side of the positive LP yield after the split.</div>
             </div>
           </aside>
         </div>
@@ -231,19 +257,19 @@
           <article class="hero-metric">
             <div class="apy-label">Projected LP APY</div>
             <div class="apy-value" id="lp-effective-apy"><span class="loading">Loading…</span></div>
-            <div class="apy-sub" id="apy-note">Gross LP yield before the 50/50 split</div>
+            <div class="apy-sub" id="apy-note">Bonding contribution plus the last 30-day fee contribution, before the split.</div>
           </article>
           <article class="hero-metric hero-metric-investor">
             <div class="apy-label">Investors APY</div>
             <div class="apy-value investor" id="investors-apy"><span class="loading">Loading…</span></div>
-            <div class="apy-sub">Net APY delivered to the investor pool after Runebond takes its 50% share.</div>
+            <div class="apy-sub">What the investor pool receives after Runebond retains its side of positive yield.</div>
           </article>
         </div>
       </div>
     </div>
 
     <!-- Capital Overview -->
-    <div class="section-header"><h2>Capital Overview</h2></div>
+    <div class="section-header"><h2>LP Snapshot</h2></div>
     <div class="stats">
       <div class="stat-card">
         <span class="stat-icon">💎</span>
@@ -272,11 +298,11 @@
     </div>
 
     <!-- Yield Breakdown -->
-    <div class="section-header"><h2>Yield Breakdown</h2></div>
+    <div class="section-header"><h2>Yield Drivers</h2></div>
     <div class="stats">
       <div class="stat-card">
         <span class="stat-icon">📊</span>
-        <div class="stat-label">Network Bonding APY</div>
+        <div class="stat-label">Network Base APY</div>
         <div class="stat-value" id="network-apy"><span class="loading">Loading</span></div>
         <div class="stat-usd" id="network-apy-note">Midgard reported network APY</div>
       </div>
@@ -288,13 +314,13 @@
       </div>
       <div class="stat-card">
         <span class="stat-icon">🏷️</span>
-        <div class="stat-label">Fee Income (30d)</div>
+        <div class="stat-label">30d Fee Contribution</div>
         <div class="stat-value accent" id="fee-yield-pct"><span class="loading">Loading</span></div>
         <div class="stat-usd" id="fee-yield-rune"></div>
       </div>
       <div class="stat-card">
         <span class="stat-icon">🔄</span>
-        <div class="stat-label">Redemption Volume</div>
+        <div class="stat-label">30d Exit Volume</div>
         <div class="stat-value" id="redemption-volume"><span class="loading">Loading</span></div>
         <div class="stat-usd" id="redemption-count"></div>
       </div>
@@ -305,7 +331,7 @@
       <div class="section-header"><h2>Investor Pool</h2></div>
       <div class="table-wrap">
         <div class="table-header">
-          <span>Investor positions after the 50 / 50 split</span>
+          <span>Deposits, gross yield, and investor-side value</span>
           <span class="count" id="providers-count">Loading…</span>
         </div>
         <div class="table-scroll">
@@ -335,7 +361,7 @@
       <div class="section-header"><h2>LP Bonded Positions</h2></div>
       <div class="table-wrap">
         <div class="table-header">
-          <span>Bonded node allocations</span>
+          <span>Where the LP bond is currently parked</span>
           <span class="count" id="node-count">Loading…</span>
         </div>
         <div class="table-scroll">
@@ -511,6 +537,7 @@
     let deposits30dE8 = 0;
     let redemptionsLoaded = false;
     let redemptionStatus = 'idle';
+    let bondedNodeCount = 0;
 
     async function fetchAPY() {
       const [earningsData, networkData] = await Promise.all([
@@ -549,6 +576,7 @@
       const activeNodes = nodes.filter(n => n.status === 'Active');
       const standbyNodes = nodes.filter(n => n.status !== 'Active');
       const withBond = nodes.filter(n => Number(n.bond) > 0);
+      bondedNodeCount = withBond.length;
 
       setText('active-nodes', activeNodes.length);
       setText('node-breakdown', `${withBond.length} bonded · ${standbyNodes.length} standby`);
@@ -563,7 +591,7 @@
         return `<tr>
           <td class="row-num">${i + 1}</td>
           <td class="node-addr">
-            <a href="https://thorchain.net/nodes/${n.address}" target="_blank" rel="noopener">${truncAddr(n.address)}</a>
+            <a href="https://thorchain.net/address/${n.address}" target="_blank" rel="noopener">${truncAddr(n.address)}</a>
           </td>
           <td class="${bond > 0 ? 'bond-amount' : 'bond-zero'}">${bond > 0 ? formatRune(n.bond) : '0 ᚱ'}</td>
           <td><span class="badge ${statusClass}">${n.status}</span></td>
@@ -714,6 +742,11 @@
       const liquidPct = (lpBalanceE8 / totalCapitalE8 * 100).toFixed(1);
       setText('bonded-pct', `${bondedPct}% of capital` + (runePrice ? ' · ' + formatUSD(lpBondedE8) : ''));
       setText('liquid-pct', `${liquidPct}% of capital` + (runePrice ? ' · ' + formatUSD(lpBalanceE8) : ''));
+      setText(
+        'hero-capital-note',
+        `${bondedPct}% bonded · ${liquidPct}% liquid` +
+        (bondedNodeCount ? ` · ${bondedNodeCount} nodes with bond` : '')
+      );
 
       let bondingYieldOnTotal = null;
       if (bondingAPY > 0) {
@@ -721,9 +754,13 @@
         bondingYieldOnTotal = (bondingEarningsAnnual / totalRune) * 100;
         setText('bonding-yield-pct', formatPercent(bondingYieldOnTotal));
         setText('bonding-yield-rune', `~${bondingEarningsAnnual.toFixed(0)} ᚱ/yr from ${bondedRune.toFixed(0)} ᚱ bonded`);
+        setText('hero-bonding-yield', formatPercent(bondingYieldOnTotal));
+        setText('hero-bonding-note', `~${bondingEarningsAnnual.toFixed(0)} ᚱ/yr from ${bondedRune.toFixed(0)} ᚱ bonded at ${formatPercent(bondingAPY * 100)}`);
       } else {
         setText('bonding-yield-pct', '—');
         setText('bonding-yield-rune', 'Network bonding APY unavailable');
+        setText('hero-bonding-yield', '—');
+        setText('hero-bonding-note', 'Network bonding APY unavailable right now.');
       }
 
       let feeYieldOnTotal = null;
@@ -737,6 +774,8 @@
           'fee-yield-rune',
           `${feeIncome30d.toFixed(2)} ᚱ retained last 30d · ~${(payoutVolume30dE8 / 1e8).toFixed(2)} ᚱ paid out net`
         );
+        setText('hero-fee-yield', formatPercent(feeYieldOnTotal));
+        setText('hero-fee-note', `${redemptionCount30d} payouts · ${formatRune(redemptionVolume30dE8)} gross exit volume in 30d`);
 
         setText('redemption-volume', formatRune(redemptionVolume30dE8));
         setText('redemption-count', `${redemptionCount30d} payouts · gross volume inferred from net sends`);
@@ -747,19 +786,21 @@
         setText('redemption-volume', '—');
         setText('redemption-count', 'Could not load recent claims');
         setText('apy-note', bondingYieldOnTotal !== null ? 'Bonding-only fallback until fee history returns' : 'Fee history unavailable');
+        setText('hero-fee-yield', '—');
+        setText('hero-fee-note', 'Recent payout history could not be loaded.');
       } else {
         setText('fee-yield-pct', 'Loading…');
         setText('fee-yield-rune', 'Fetching 30d claim history…');
         setText('redemption-volume', '—');
         setText('redemption-count', 'Fetching recent claims…');
         setText('apy-note', bondingYieldOnTotal !== null ? 'Bonding loaded, fee history still syncing' : 'Loading live APY inputs');
+        setText('hero-fee-yield', 'Loading…');
+        setText('hero-fee-note', 'Fetching last 30d payouts and exits…');
       }
 
       const lpEffectiveAPY = (bondingYieldOnTotal || 0) + (feeYieldOnTotal || 0);
       const investorsAPY = investorTake(lpEffectiveAPY);
       const runebondAPY = runebondTake(lpEffectiveAPY);
-      setText('investor-share-pct', formatPercent(INVESTOR_SHARE * 100, 0));
-      setText('runebond-share-pct', formatPercent((1 - INVESTOR_SHARE) * 100, 0));
       if (redemptionsLoaded) {
         setText('lp-effective-apy', lpEffectiveAPY > 0 ? formatPercent(lpEffectiveAPY) : '—');
         setText('investors-apy', investorsAPY > 0 ? formatPercent(investorsAPY) : '—');
