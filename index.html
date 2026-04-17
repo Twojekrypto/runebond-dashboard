@@ -1011,8 +1011,7 @@
         const coreResults = await Promise.allSettled([
           fetchAPY(),
           fetchBonds(),
-          fetchBalance(),
-          fetchRunePrice()
+          fetchBalance()
         ]);
 
         calculateLPMetrics();
@@ -1021,12 +1020,24 @@
           ? `Core data refreshed with ${coreWarnings} warning${coreWarnings > 1 ? 's' : ''}; loading history…`
           : 'Core data refreshed; loading history…');
 
-        const backgroundResults = await Promise.allSettled([
-          fetchRedemptionVolume(),
-          fetchDepositors()
-        ]);
+        const runePricePromise = fetchRunePrice()
+          .finally(() => {
+            calculateLPMetrics();
+          });
 
-        calculateLPMetrics();
+        const redemptionPromise = fetchRedemptionVolume()
+          .finally(() => {
+            calculateLPMetrics();
+            setText('last-update', 'Yield data refreshed; syncing investor table…');
+          });
+
+        const depositorPromise = fetchDepositors();
+
+        const backgroundResults = await Promise.allSettled([
+          runePricePromise,
+          redemptionPromise,
+          depositorPromise
+        ]);
 
         const backgroundWarnings = backgroundResults.filter(result => result.status === 'rejected').length;
         const totalWarnings = coreWarnings + backgroundWarnings;
