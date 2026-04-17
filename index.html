@@ -6,23 +6,32 @@
   <title>Runebond APY Dashboard</title>
   <meta name="description" content="Live APY dashboard for Runebond LP — track bonded RUNE, node positions, and reward claims in real-time.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{
-      --bg:#060a13;--bg2:#0c1221;--bg3:#131c30;
+      --bg:#04111d;--bg2:#0c1729;--bg3:#142039;
       --surface:rgba(255,255,255,0.035);
-      --surface2:rgba(255,255,255,0.055);
-      --border:rgba(255,255,255,0.07);
-      --border2:rgba(255,255,255,0.12);
-      --text:#f0f2f5;--text2:#94a3b8;--text3:#64748b;
-      --accent:#00e4b8;--accent2:#00ffd0;--accent-dim:rgba(0,228,184,0.12);
-      --purple:#8b5cf6;--purple-dim:rgba(139,92,246,0.12);
+      --surface2:rgba(255,255,255,0.06);
+      --surface3:rgba(255,255,255,0.085);
+      --border:rgba(255,255,255,0.08);
+      --border2:rgba(255,255,255,0.15);
+      --text:#eef4fb;--text2:#9eb2c9;--text3:#68819c;
+      --accent:#00e4b8;--accent2:#8bffd8;--accent-dim:rgba(0,228,184,0.14);
+      --gold:#f7c66d;--gold-dim:rgba(247,198,109,0.14);
+      --purple:#7c73ff;--purple-dim:rgba(124,115,255,0.14);
       --red:#f43f5e;--amber:#f59e0b;--green:#22c55e;
-      --radius:20px;--radius-sm:12px;--radius-xs:8px;
+      --shadow:0 28px 80px rgba(0,0,0,0.32);
+      --radius:28px;--radius-sm:18px;--radius-xs:10px;
     }
-    html{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-    body{min-height:100vh;overflow-x:hidden}
+    html{font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+    body{min-height:100vh;overflow-x:hidden;background:
+      radial-gradient(circle at 12% 18%, rgba(0,228,184,.14), transparent 26%),
+      radial-gradient(circle at 86% 14%, rgba(124,115,255,.17), transparent 30%),
+      radial-gradient(circle at 52% 108%, rgba(247,198,109,.12), transparent 28%),
+      linear-gradient(180deg,#04111d 0%, #071321 26%, #09182a 100%)}
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);background-size:120px 120px;mask-image:radial-gradient(circle at center, black 40%, transparent 85%);opacity:.22}
 
     /* ─── Animated BG ─── */
     .bg-glow{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
@@ -34,7 +43,7 @@
     @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
     @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
 
-    .container{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:48px 28px 100px}
+    .container{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:56px 32px 110px}
 
     /* ─── Header ─── */
     .header{text-align:center;margin-bottom:56px;animation:fadeUp .5s ease-out}
@@ -42,32 +51,51 @@
     .logo-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);position:relative}
     .logo-badge .dot::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1.5px solid var(--accent);animation:pulse-ring 2s ease-out infinite}
     .logo-badge span{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:2px}
-    .header h1{font-size:clamp(30px,5vw,44px);font-weight:800;letter-spacing:-1.5px;margin-bottom:14px;line-height:1.15}
+    .header h1,.section-header h2,.hero-intro h2{font-family:'Space Grotesk',sans-serif}
+    .header h1{font-size:clamp(34px,5vw,52px);font-weight:700;letter-spacing:-1.8px;margin-bottom:14px;line-height:1.04}
     .header h1 .accent{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-    .header .subtitle{color:var(--text2);font-size:15px;max-width:460px;margin:0 auto;line-height:1.6}
+    .header .subtitle{color:var(--text2);font-size:15px;max-width:620px;margin:0 auto;line-height:1.75}
     .header .address{display:inline-block;margin-top:20px;padding:10px 18px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-xs);font-size:12px;font-family:'SF Mono','Fira Code',monospace;color:var(--text2);word-break:break-all;backdrop-filter:blur(16px);transition:border-color .3s}
     .header .address:hover{border-color:rgba(0,228,184,.3)}
     .header .address a{color:var(--accent);text-decoration:none;transition:opacity .2s}
     .header .address a:hover{opacity:.8}
 
     /* ─── APY Hero ─── */
-    .apy-hero{text-align:center;margin-bottom:56px;animation:fadeUp .6s ease-out}
-    .apy-card{display:inline-block;background:linear-gradient(160deg,rgba(0,228,184,0.06),rgba(139,92,246,0.04),rgba(0,0,0,0));border:1px solid rgba(0,228,184,0.18);border-radius:var(--radius);padding:48px 72px;backdrop-filter:blur(24px);position:relative;overflow:hidden}
-    .apy-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 40% 40%,rgba(0,228,184,.06),transparent 50%);pointer-events:none;animation:float 20s ease-in-out infinite}
+    .apy-hero{text-align:left;margin-bottom:56px;animation:fadeUp .6s ease-out}
+    .apy-card{display:grid;grid-template-columns:minmax(0,0.95fr) minmax(0,1.35fr);gap:28px;width:100%;background:linear-gradient(160deg,rgba(8,23,39,0.92),rgba(12,30,48,0.88));border:1px solid rgba(0,228,184,0.18);border-radius:var(--radius);padding:34px;backdrop-filter:blur(24px);position:relative;overflow:hidden;box-shadow:var(--shadow)}
+    .apy-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 12% 10%,rgba(0,228,184,.12),transparent 28%),radial-gradient(circle at 90% 8%,rgba(124,115,255,.14),transparent 26%);pointer-events:none}
+    .hero-intro{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:100%}
+    .hero-intro h2{font-size:clamp(28px,4vw,40px);font-weight:700;line-height:1.03;letter-spacing:-1.4px;max-width:11ch;margin:10px 0 14px}
+    .hero-intro p{color:var(--text2);font-size:14px;line-height:1.75;max-width:38ch}
+    .hero-chip-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+    .hero-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);font-size:11px;letter-spacing:.4px;color:var(--text2)}
+    .hero-chip strong{color:var(--text)}
+    .apy-grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) minmax(220px,0.8fr);gap:16px}
+    .hero-metric,.hero-rail{position:relative;border-radius:22px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));padding:24px 24px 22px;backdrop-filter:blur(24px)}
+    .hero-metric::after,.hero-rail::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent 22%);opacity:.5;pointer-events:none}
+    .hero-metric-investor{border-color:rgba(247,198,109,.18);background:linear-gradient(180deg,rgba(247,198,109,.08),rgba(255,255,255,.03))}
     .apy-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:var(--text3);margin-bottom:12px}
-    .apy-value{font-size:clamp(52px,10vw,76px);font-weight:900;letter-spacing:-3px;background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 40%,var(--purple) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
-    .apy-sub{font-size:13px;color:var(--text3);margin-top:16px;letter-spacing:.2px}
+    .apy-value{font-size:clamp(44px,7vw,74px);font-weight:800;letter-spacing:-2.8px;background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 40%,var(--purple) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:.96}
+    .apy-value.investor{background:linear-gradient(135deg,var(--gold) 0%,#fff3d5 45%,var(--accent2) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+    .apy-sub{font-size:13px;color:var(--text2);margin-top:12px;line-height:1.55}
     .apy-sub .net{color:var(--accent);font-weight:600}
     .apy-value .loading{font-size:20px;font-weight:500;-webkit-text-fill-color:var(--text3);background:none}
+    .hero-rail{display:flex;flex-direction:column;justify-content:space-between}
+    .rail-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text3)}
+    .rail-value{font-size:28px;font-weight:800;letter-spacing:-1px;margin-top:10px}
+    .rail-divider{height:1px;background:linear-gradient(90deg,rgba(255,255,255,.16),transparent);margin:18px 0}
+    .rail-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:var(--text2);padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .rail-row:last-child{border-bottom:none;padding-bottom:0}
+    .rail-row strong{color:var(--text);font-size:14px}
 
     /* ─── Section Headers ─── */
     .section-header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
-    .section-header h2{font-size:18px;font-weight:700;letter-spacing:-0.3px;white-space:nowrap}
+    .section-header h2{font-size:20px;font-weight:700;letter-spacing:-0.4px;white-space:nowrap}
     .section-header::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent)}
 
     /* ─── Stats Grid ─── */
-    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-bottom:40px}
-    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:22px 24px;backdrop-filter:blur(20px);animation:fadeUp .7s ease-out;transition:all .35s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:42px}
+    .stat-card{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));border:1px solid var(--border);border-radius:22px;padding:24px 24px 22px;backdrop-filter:blur(20px);animation:fadeUp .7s ease-out;transition:all .35s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;box-shadow:0 16px 40px rgba(0,0,0,.18)}
     .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,228,184,.2),transparent);opacity:0;transition:opacity .35s}
     .stat-card:hover{border-color:rgba(0,228,184,.2);transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,228,184,.06)}
     .stat-card:hover::before{opacity:1}
@@ -79,7 +107,7 @@
     .stat-value .loading{color:var(--text3);font-size:16px;font-weight:500;background:linear-gradient(90deg,var(--text3) 25%,var(--text2) 50%,var(--text3) 75%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 1.5s infinite}
 
     /* ─── Fee Banner ─── */
-    .fee-banner{display:flex;align-items:center;justify-content:center;gap:14px;padding:18px 28px;background:linear-gradient(135deg,rgba(245,158,11,.06),rgba(139,92,246,.04));border:1px solid rgba(245,158,11,.15);border-radius:var(--radius-sm);margin-bottom:40px;animation:fadeUp .75s ease-out}
+    .fee-banner{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:18px 22px;background:linear-gradient(135deg,rgba(247,198,109,.08),rgba(124,115,255,.06));border:1px solid rgba(247,198,109,.14);border-radius:22px;margin-bottom:40px;animation:fadeUp .75s ease-out}
     .fee-banner .fee-icon{font-size:22px}
     .fee-banner .fee-text{font-size:13px;color:var(--text2);letter-spacing:.2px}
     .fee-banner .fee-text strong{color:var(--amber);font-weight:700}
@@ -97,15 +125,16 @@
 
     /* ─── Nodes Table ─── */
     .nodes-section{animation:fadeUp .9s ease-out}
-    .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;backdrop-filter:blur(20px)}
+    .table-wrap{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));border:1px solid var(--border);border-radius:24px;overflow:hidden;backdrop-filter:blur(20px);box-shadow:0 18px 50px rgba(0,0,0,.18)}
     .table-header{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid var(--border)}
     .table-header span:first-child{font-size:14px;font-weight:600}
     .table-header .count{font-size:12px;color:var(--text3);background:var(--surface2);padding:4px 12px;border-radius:100px}
-    table{width:100%;border-collapse:collapse}
-    th{text-align:left;padding:12px 24px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text3);border-bottom:1px solid var(--border);background:rgba(0,0,0,.15)}
-    td{padding:14px 24px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04);transition:background .2s}
+    .table-scroll{overflow:auto}
+    table{width:100%;min-width:760px;border-collapse:collapse}
+    th{text-align:left;padding:14px 24px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text3);border-bottom:1px solid var(--border);background:rgba(8,17,29,.92);backdrop-filter:blur(16px);position:sticky;top:0;z-index:1}
+    td{padding:16px 24px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04);transition:background .2s}
     tr:last-child td{border-bottom:none}
-    tr:hover td{background:rgba(0,228,184,0.025)}
+    tr:hover td{background:rgba(0,228,184,0.04)}
     .node-addr{font-family:'SF Mono','Fira Code',monospace;font-size:12px;color:var(--text2)}
     .node-addr a{color:var(--text2);text-decoration:none;transition:color .2s}
     .node-addr a:hover{color:var(--accent)}
@@ -138,18 +167,26 @@
     .last-update{font-size:11px;color:var(--text3)}
 
     /* ─── Responsive ─── */
+    @media(max-width:1140px){
+      .apy-card{grid-template-columns:1fr}
+      .apy-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .hero-rail{grid-column:1/-1}
+      .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
     @media(max-width:768px){
       .container{padding:28px 16px 64px}
-      .apy-card{padding:36px 32px}
+      .apy-card{padding:24px}
+      .hero-intro h2{max-width:none}
+      .apy-grid{grid-template-columns:1fr}
       .flow-arrow{width:auto;padding:8px 0;transform:rotate(90deg)}
       .flow{flex-direction:column;align-items:center}
       .flow-step{max-width:100%;width:100%}
       th,td{padding:12px 16px}
-      .stats{grid-template-columns:1fr 1fr}
+      .stats{grid-template-columns:1fr}
       .row-num{display:none}
+      .fee-banner{flex-direction:column;align-items:flex-start}
     }
     @media(max-width:480px){
-      .stats{grid-template-columns:1fr}
       .apy-value{font-size:48px}
     }
   </style>
@@ -176,9 +213,39 @@
     <!-- APY Hero -->
     <div class="apy-hero">
       <div class="apy-card">
-        <div class="apy-label">Projected LP APY</div>
-        <div class="apy-value" id="lp-effective-apy"><span class="loading">Loading…</span></div>
-        <div class="apy-sub"><span id="apy-note">Bonding yield + 5% fee income</span> on <span class="net" id="proj-capital">—</span> capital</div>
+        <div class="hero-intro">
+          <div>
+            <div class="apy-label">Yield Split</div>
+            <h2>Gross LP engine. Investor net return.</h2>
+            <p>Runebond keeps half of total LP profit, so investors only receive the pool half of the gross yield generated by bonding and redemption fees.</p>
+          </div>
+          <div class="hero-chip-row">
+            <span class="hero-chip"><strong>Investors</strong> receive 50%</span>
+            <span class="hero-chip"><strong>Runebond</strong> captures 50%</span>
+          </div>
+        </div>
+        <div class="apy-grid">
+          <article class="hero-metric">
+            <div class="apy-label">Projected LP APY</div>
+            <div class="apy-value" id="lp-effective-apy"><span class="loading">Loading…</span></div>
+            <div class="apy-sub" id="apy-note">Gross LP yield before the 50/50 split</div>
+          </article>
+          <article class="hero-metric hero-metric-investor">
+            <div class="apy-label">Investors APY</div>
+            <div class="apy-value investor" id="investors-apy"><span class="loading">Loading…</span></div>
+            <div class="apy-sub">Net APY delivered to the investor pool after Runebond takes its 50% share.</div>
+          </article>
+          <aside class="hero-rail">
+            <div>
+              <div class="rail-label">Capital tracked</div>
+              <div class="rail-value" id="proj-capital">—</div>
+            </div>
+            <div class="rail-divider"></div>
+            <div class="rail-row"><span>Investor split</span><strong id="investor-share-pct">50%</strong></div>
+            <div class="rail-row"><span>Runebond split</span><strong id="runebond-share-pct">50%</strong></div>
+            <div class="rail-row"><span>Runebond capture APY</span><strong id="runebond-apy">—</strong></div>
+          </aside>
+        </div>
       </div>
     </div>
 
@@ -186,7 +253,7 @@
     <div class="fee-banner">
       <span class="fee-icon">⚡</span>
       <div class="fee-text">
-        Users send <strong>bRUNE</strong> <span class="arr">→</span> LP claims rewards <span class="arr">→</span> retains <strong>5% fee</strong> <span class="arr">→</span> users receive <strong>RUNE</strong>
+        Users redeem <strong>bRUNE</strong> <span class="arr">→</span> LP pays out <strong>95% RUNE</strong> <span class="arr">→</span> LP retains <strong>5% fee</strong> <span class="arr">→</span> total LP profit is split <strong>50 / 50</strong> between investors and Runebond
       </div>
     </div>
 
@@ -286,7 +353,7 @@
           <span>Bond Provider Nodes</span>
           <span class="count" id="node-count">Loading…</span>
         </div>
-        <div style="overflow-x:auto">
+        <div class="table-scroll">
           <table>
             <thead>
               <tr>
@@ -308,21 +375,21 @@
 
     <!-- Liquidity Providers -->
     <div class="providers-section">
-      <div class="section-header"><h2>Liquidity Providers</h2></div>
+      <div class="section-header"><h2>Investor Pool</h2></div>
       <div class="table-wrap">
         <div class="table-header">
-          <span>LP Shareholders</span>
+          <span>Investor positions after the 50 / 50 split</span>
           <span class="count" id="providers-count">Loading…</span>
         </div>
-        <div style="overflow-x:auto">
+        <div class="table-scroll">
           <table>
             <thead>
               <tr>
                 <th>Address</th>
                 <th>Deposited</th>
-                <th>Share</th>
-                <th>Current Value</th>
-                <th>Growth</th>
+                <th>Pool Share</th>
+                <th>Investor Value</th>
+                <th>Net Growth</th>
               </tr>
             </thead>
             <tbody id="providers-tbody">
@@ -345,6 +412,7 @@
   <script>
     const LP_ADDRESS = 'thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l';
     const LP_FEE = 0.05;
+    const INVESTOR_SHARE = 0.5;
 
     const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
     const MIDGARD_BASES = isLocal
@@ -371,10 +439,18 @@
       if (el) el.textContent = text;
     }
 
-    function setLoadingHeroAPY(message = 'Loading…') {
-      const el = document.getElementById('lp-effective-apy');
+    function setLoadingMetric(id, message = 'Loading…') {
+      const el = document.getElementById(id);
       if (!el) return;
       el.innerHTML = `<span class="loading">${message}</span>`;
+    }
+
+    function investorTake(value) {
+      return value > 0 ? value * INVESTOR_SHARE : value;
+    }
+
+    function runebondTake(value) {
+      return value > 0 ? value * (1 - INVESTOR_SHARE) : 0;
     }
 
     function formatPercent(value, digits = 2) {
@@ -708,28 +784,38 @@
 
         setText('redemption-volume', formatRune(redemptionVolume30dE8));
         setText('redemption-count', `${redemptionCount30d} payouts · gross volume inferred from net sends`);
-        setText('apy-note', 'Bonding yield + 5% fee income from user payouts');
+        setText('apy-note', 'Gross LP yield from bonding + payout fees before the 50 / 50 split');
       } else if (redemptionStatus === 'error') {
         setText('fee-yield-pct', '—');
         setText('fee-yield-rune', '30d claim history unavailable');
         setText('redemption-volume', '—');
         setText('redemption-count', 'Could not load recent claims');
-        setText('apy-note', bondingYieldOnTotal !== null ? 'Bonding yield only (fee history unavailable)' : 'Fee history unavailable');
+        setText('apy-note', bondingYieldOnTotal !== null ? 'Bonding-only fallback until fee history returns' : 'Fee history unavailable');
       } else {
         setText('fee-yield-pct', 'Loading…');
         setText('fee-yield-rune', 'Fetching 30d claim history…');
         setText('redemption-volume', '—');
         setText('redemption-count', 'Fetching recent claims…');
-        setText('apy-note', bondingYieldOnTotal !== null ? 'Bonding yield loaded, fee history loading' : 'Loading live APY inputs');
+        setText('apy-note', bondingYieldOnTotal !== null ? 'Bonding loaded, fee history still syncing' : 'Loading live APY inputs');
       }
 
       const lpEffectiveAPY = (bondingYieldOnTotal || 0) + (feeYieldOnTotal || 0);
+      const investorsAPY = investorTake(lpEffectiveAPY);
+      const runebondAPY = runebondTake(lpEffectiveAPY);
+      setText('investor-share-pct', formatPercent(INVESTOR_SHARE * 100, 0));
+      setText('runebond-share-pct', formatPercent((1 - INVESTOR_SHARE) * 100, 0));
       if (redemptionsLoaded) {
         setText('lp-effective-apy', lpEffectiveAPY > 0 ? formatPercent(lpEffectiveAPY) : '—');
+        setText('investors-apy', investorsAPY > 0 ? formatPercent(investorsAPY) : '—');
+        setText('runebond-apy', runebondAPY > 0 ? formatPercent(runebondAPY) : '—');
       } else if (redemptionStatus === 'error') {
         setText('lp-effective-apy', bondingYieldOnTotal !== null ? formatPercent(bondingYieldOnTotal) : '—');
+        setText('investors-apy', bondingYieldOnTotal !== null ? formatPercent(investorTake(bondingYieldOnTotal)) : '—');
+        setText('runebond-apy', bondingYieldOnTotal !== null ? formatPercent(runebondTake(bondingYieldOnTotal)) : '—');
       } else {
-        setLoadingHeroAPY();
+        setLoadingMetric('lp-effective-apy');
+        setLoadingMetric('investors-apy');
+        setLoadingMetric('runebond-apy');
       }
       setText('proj-capital', formatRune(totalCapitalE8));
     }
@@ -811,7 +897,8 @@
         // Total deposited and total earnings
         const totalDeposited = individualDeposits.reduce((s, d) => s + d.amount, 0);
         const totalCapitalE8 = lpBondedE8 + lpBalanceE8;
-        const totalEarnings = totalCapitalE8 - totalDeposited;
+        const grossProfitE8 = totalCapitalE8 - totalDeposited;
+        const investorEarningsPoolE8 = investorTake(grossProfitE8);
 
         // Time-weighted earnings: weight = amount × days_in_LP
         // Each deposit's share of earnings = its weight / total weight
@@ -831,7 +918,7 @@
           // Time-weighted share of earnings for this individual deposit
           const weight = d.amount * d.daysInLP;
           const earningsShare = totalWeight > 0 ? weight / totalWeight : 0;
-          depositorMap[d.sender].earningsE8 += totalEarnings * earningsShare;
+          depositorMap[d.sender].earningsE8 += investorEarningsPoolE8 * earningsShare;
           // Track dates
           if (d.dateMs < depositorMap[d.sender].firstDateMs) {
             depositorMap[d.sender].firstDateMs = d.dateMs;
@@ -867,7 +954,7 @@
     }
 
     function renderDepositors(providers, totalDeposited) {
-      setText('providers-count', `${providers.length} providers · ${formatRune(totalDeposited)} total deposited`);
+      setText('providers-count', `${providers.length} investors · ${formatRune(totalDeposited)} deposited capital`);
 
       const tbody = document.getElementById('providers-tbody');
       if (providers.length === 0) {
