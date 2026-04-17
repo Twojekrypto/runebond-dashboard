@@ -62,6 +62,13 @@
     .header .address-label{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text3)}
     .header .address a{color:var(--accent);text-decoration:none;transition:opacity .2s}
     .header .address a:hover{opacity:.8}
+    .source-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+    .source-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);font-size:11px;font-weight:600;letter-spacing:.3px;color:var(--text2)}
+    .source-chip::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--text3);box-shadow:0 0 12px rgba(255,255,255,.08)}
+    .source-chip.live::before{background:var(--accent);box-shadow:0 0 12px rgba(0,228,184,.28)}
+    .source-chip.midgard::before{background:var(--gold);box-shadow:0 0 12px rgba(247,198,109,.24)}
+    .source-chip.thornode::before{background:var(--purple);box-shadow:0 0 12px rgba(124,115,255,.24)}
+    .source-chip.inferred::before{background:var(--amber);box-shadow:0 0 12px rgba(245,158,11,.24)}
     .header-note{width:100%;max-width:360px;padding:18px 20px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));border:1px solid var(--border);border-radius:22px;backdrop-filter:blur(20px);box-shadow:0 16px 40px rgba(0,0,0,.16)}
     .header-note-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:14px}
     .header-focus{list-style:none;display:grid;gap:10px}
@@ -79,7 +86,7 @@
     .hero-chip-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
     .hero-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);font-size:11px;letter-spacing:.4px;color:var(--text2)}
     .hero-chip strong{color:var(--text)}
-    .apy-grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .apy-grid{position:relative;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr);gap:16px}
     .hero-metric,.hero-rail,.rail-item{position:relative;border-radius:22px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));padding:24px 24px 22px;backdrop-filter:blur(24px)}
     .hero-metric::after,.hero-rail::after,.rail-item::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent 22%);opacity:.5;pointer-events:none}
     .hero-metric-investor{border-color:rgba(247,198,109,.18);background:linear-gradient(180deg,rgba(247,198,109,.08),rgba(255,255,255,.03))}
@@ -94,6 +101,14 @@
     .rail-item{padding:18px 18px 16px}
     .rail-value{font-size:24px;font-weight:800;letter-spacing:-1px;margin-top:8px;color:var(--text)}
     .rail-detail{font-size:12px;color:var(--text3);margin-top:8px;line-height:1.45}
+    .hero-split{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 42px minmax(0,1fr) 42px minmax(0,1fr) 42px minmax(0,1fr);gap:10px;align-items:center;padding:16px 18px;border-radius:22px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.02))}
+    .split-cell{min-width:0}
+    .split-cell.highlight .split-value{color:var(--gold)}
+    .split-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text3)}
+    .split-value{margin-top:8px;font-size:28px;font-weight:800;letter-spacing:-1.2px;color:var(--text);font-variant-numeric:tabular-nums}
+    .split-detail{margin-top:6px;font-size:12px;line-height:1.45;color:var(--text3)}
+    .split-operator{display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--text3)}
+    .split-operator strong{color:var(--accent)}
 
     /* ─── Section Headers ─── */
     .section-header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
@@ -106,8 +121,15 @@
     .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,228,184,.2),transparent);opacity:0;transition:opacity .35s}
     .stat-card:hover{border-color:rgba(0,228,184,.2);transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,228,184,.06)}
     .stat-card:hover::before{opacity:1}
-    .stat-icon{font-size:20px;margin-bottom:10px;display:block}
+    .stat-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
     .stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.8px;color:var(--text3);margin-bottom:10px}
+    .stat-card-head .stat-label{margin-bottom:0}
+    .trust-chip{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);white-space:nowrap}
+    .trust-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--text3);box-shadow:0 0 10px rgba(255,255,255,.08)}
+    .trust-chip.live::before{background:var(--accent);box-shadow:0 0 10px rgba(0,228,184,.22)}
+    .trust-chip.midgard::before{background:var(--gold);box-shadow:0 0 10px rgba(247,198,109,.22)}
+    .trust-chip.thornode::before{background:var(--purple);box-shadow:0 0 10px rgba(124,115,255,.22)}
+    .trust-chip.derived::before{background:var(--amber);box-shadow:0 0 10px rgba(245,158,11,.22)}
     .stat-value{font-size:26px;font-weight:800;letter-spacing:-0.5px;font-variant-numeric:tabular-nums}
     .stat-value.accent{color:var(--accent)}
     .stat-usd{font-size:12px;color:var(--text3);margin-top:6px;line-height:1.5}
@@ -124,8 +146,19 @@
     table{width:100%;min-width:760px;border-collapse:collapse}
     th{text-align:left;padding:14px 24px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text3);border-bottom:1px solid var(--border);background:rgba(8,17,29,.92);backdrop-filter:blur(16px);position:sticky;top:0;z-index:1}
     td{padding:16px 24px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04);transition:background .2s}
+    .table-message td{text-align:center;color:var(--text3);padding:48px}
+    tbody tr:nth-child(even) td{background:rgba(255,255,255,.015)}
     tr:last-child td{border-bottom:none}
     tr:hover td{background:rgba(0,228,184,0.04)}
+    .sticky-col{position:sticky;left:0;z-index:2}
+    th.sticky-col{background:rgba(8,17,29,.98);z-index:3}
+    td.sticky-col{background:rgba(8,17,29,.88);backdrop-filter:blur(16px)}
+    tbody tr:nth-child(even) td.sticky-col{background:rgba(10,22,36,.92)}
+    tr:hover td.sticky-col{background:rgba(7,32,36,.96)}
+    .th-sort{display:inline-flex;align-items:center;gap:8px;padding:0;border:0;background:none;color:inherit;font:inherit;font-weight:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer}
+    .th-sort .sort-indicator{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:999px;background:rgba(255,255,255,.06);font-size:9px;color:var(--text3)}
+    .th-sort.active{color:var(--text)}
+    .th-sort.active .sort-indicator{background:rgba(0,228,184,.12);color:var(--accent)}
     .node-addr{font-family:'SF Mono','Fira Code',monospace;font-size:12px;color:var(--text2)}
     .node-addr a{color:var(--text2);text-decoration:none;transition:color .2s}
     .node-addr a:hover{color:var(--accent)}
@@ -148,6 +181,7 @@
     .deposited{font-family:'SF Mono','Fira Code',monospace;font-size:12px;color:var(--text2)}
     .current-val{font-family:'SF Mono','Fira Code',monospace;font-size:12px;font-weight:600;color:var(--text)}
     .share-pct{font-weight:700;color:var(--accent);font-size:13px}
+    .cell-sub{font-size:10px;color:var(--text3);margin-top:4px}
 
     /* ─── Footer ─── */
     .footer{text-align:center;margin-top:64px;padding-top:28px;border-top:1px solid var(--border);color:var(--text3);font-size:12px;display:flex;flex-direction:column;align-items:center;gap:8px}
@@ -172,10 +206,25 @@
       .hero-intro h2{max-width:none}
       .apy-grid{grid-template-columns:1fr}
       .hero-rail{grid-template-columns:1fr}
-      th,td{padding:12px 16px}
       .stats{grid-template-columns:1fr}
       .row-num{display:none}
       .nodes-section .table-scroll{max-height:560px}
+      .hero-split{grid-template-columns:1fr;gap:12px}
+      .split-operator{min-height:24px}
+      .table-scroll{overflow:visible}
+      table{min-width:0}
+      thead{display:none}
+      tbody{display:grid;gap:14px;padding:16px}
+      tbody tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:18px;border:1px solid rgba(255,255,255,.08);border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.02))}
+      tbody tr.table-message{display:block;padding:0;border:none;background:none}
+      tbody tr:nth-child(even) td{background:none}
+      td{display:flex;flex-direction:column;gap:4px;padding:0;border-bottom:none;background:none}
+      td::before{content:attr(data-label);font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--text3)}
+      td.sticky-col{position:static;background:none;backdrop-filter:none}
+      tr:hover td, tr:hover td.sticky-col{background:none}
+      .primary-cell{grid-column:1/-1}
+      .primary-cell::before{margin-bottom:2px}
+      .table-message td{padding:20px 0}
     }
     @media(max-width:480px){
       .apy-value{font-size:48px}
@@ -200,6 +249,12 @@
           <a href="https://thorchain.net/address/thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l" target="_blank" rel="noopener">
             thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l
           </a>
+        </div>
+        <div class="source-strip">
+          <span class="source-chip live">Live operating view</span>
+          <span class="source-chip midgard">Midgard network and bond data</span>
+          <span class="source-chip thornode">Thornode wallet balances</span>
+          <span class="source-chip inferred">30d fee model inferred from exits</span>
         </div>
       </div>
       <div class="header-aside">
@@ -254,16 +309,41 @@
           </aside>
         </div>
         <div class="apy-grid">
-          <article class="hero-metric">
-            <div class="apy-label">Projected LP APY</div>
-            <div class="apy-value" id="lp-effective-apy"><span class="loading">Loading…</span></div>
-            <div class="apy-sub" id="apy-note">Bonding contribution plus the last 30-day fee contribution, before the split.</div>
-          </article>
           <article class="hero-metric hero-metric-investor">
             <div class="apy-label">Investors APY</div>
             <div class="apy-value investor" id="investors-apy"><span class="loading">Loading…</span></div>
             <div class="apy-sub">What the investor pool receives after Runebond retains its side of positive yield.</div>
           </article>
+          <article class="hero-metric">
+            <div class="apy-label">Projected LP APY</div>
+            <div class="apy-value" id="lp-effective-apy"><span class="loading">Loading…</span></div>
+            <div class="apy-sub" id="apy-note">Bonding contribution plus the last 30-day fee contribution, before the split.</div>
+          </article>
+        </div>
+        <div class="hero-split">
+          <div class="split-cell">
+            <div class="split-label">Bonding</div>
+            <div class="split-value" id="split-bonding">—</div>
+            <div class="split-detail" id="split-bonding-note">Live contribution from bonded capital.</div>
+          </div>
+          <div class="split-operator">+</div>
+          <div class="split-cell">
+            <div class="split-label">Fees</div>
+            <div class="split-value" id="split-fees">—</div>
+            <div class="split-detail" id="split-fees-note">Last 30d payout-derived contribution.</div>
+          </div>
+          <div class="split-operator"><strong>=</strong></div>
+          <div class="split-cell">
+            <div class="split-label">Gross LP APY</div>
+            <div class="split-value" id="split-gross">—</div>
+            <div class="split-detail" id="split-gross-note">Bonding plus fees before the split.</div>
+          </div>
+          <div class="split-operator">-&gt;</div>
+          <div class="split-cell highlight">
+            <div class="split-label">Investor Side</div>
+            <div class="split-value" id="split-investor">—</div>
+            <div class="split-detail" id="split-investor-note">50% of positive gross LP APY.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -272,26 +352,34 @@
     <div class="section-header"><h2>LP Snapshot</h2></div>
     <div class="stats">
       <div class="stat-card">
-        <span class="stat-icon">💎</span>
-        <div class="stat-label">Total LP Capital</div>
+        <div class="stat-card-head">
+          <div class="stat-label">Total LP Capital</div>
+          <span class="trust-chip live">Live LP</span>
+        </div>
         <div class="stat-value accent" id="total-capital"><span class="loading">Loading</span></div>
         <div class="stat-usd" id="total-capital-usd"></div>
       </div>
       <div class="stat-card">
-        <span class="stat-icon">🔒</span>
-        <div class="stat-label">Bonded (bRUNE)</div>
+        <div class="stat-card-head">
+          <div class="stat-label">Bonded (bRUNE)</div>
+          <span class="trust-chip midgard">Midgard</span>
+        </div>
         <div class="stat-value" id="total-bonded"><span class="loading">Loading</span></div>
         <div class="stat-usd" id="bonded-pct"></div>
       </div>
       <div class="stat-card">
-        <span class="stat-icon">💧</span>
-        <div class="stat-label">Liquid RUNE</div>
+        <div class="stat-card-head">
+          <div class="stat-label">Liquid RUNE</div>
+          <span class="trust-chip thornode">Thornode</span>
+        </div>
         <div class="stat-value" id="rune-balance"><span class="loading">Loading</span></div>
         <div class="stat-usd" id="liquid-pct"></div>
       </div>
       <div class="stat-card">
-        <span class="stat-icon">🖧</span>
-        <div class="stat-label">Active Nodes</div>
+        <div class="stat-card-head">
+          <div class="stat-label">Active Nodes</div>
+          <span class="trust-chip midgard">Midgard</span>
+        </div>
         <div class="stat-value" id="active-nodes"><span class="loading">Loading</span></div>
         <div class="stat-usd" id="node-breakdown"></div>
       </div>
@@ -301,26 +389,34 @@
     <div class="section-header"><h2>Yield Drivers</h2></div>
     <div class="stats">
       <div class="stat-card">
-        <span class="stat-icon">📊</span>
-        <div class="stat-label">Network Base APY</div>
+        <div class="stat-card-head">
+          <div class="stat-label">Network Base APY</div>
+          <span class="trust-chip midgard">Midgard</span>
+        </div>
         <div class="stat-value" id="network-apy"><span class="loading">Loading</span></div>
         <div class="stat-usd" id="network-apy-note">Midgard reported network APY</div>
       </div>
       <div class="stat-card">
-        <span class="stat-icon">📈</span>
-        <div class="stat-label">Bonding Yield</div>
+        <div class="stat-card-head">
+          <div class="stat-label">Bonding Yield</div>
+          <span class="trust-chip derived">Derived</span>
+        </div>
         <div class="stat-value accent" id="bonding-yield-pct"><span class="loading">Loading</span></div>
         <div class="stat-usd" id="bonding-yield-rune"></div>
       </div>
       <div class="stat-card">
-        <span class="stat-icon">🏷️</span>
-        <div class="stat-label">30d Fee Contribution</div>
+        <div class="stat-card-head">
+          <div class="stat-label">30d Fee Contribution</div>
+          <span class="trust-chip derived">30d inferred</span>
+        </div>
         <div class="stat-value accent" id="fee-yield-pct"><span class="loading">Loading</span></div>
         <div class="stat-usd" id="fee-yield-rune"></div>
       </div>
       <div class="stat-card">
-        <span class="stat-icon">🔄</span>
-        <div class="stat-label">30d Exit Volume</div>
+        <div class="stat-card-head">
+          <div class="stat-label">30d Exit Volume</div>
+          <span class="trust-chip live">Live 30d</span>
+        </div>
         <div class="stat-value" id="redemption-volume"><span class="loading">Loading</span></div>
         <div class="stat-usd" id="redemption-count"></div>
       </div>
@@ -338,16 +434,16 @@
           <table>
             <thead>
               <tr>
-                <th>Address</th>
-                <th>Deposited</th>
-                <th>Pool Share</th>
-                <th>Gross Yield</th>
-                <th>Investor Yield</th>
-                <th>Investor Value</th>
+                <th class="sticky-col"><button class="th-sort" id="providers-sort-addr" onclick="setProviderSort('addr')">Address <span class="sort-indicator">-</span></button></th>
+                <th><button class="th-sort" id="providers-sort-totalE8" onclick="setProviderSort('totalE8')">Deposited <span class="sort-indicator">-</span></button></th>
+                <th><button class="th-sort" id="providers-sort-share" onclick="setProviderSort('share')">Pool Share <span class="sort-indicator">-</span></button></th>
+                <th><button class="th-sort" id="providers-sort-grossEarningsE8" onclick="setProviderSort('grossEarningsE8')">Gross Yield <span class="sort-indicator">-</span></button></th>
+                <th><button class="th-sort" id="providers-sort-investorEarningsE8" onclick="setProviderSort('investorEarningsE8')">Investor Yield <span class="sort-indicator">-</span></button></th>
+                <th><button class="th-sort" id="providers-sort-currentValueE8" onclick="setProviderSort('currentValueE8')">Investor Value <span class="sort-indicator">-</span></button></th>
               </tr>
             </thead>
             <tbody id="providers-tbody">
-              <tr><td colspan="6" style="text-align:center;color:var(--text3);padding:48px">
+              <tr class="table-message"><td colspan="6">
                 <span class="loading" style="font-size:14px">Loading provider data…</span>
               </td></tr>
             </tbody>
@@ -369,13 +465,13 @@
             <thead>
               <tr>
                 <th style="width:36px">#</th>
-                <th>Node Address</th>
-                <th>Bond</th>
-                <th>Status</th>
+                <th class="sticky-col"><button class="th-sort" id="nodes-sort-address" onclick="setNodeSort('address')">Node Address <span class="sort-indicator">-</span></button></th>
+                <th><button class="th-sort" id="nodes-sort-bond" onclick="setNodeSort('bond')">Bond <span class="sort-indicator">-</span></button></th>
+                <th><button class="th-sort" id="nodes-sort-status" onclick="setNodeSort('status')">Status <span class="sort-indicator">-</span></button></th>
               </tr>
             </thead>
             <tbody id="nodes-tbody">
-              <tr><td colspan="4" style="text-align:center;color:var(--text3);padding:48px">
+              <tr class="table-message"><td colspan="4">
                 <span class="loading" style="font-size:14px">Loading node data…</span>
               </td></tr>
             </tbody>
@@ -415,6 +511,8 @@
       thornode: { bases: THORNODE_BASES, preferred: THORNODE_BASES[0] },
       coingecko: { bases: COINGECKO_BASES, preferred: COINGECKO_BASES[0] }
     };
+    const providerSort = { key: 'totalE8', direction: 'desc' };
+    const nodeSort = { key: 'bond', direction: 'desc' };
 
     function setText(id, text) {
       const el = document.getElementById(id);
@@ -454,6 +552,43 @@
 
     function truncAddr(addr) {
       return addr.slice(0, 10) + '…' + addr.slice(-6);
+    }
+
+    function isStringSort(key) {
+      return key === 'addr' || key === 'address' || key === 'status';
+    }
+
+    function defaultSortDirection(key) {
+      return isStringSort(key) ? 'asc' : 'desc';
+    }
+
+    function compareSorted(a, b, key, direction) {
+      let aVal = a[key];
+      let bVal = b[key];
+
+      if (key === 'status') {
+        aVal = aVal === 'Active' ? 0 : 1;
+        bVal = bVal === 'Active' ? 0 : 1;
+      }
+
+      if (typeof aVal === 'string' && typeof bVal === 'string') {
+        return direction === 'asc'
+          ? aVal.localeCompare(bVal)
+          : bVal.localeCompare(aVal);
+      }
+
+      return direction === 'asc' ? aVal - bVal : bVal - aVal;
+    }
+
+    function updateSortButtons(prefix, sort, keys) {
+      keys.forEach(key => {
+        const btn = document.getElementById(`${prefix}-sort-${key}`);
+        if (!btn) return;
+        const active = sort.key === key;
+        btn.classList.toggle('active', active);
+        const indicator = btn.querySelector('.sort-indicator');
+        if (indicator) indicator.textContent = active ? (sort.direction === 'desc' ? 'v' : '^') : '-';
+      });
     }
 
     function getOrderedBases(config) {
@@ -538,6 +673,46 @@
     let redemptionsLoaded = false;
     let redemptionStatus = 'idle';
     let bondedNodeCount = 0;
+    let providerRows = [];
+    let providerDepositedTotalE8 = 0;
+    let nodeRows = [];
+
+    function setProviderSort(key) {
+      providerSort.direction = providerSort.key === key
+        ? (providerSort.direction === 'desc' ? 'asc' : 'desc')
+        : defaultSortDirection(key);
+      providerSort.key = key;
+      renderDepositors(providerRows, providerDepositedTotalE8);
+    }
+
+    function setNodeSort(key) {
+      nodeSort.direction = nodeSort.key === key
+        ? (nodeSort.direction === 'desc' ? 'asc' : 'desc')
+        : defaultSortDirection(key);
+      nodeSort.key = key;
+      renderNodes(nodeRows);
+    }
+
+    function renderNodes(nodes) {
+      nodeRows = nodes;
+      updateSortButtons('nodes', nodeSort, ['address', 'bond', 'status']);
+
+      const tbody = document.getElementById('nodes-tbody');
+      const sorted = [...nodes].sort((a, b) => compareSorted(a, b, nodeSort.key, nodeSort.direction));
+
+      tbody.innerHTML = sorted.map((n, i) => {
+        const bond = Number(n.bond);
+        const statusClass = n.status === 'Active' ? 'active' : 'standby';
+        return `<tr>
+          <td class="row-num" data-label="Rank">${i + 1}</td>
+          <td class="node-addr sticky-col primary-cell" data-label="Node address">
+            <a href="https://thorchain.net/address/${n.address}" target="_blank" rel="noopener">${truncAddr(n.address)}</a>
+          </td>
+          <td class="${bond > 0 ? 'bond-amount' : 'bond-zero'}" data-label="Bond">${bond > 0 ? formatRune(n.bond) : '0 ᚱ'}</td>
+          <td data-label="Status"><span class="badge ${statusClass}">${n.status}</span></td>
+        </tr>`;
+      }).join('');
+    }
 
     async function fetchAPY() {
       const [earningsData, networkData] = await Promise.all([
@@ -581,22 +756,7 @@
       setText('active-nodes', activeNodes.length);
       setText('node-breakdown', `${withBond.length} bonded · ${standbyNodes.length} standby`);
       setText('node-count', `${nodes.length} nodes · ${withBond.length} with bond`);
-
-      const sorted = [...nodes].sort((a, b) => Number(b.bond) - Number(a.bond));
-
-      const tbody = document.getElementById('nodes-tbody');
-      tbody.innerHTML = sorted.map((n, i) => {
-        const bond = Number(n.bond);
-        const statusClass = n.status === 'Active' ? 'active' : 'standby';
-        return `<tr>
-          <td class="row-num">${i + 1}</td>
-          <td class="node-addr">
-            <a href="https://thorchain.net/address/${n.address}" target="_blank" rel="noopener">${truncAddr(n.address)}</a>
-          </td>
-          <td class="${bond > 0 ? 'bond-amount' : 'bond-zero'}">${bond > 0 ? formatRune(n.bond) : '0 ᚱ'}</td>
-          <td><span class="badge ${statusClass}">${n.status}</span></td>
-        </tr>`;
-      }).join('');
+      renderNodes(nodes);
     }
 
     async function fetchBalance() {
@@ -756,11 +916,15 @@
         setText('bonding-yield-rune', `~${bondingEarningsAnnual.toFixed(0)} ᚱ/yr from ${bondedRune.toFixed(0)} ᚱ bonded`);
         setText('hero-bonding-yield', formatPercent(bondingYieldOnTotal));
         setText('hero-bonding-note', `~${bondingEarningsAnnual.toFixed(0)} ᚱ/yr from ${bondedRune.toFixed(0)} ᚱ bonded at ${formatPercent(bondingAPY * 100)}`);
+        setText('split-bonding', formatPercent(bondingYieldOnTotal));
+        setText('split-bonding-note', `${bondedPct}% of LP capital is earning the network bond rate.`);
       } else {
         setText('bonding-yield-pct', '—');
         setText('bonding-yield-rune', 'Network bonding APY unavailable');
         setText('hero-bonding-yield', '—');
         setText('hero-bonding-note', 'Network bonding APY unavailable right now.');
+        setText('split-bonding', '—');
+        setText('split-bonding-note', 'Network bonding APY unavailable right now.');
       }
 
       let feeYieldOnTotal = null;
@@ -776,6 +940,8 @@
         );
         setText('hero-fee-yield', formatPercent(feeYieldOnTotal));
         setText('hero-fee-note', `${redemptionCount30d} payouts · ${formatRune(redemptionVolume30dE8)} gross exit volume in 30d`);
+        setText('split-fees', formatPercent(feeYieldOnTotal));
+        setText('split-fees-note', `${redemptionCount30d} payouts drove ${formatRune(redemptionVolume30dE8)} of gross exits.`);
 
         setText('redemption-volume', formatRune(redemptionVolume30dE8));
         setText('redemption-count', `${redemptionCount30d} payouts · gross volume inferred from net sends`);
@@ -788,6 +954,8 @@
         setText('apy-note', bondingYieldOnTotal !== null ? 'Bonding-only fallback until fee history returns' : 'Fee history unavailable');
         setText('hero-fee-yield', '—');
         setText('hero-fee-note', 'Recent payout history could not be loaded.');
+        setText('split-fees', '—');
+        setText('split-fees-note', 'Recent payout history could not be loaded.');
       } else {
         setText('fee-yield-pct', 'Loading…');
         setText('fee-yield-rune', 'Fetching 30d claim history…');
@@ -796,6 +964,8 @@
         setText('apy-note', bondingYieldOnTotal !== null ? 'Bonding loaded, fee history still syncing' : 'Loading live APY inputs');
         setText('hero-fee-yield', 'Loading…');
         setText('hero-fee-note', 'Fetching last 30d payouts and exits…');
+        setText('split-fees', 'Loading…');
+        setText('split-fees-note', 'Fetching recent exits and payout history…');
       }
 
       const lpEffectiveAPY = (bondingYieldOnTotal || 0) + (feeYieldOnTotal || 0);
@@ -805,14 +975,26 @@
         setText('lp-effective-apy', lpEffectiveAPY > 0 ? formatPercent(lpEffectiveAPY) : '—');
         setText('investors-apy', investorsAPY > 0 ? formatPercent(investorsAPY) : '—');
         setText('runebond-apy', runebondAPY > 0 ? formatPercent(runebondAPY) : '—');
+        setText('split-gross', lpEffectiveAPY > 0 ? formatPercent(lpEffectiveAPY) : '—');
+        setText('split-gross-note', 'Bonding contribution plus the 30-day fee contribution.');
+        setText('split-investor', investorsAPY > 0 ? formatPercent(investorsAPY) : '—');
+        setText('split-investor-note', `${formatPercent(INVESTOR_SHARE * 100, 0)} of positive LP APY. Runebond captures ${runebondAPY > 0 ? formatPercent(runebondAPY) : '0.00%'}.`);
       } else if (redemptionStatus === 'error') {
         setText('lp-effective-apy', bondingYieldOnTotal !== null ? formatPercent(bondingYieldOnTotal) : '—');
         setText('investors-apy', bondingYieldOnTotal !== null ? formatPercent(investorTake(bondingYieldOnTotal)) : '—');
         setText('runebond-apy', bondingYieldOnTotal !== null ? formatPercent(runebondTake(bondingYieldOnTotal)) : '—');
+        setText('split-gross', bondingYieldOnTotal !== null ? formatPercent(bondingYieldOnTotal) : '—');
+        setText('split-gross-note', 'Temporary bonding-only fallback while fee history is unavailable.');
+        setText('split-investor', bondingYieldOnTotal !== null ? formatPercent(investorTake(bondingYieldOnTotal)) : '—');
+        setText('split-investor-note', 'Investor side shown on the bonding-only fallback.');
       } else {
         setLoadingMetric('lp-effective-apy');
         setLoadingMetric('investors-apy');
         setLoadingMetric('runebond-apy');
+        setText('split-gross', 'Loading…');
+        setText('split-gross-note', 'Waiting for fee history to finish syncing.');
+        setText('split-investor', 'Loading…');
+        setText('split-investor-note', 'Investor side updates when gross LP APY is ready.');
       }
       setText('proj-capital', formatRune(totalCapitalE8));
     }
@@ -944,7 +1126,7 @@
         console.error('fetchDepositors failed:', err);
         setText('providers-count', 'Error loading');
         document.getElementById('providers-tbody').innerHTML = 
-          `<tr><td colspan="6" style="text-align:center;color:var(--red);padding:32px">
+          `<tr class="table-message"><td colspan="6" style="color:var(--red);padding:32px">
             Failed to load provider data: ${err.message}<br>
             <small style="color:var(--text3)">Try refreshing — API may be temporarily unavailable</small>
           </td></tr>`;
@@ -953,15 +1135,20 @@
     }
 
     function renderDepositors(providers, totalDeposited) {
+      providerRows = providers;
+      providerDepositedTotalE8 = totalDeposited;
       setText('providers-count', `${providers.length} investors · ${formatRune(totalDeposited)} deposited capital`);
+      updateSortButtons('providers', providerSort, ['addr', 'totalE8', 'share', 'grossEarningsE8', 'investorEarningsE8', 'currentValueE8']);
 
       const tbody = document.getElementById('providers-tbody');
       if (providers.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:32px">No deposit data available</td></tr>';
+        tbody.innerHTML = '<tr class="table-message"><td colspan="6" style="padding:32px">No deposit data available</td></tr>';
         return;
       }
 
-      tbody.innerHTML = providers.map(p => {
+      const sortedProviders = [...providers].sort((a, b) => compareSorted(a, b, providerSort.key, providerSort.direction));
+
+      tbody.innerHTML = sortedProviders.map(p => {
         const sharePct = (p.share * 100).toFixed(1);
         const grossGrowthClass = p.grossEarningsE8 >= 0 ? 'growth-pos' : 'growth-neg';
         const grossGrowthSign = p.grossEarningsE8 >= 0 ? '+' : '';
@@ -972,24 +1159,24 @@
         const dateStr = p.firstDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
         return `<tr>
-          <td>
+          <td class="sticky-col primary-cell" data-label="Address">
             <div class="node-addr"><a href="https://thorchain.net/address/${p.addr}" target="_blank" rel="noopener">${truncAddr(p.addr)}</a></div>
-            <div style="font-size:10px;color:var(--text3);margin-top:3px">Since ${dateStr} · ${p.txCount} tx${p.txCount > 1 ? 's' : ''}</div>
+            <div class="cell-sub">Since ${dateStr} · ${p.txCount} tx${p.txCount > 1 ? 's' : ''}</div>
           </td>
-          <td class="deposited">${formatRune(p.totalE8)}</td>
-          <td>
+          <td class="deposited" data-label="Deposited">${formatRune(p.totalE8)}</td>
+          <td data-label="Pool share">
             <div class="share-pct">${sharePct}%</div>
             <div class="share-bar"><div class="fill" style="width:${sharePct}%"></div></div>
           </td>
-          <td>
+          <td data-label="Gross yield">
             <div class="${grossGrowthClass}">${grossGrowthSign}${grossGrowthRune.toFixed(1)} ᚱ</div>
-            <div style="font-size:10px;color:var(--text3)">${grossGrowthSign}${p.grossGrowthPct.toFixed(1)}% gross</div>
+            <div class="cell-sub">${grossGrowthSign}${p.grossGrowthPct.toFixed(1)}% gross</div>
           </td>
-          <td>
+          <td data-label="Investor yield">
             <div class="${investorGrowthClass}">${investorGrowthSign}${investorGrowthRune.toFixed(1)} ᚱ</div>
-            <div style="font-size:10px;color:var(--text3)">${investorGrowthSign}${p.investorGrowthPct.toFixed(1)}% investor</div>
+            <div class="cell-sub">${investorGrowthSign}${p.investorGrowthPct.toFixed(1)}% investor</div>
           </td>
-          <td class="current-val">${formatRune(Math.round(p.currentValueE8))}</td>
+          <td class="current-val" data-label="Investor value">${formatRune(Math.round(p.currentValueE8))}</td>
         </tr>`;
       }).join('');
     }
