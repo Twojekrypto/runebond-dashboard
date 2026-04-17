@@ -69,6 +69,17 @@
     .source-chip.midgard::before{background:var(--gold);box-shadow:0 0 12px rgba(247,198,109,.24)}
     .source-chip.thornode::before{background:var(--purple);box-shadow:0 0 12px rgba(124,115,255,.24)}
     .source-chip.inferred::before{background:var(--amber);box-shadow:0 0 12px rgba(245,158,11,.24)}
+    .status-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+    .status-card{padding:13px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));backdrop-filter:blur(16px)}
+    .status-kicker{font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text3)}
+    .status-card-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .status-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.05);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);white-space:nowrap}
+    .status-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--text3);box-shadow:0 0 10px rgba(255,255,255,.08)}
+    .status-pill[data-tone="live"]::before{background:var(--accent);box-shadow:0 0 10px rgba(0,228,184,.22)}
+    .status-pill[data-tone="loading"]::before{background:var(--text2);box-shadow:0 0 10px rgba(158,178,201,.18)}
+    .status-pill[data-tone="cached"]::before{background:var(--gold);box-shadow:0 0 10px rgba(247,198,109,.22)}
+    .status-pill[data-tone="warning"]::before{background:var(--amber);box-shadow:0 0 10px rgba(245,158,11,.22)}
+    .status-detail{font-size:12px;color:var(--text3);line-height:1.45}
     .header-note{width:100%;max-width:360px;padding:18px 20px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));border:1px solid var(--border);border-radius:22px;backdrop-filter:blur(20px);box-shadow:0 16px 40px rgba(0,0,0,.16)}
     .header-note-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:14px}
     .header-focus{list-style:none;display:grid;gap:10px}
@@ -86,6 +97,14 @@
     .hero-chip-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
     .hero-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);font-size:11px;letter-spacing:.4px;color:var(--text2)}
     .hero-chip strong{color:var(--text)}
+    .label-row{display:inline-flex;align-items:center;gap:8px;max-width:100%}
+    .label-row .apy-label,.label-row .rail-label,.label-row .stat-label{margin-bottom:0}
+    .label-row.full-width{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%}
+    .info-tip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:var(--text2);font:inherit;font-size:10px;font-weight:700;line-height:1;cursor:help;flex:0 0 auto}
+    .info-tip::before{content:'i'}
+    .info-tip::after{content:attr(data-tip);position:absolute;left:50%;top:calc(100% + 10px);transform:translateX(-50%) translateY(4px);width:min(280px,72vw);padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(7,19,33,.96);backdrop-filter:blur(18px);box-shadow:0 18px 50px rgba(0,0,0,.28);font-size:11px;font-weight:500;letter-spacing:0;line-height:1.55;color:var(--text2);opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;text-transform:none;z-index:8}
+    .info-tip:hover,.info-tip:focus-visible{border-color:rgba(0,228,184,.28);color:var(--text)}
+    .info-tip:hover::after,.info-tip:focus-visible::after{opacity:1;transform:translateX(-50%) translateY(0)}
     .apy-grid{position:relative;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr);gap:16px}
     .hero-metric,.hero-rail,.rail-item{position:relative;border-radius:22px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));padding:24px 24px 22px;backdrop-filter:blur(24px)}
     .hero-metric::after,.hero-rail::after,.rail-item::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent 22%);opacity:.5;pointer-events:none}
@@ -138,9 +157,16 @@
     /* ─── Nodes Table ─── */
     .nodes-section{margin-top:48px;animation:fadeUp .9s ease-out}
     .table-wrap{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:24px;overflow:hidden;backdrop-filter:blur(20px);box-shadow:0 18px 50px rgba(0,0,0,.18)}
-    .table-header{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015))}
+    .table-header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 24px;border-bottom:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015))}
     .table-header span:first-child{font-size:14px;font-weight:600;color:var(--text)}
+    .table-header-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
     .table-header .count{font-size:11px;color:var(--text2);background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);padding:5px 12px;border-radius:100px}
+    .table-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-bottom:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.015))}
+    .summary-item{padding:18px 24px;min-width:0}
+    .summary-item + .summary-item{border-left:1px solid rgba(255,255,255,.06)}
+    .summary-label{font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text3)}
+    .summary-value{margin-top:10px;font-size:22px;font-weight:800;letter-spacing:-.8px;color:var(--text);font-variant-numeric:tabular-nums}
+    .summary-note{margin-top:6px;font-size:12px;line-height:1.45;color:var(--text3)}
     .table-scroll{overflow:auto}
     .nodes-section .table-scroll{max-height:612px}
     table{width:100%;min-width:760px;border-collapse:collapse}
@@ -194,8 +220,11 @@
       .header{grid-template-columns:1fr}
       .header-aside{justify-content:flex-start}
       .header-note{max-width:none}
+      .status-strip{grid-template-columns:1fr}
       .hero-top{grid-template-columns:1fr}
       .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .table-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .summary-item:nth-child(3){border-left:none}
     }
     @media(max-width:768px){
       .container{padding:28px 16px 64px}
@@ -209,6 +238,10 @@
       .nodes-section .table-scroll{max-height:560px}
       .hero-split{grid-template-columns:1fr;gap:12px}
       .split-operator{min-height:24px}
+      .table-header{align-items:flex-start;flex-direction:column}
+      .table-header-meta{justify-content:flex-start}
+      .table-summary{grid-template-columns:1fr}
+      .summary-item + .summary-item{border-left:none;border-top:1px solid rgba(255,255,255,.06)}
       .table-scroll{overflow:visible}
       table{min-width:0}
       thead{display:none}
@@ -224,6 +257,8 @@
       .primary-cell{grid-column:1/-1}
       .primary-cell::before{margin-bottom:2px}
       .table-message td{padding:20px 0}
+      .info-tip::after{left:0;transform:translateX(0) translateY(4px)}
+      .info-tip:hover::after,.info-tip:focus-visible::after{transform:translateX(0) translateY(0)}
     }
     @media(max-width:480px){
       .apy-value{font-size:48px}
@@ -242,7 +277,7 @@
           <span>Live</span>
         </div>
         <h1>Runebond <span class="accent">APY Dashboard</span></h1>
-        <p class="subtitle">Track the numbers that actually move the pool: investor APY, gross LP yield, capital mix, and fee flow coming from recent exits.</p>
+        <p class="subtitle">Live operating view for the LP: investor APY, gross LP yield, capital mix, and the recent exit flow driving fee income.</p>
         <div class="address">
           <span class="address-label">Tracked LP address</span>
           <a href="https://thorchain.net/address/thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l" target="_blank" rel="noopener">
@@ -254,6 +289,29 @@
           <span class="source-chip midgard">Midgard network and bond data</span>
           <span class="source-chip thornode">Thornode wallet balances</span>
           <span class="source-chip inferred">30d fee model inferred from exits</span>
+        </div>
+        <div class="status-strip">
+          <div class="status-card">
+            <div class="status-kicker">Yield engine</div>
+            <div class="status-card-row">
+              <span class="status-pill" id="yield-status" data-tone="loading">Syncing</span>
+            </div>
+            <div class="status-detail" id="yield-status-detail">Waiting for bond and fee inputs.</div>
+          </div>
+          <div class="status-card">
+            <div class="status-kicker">USD helper</div>
+            <div class="status-card-row">
+              <span class="status-pill" id="usd-status" data-tone="loading">Syncing</span>
+            </div>
+            <div class="status-detail" id="usd-status-detail">Fetching the RUNE/USD helper for capital cards.</div>
+          </div>
+          <div class="status-card">
+            <div class="status-kicker">Source health</div>
+            <div class="status-card-row">
+              <span class="status-pill" id="source-health-status" data-tone="loading">Syncing</span>
+            </div>
+            <div class="status-detail" id="source-health-detail">Verifying Midgard, Thornode, and helper sources.</div>
+          </div>
         </div>
       </div>
       <div class="header-aside">
@@ -276,8 +334,8 @@
           <div class="hero-intro">
             <div>
               <div class="apy-label">Live Yield View</div>
-              <h2>The investor side and the LP engine, side by side.</h2>
-              <p>The gross LP APY comes from two drivers only: bonded RUNE yield and fee retained from recent redemptions. Investors receive half of that positive yield.</p>
+              <h2>What investors earn, what the LP earns, and what is driving both.</h2>
+              <p>Gross LP APY comes from bonded RUNE yield plus the last 30-day fee contribution. Investors receive 50% of positive LP yield.</p>
             </div>
             <div class="hero-chip-row">
               <span class="hero-chip"><strong>Investor APY</strong> is 50% of positive LP yield</span>
@@ -296,7 +354,10 @@
               <div class="rail-detail" id="hero-bonding-note">Yield coming from the bonded RUNE side of the LP.</div>
             </div>
             <div class="rail-item">
-              <div class="rail-label">30d fee contribution</div>
+              <div class="label-row">
+                <div class="rail-label">30d fee contribution</div>
+                <button class="info-tip" type="button" aria-label="How 30 day fee contribution is calculated" data-tip="We infer gross exit volume from net RUNE payouts. Gross exits = net payouts / 0.95, and the retained fee = gross exits - net payouts."></button>
+              </div>
               <div class="rail-value" id="hero-fee-yield">—</div>
               <div class="rail-detail" id="hero-fee-note">Fee retained from recent exits and net payouts.</div>
             </div>
@@ -309,7 +370,10 @@
         </div>
         <div class="apy-grid">
           <article class="hero-metric hero-metric-investor">
-            <div class="apy-label">Investors APY</div>
+            <div class="label-row">
+              <div class="apy-label">Investors APY</div>
+              <button class="info-tip" type="button" aria-label="How investor APY is calculated" data-tip="Investor APY equals 50% of positive gross LP APY. If gross LP APY is 18%, investors receive 9% and Runebond keeps the other 9%."></button>
+            </div>
             <div class="apy-value investor" id="investors-apy"><span class="loading">Loading…</span></div>
             <div class="apy-sub">What the investor pool receives after Runebond retains its side of positive yield.</div>
           </article>
@@ -405,7 +469,10 @@
       </div>
       <div class="stat-card">
         <div class="stat-card-head">
-          <div class="stat-label">30d Fee Contribution</div>
+          <div class="label-row">
+            <div class="stat-label">30d Fee Contribution</div>
+            <button class="info-tip" type="button" aria-label="How 30 day fee contribution is calculated" data-tip="This uses the last 30 days of outgoing payouts. Net RUNE sent out is treated as 95% of a gross exit, so the missing 5% is counted as fee retained by the LP."></button>
+          </div>
           <span class="trust-chip derived">30d inferred</span>
         </div>
         <div class="stat-value accent" id="fee-yield-pct"><span class="loading">Loading</span></div>
@@ -423,11 +490,39 @@
 
     <!-- Liquidity Providers -->
     <div class="providers-section">
-      <div class="section-header"><h2>Investor Pool</h2></div>
+      <div class="section-header">
+        <h2>Investor Pool</h2>
+        <button class="info-tip" type="button" aria-label="How investor pool values are calculated" data-tip="Each deposit is weighted by amount times days in the pool. Gross profit is current LP capital minus deposited principal, then investor-side yield applies the 50 / 50 positive-yield split."></button>
+      </div>
       <div class="table-wrap">
         <div class="table-header">
           <span>Deposits, gross yield, and investor-side value</span>
-          <span class="count" id="providers-count">Loading…</span>
+          <div class="table-header-meta">
+            <span class="count" id="providers-count">Loading…</span>
+            <span class="status-pill" id="providers-sync-status" data-tone="loading">Syncing</span>
+          </div>
+        </div>
+        <div class="table-summary">
+          <div class="summary-item">
+            <div class="summary-label">Deposited capital</div>
+            <div class="summary-value" id="provider-summary-deposited">—</div>
+            <div class="summary-note" id="provider-summary-deposited-note">Tracked principal across the investor pool.</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Gross LP profit</div>
+            <div class="summary-value" id="provider-summary-gross">—</div>
+            <div class="summary-note" id="provider-summary-gross-note">Before the 50 / 50 positive-yield split.</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Investor-side yield</div>
+            <div class="summary-value" id="provider-summary-investor-yield">—</div>
+            <div class="summary-note" id="provider-summary-investor-yield-note">Yield allocated to investors after the split.</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Investor-side pool value</div>
+            <div class="summary-value" id="provider-summary-value">—</div>
+            <div class="summary-note" id="provider-summary-value-note">Deposited capital plus investor-side yield.</div>
+          </div>
         </div>
         <div class="table-scroll">
           <table>
@@ -457,7 +552,31 @@
       <div class="table-wrap">
         <div class="table-header">
           <span>Where the LP bond is currently parked</span>
-          <span class="count" id="node-count">Loading…</span>
+          <div class="table-header-meta">
+            <span class="count" id="node-count">Loading…</span>
+          </div>
+        </div>
+        <div class="table-summary">
+          <div class="summary-item">
+            <div class="summary-label">Bonded across nodes</div>
+            <div class="summary-value" id="node-summary-bonded">—</div>
+            <div class="summary-note" id="node-summary-bonded-note">Capital currently parked in node bonds.</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Active vs standby</div>
+            <div class="summary-value" id="node-summary-activity">—</div>
+            <div class="summary-note" id="node-summary-activity-note">Distribution across node states.</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Largest node share</div>
+            <div class="summary-value" id="node-summary-largest">—</div>
+            <div class="summary-note" id="node-summary-largest-note">Largest single parked allocation.</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Nodes with bond</div>
+            <div class="summary-value" id="node-summary-with-bond">—</div>
+            <div class="summary-note" id="node-summary-with-bond-note">Tracked LP nodes currently holding bond.</div>
+          </div>
         </div>
         <div class="table-scroll">
           <table>
@@ -490,6 +609,7 @@
     const LP_ADDRESS = 'thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l';
     const LP_FEE = 0.05;
     const INVESTOR_SHARE = 0.5;
+    const RUNE_PRICE_CACHE_KEY = 'runebond_rune_price_cache';
 
     const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
     const MIDGARD_BASES = isLocal
@@ -503,6 +623,9 @@
       : ['https://api.coingecko.com/api/v3'];
 
     let runePrice = null;
+    let runePriceSource = 'loading';
+    let runePriceTimestamp = 0;
+    let usdUsedFallback = false;
     let refreshPromise = null;
 
     const endpointState = {
@@ -522,6 +645,109 @@
       const el = document.getElementById(id);
       if (!el) return;
       el.innerHTML = `<span class="loading">${message}</span>`;
+    }
+
+    function setStatusPill(id, tone, text) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.dataset.tone = tone;
+      el.textContent = text;
+    }
+
+    function formatStatusTime(ts) {
+      if (!ts) return 'recently';
+      return new Date(ts).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    }
+
+    function readRunePriceCache() {
+      try {
+        const raw = localStorage.getItem(RUNE_PRICE_CACHE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed.price !== 'number' || !parsed.ts) return null;
+        return parsed;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function writeRunePriceCache(price) {
+      try {
+        localStorage.setItem(RUNE_PRICE_CACHE_KEY, JSON.stringify({
+          price,
+          ts: Date.now()
+        }));
+      } catch (error) {
+        console.warn('Unable to write RUNE price cache:', error.message);
+      }
+    }
+
+    function primeRunePriceFromCache() {
+      const cached = readRunePriceCache();
+      if (!cached) return false;
+      runePrice = cached.price;
+      runePriceSource = 'cached';
+      runePriceTimestamp = cached.ts;
+      return true;
+    }
+
+    function updateUsdStatus() {
+      if (runePriceSource === 'live' && runePrice) {
+        setStatusPill('usd-status', 'live', 'Live');
+        setText('usd-status-detail', `RUNE/USD helper refreshed live at ${formatStatusTime(runePriceTimestamp)}.`);
+        return;
+      }
+      if (runePriceSource === 'cached' && runePrice) {
+        setStatusPill('usd-status', 'cached', 'Cached');
+        setText('usd-status-detail', `Using cached RUNE/USD from ${formatStatusTime(runePriceTimestamp)} until a live refresh succeeds.`);
+        return;
+      }
+      if (runePriceSource === 'warning') {
+        setStatusPill('usd-status', 'warning', 'Delayed');
+        setText('usd-status-detail', 'USD helper unavailable; APY calculations remain live and unaffected.');
+        return;
+      }
+      setStatusPill('usd-status', 'loading', 'Syncing');
+      setText('usd-status-detail', 'Fetching the RUNE/USD helper for capital cards.');
+    }
+
+    function updateYieldStatus() {
+      if (redemptionStatus === 'ready') {
+        setStatusPill('yield-status', 'live', 'Live');
+        setText('yield-status-detail', 'Bonding and 30d fee inputs are both confirmed.');
+        return;
+      }
+      if (redemptionStatus === 'error') {
+        setStatusPill('yield-status', 'warning', 'Fallback');
+        setText('yield-status-detail', 'Fee history is unavailable, so the page is showing the bonding-only fallback.');
+        return;
+      }
+      if (bondingAPY > 0 || lpBondedE8 > 0 || lpBalanceE8 > 0) {
+        setStatusPill('yield-status', 'loading', 'Syncing');
+        setText('yield-status-detail', 'Core LP data is loaded; waiting for the 30d exit feed to finish.');
+        return;
+      }
+      setStatusPill('yield-status', 'loading', 'Syncing');
+      setText('yield-status-detail', 'Waiting for bond and fee inputs.');
+    }
+
+    function updateSourceHealthStatus(warningCount = 0, isSyncing = false) {
+      if (isSyncing) {
+        setStatusPill('source-health-status', 'loading', 'Syncing');
+        setText('source-health-detail', 'Verifying Midgard, Thornode, and helper sources.');
+        return;
+      }
+      if (warningCount > 0) {
+        setStatusPill('source-health-status', 'warning', `${warningCount} warning${warningCount > 1 ? 's' : ''}`);
+        setText('source-health-detail', 'At least one source needed a fallback or did not respond on the last refresh.');
+        return;
+      }
+      setStatusPill('source-health-status', 'live', 'Clean');
+      setText('source-health-detail', 'All primary data sources responded on the last refresh.');
+    }
+
+    function setProviderSyncStatus(tone, text) {
+      setStatusPill('providers-sync-status', tone, text);
     }
 
     function investorTake(value) {
@@ -547,6 +773,14 @@
       if (!runePrice) return '';
       const val = (Number(amountE8) / 1e8) * runePrice;
       return '≈ $' + val.toLocaleString('en-US', { maximumFractionDigits: 0 });
+    }
+
+    function formatSignedRune(amountE8, digits = 1) {
+      const val = Number(amountE8) / 1e8;
+      if (!Number.isFinite(val)) return '—';
+      if (val === 0) return '0 ᚱ';
+      const sign = val > 0 ? '+' : '';
+      return `${sign}${val.toLocaleString('en-US', { maximumFractionDigits: Math.abs(val) >= 1000 ? 0 : digits })} ᚱ`;
     }
 
     function truncAddr(addr) {
@@ -650,11 +884,31 @@
     }
 
     async function fetchRunePrice() {
+      const cached = readRunePriceCache();
       try {
         const d = await fetchCoinGecko('/simple/price?ids=thorchain&vs_currencies=usd', 2);
-        runePrice = d.thorchain?.usd || null;
+        const livePrice = Number(d.thorchain?.usd || 0);
+        if (livePrice <= 0) throw new Error('Missing live RUNE/USD price');
+        runePrice = livePrice;
+        runePriceSource = 'live';
+        runePriceTimestamp = Date.now();
+        usdUsedFallback = false;
+        writeRunePriceCache(livePrice);
+        updateUsdStatus();
       } catch (error) {
+        if (cached) {
+          runePrice = cached.price;
+          runePriceSource = 'cached';
+          runePriceTimestamp = cached.ts;
+          usdUsedFallback = true;
+          updateUsdStatus();
+          return;
+        }
         runePrice = null;
+        runePriceSource = 'warning';
+        runePriceTimestamp = 0;
+        usdUsedFallback = false;
+        updateUsdStatus();
         throw error;
       }
     }
@@ -672,6 +926,8 @@
     let redemptionsLoaded = false;
     let redemptionStatus = 'idle';
     let bondedNodeCount = 0;
+    let activeNodeCount = 0;
+    let standbyNodeCount = 0;
     let providerRows = [];
     let providerDepositedTotalE8 = 0;
     let nodeRows = [];
@@ -698,6 +954,19 @@
 
       const tbody = document.getElementById('nodes-tbody');
       const sorted = [...nodes].sort((a, b) => compareSorted(a, b, nodeSort.key, nodeSort.direction));
+      const totalBondedAcrossNodes = nodes.reduce((sum, node) => sum + Number(node.bond || 0), 0);
+      const largestBondNode = nodes.reduce((largest, node) => Number(node.bond || 0) > Number(largest.bond || 0) ? node : largest, { bond: 0, address: '' });
+      const largestBond = Number(largestBondNode.bond || 0);
+      const largestShare = totalBondedAcrossNodes > 0 ? (largestBond / totalBondedAcrossNodes) * 100 : 0;
+
+      setText('node-summary-bonded', formatRune(totalBondedAcrossNodes));
+      setText('node-summary-bonded-note', formatUSD(totalBondedAcrossNodes) || 'Capital currently parked in node bonds.');
+      setText('node-summary-activity', `${activeNodeCount} / ${standbyNodeCount}`);
+      setText('node-summary-activity-note', `${activeNodeCount} active · ${standbyNodeCount} standby`);
+      setText('node-summary-largest', largestBond > 0 ? formatPercent(largestShare, 1) : '—');
+      setText('node-summary-largest-note', largestBond > 0 ? `${formatRune(largestBond)} on the largest allocation` : 'No bonded node allocation yet.');
+      setText('node-summary-with-bond', `${bondedNodeCount}`);
+      setText('node-summary-with-bond-note', `${nodes.length} tracked LP nodes in total`);
 
       tbody.innerHTML = sorted.map((n, i) => {
         const bond = Number(n.bond);
@@ -751,6 +1020,8 @@
       const standbyNodes = nodes.filter(n => n.status !== 'Active');
       const withBond = nodes.filter(n => Number(n.bond) > 0);
       bondedNodeCount = withBond.length;
+      activeNodeCount = activeNodes.length;
+      standbyNodeCount = standbyNodes.length;
 
       setText('active-nodes', activeNodes.length);
       setText('node-breakdown', `${withBond.length} bonded · ${standbyNodes.length} standby`);
@@ -889,6 +1160,7 @@
 
     function calculateLPMetrics() {
       const totalCapitalE8 = lpBondedE8 + lpBalanceE8;
+      updateYieldStatus();
       if (totalCapitalE8 === 0) return;
 
       const bondedRune = lpBondedE8 / 1e8;
@@ -896,6 +1168,11 @@
 
       setText('total-capital', formatRune(totalCapitalE8));
       setText('total-capital-usd', formatUSD(totalCapitalE8));
+      setText('node-summary-bonded-note', formatUSD(lpBondedE8) || 'Capital currently parked in node bonds.');
+      if (providerRows.length) {
+        const investorValueTotalE8 = providerRows.reduce((sum, provider) => sum + provider.currentValueE8, 0);
+        setText('provider-summary-value-note', formatUSD(Math.round(investorValueTotalE8)) || 'Deposited capital plus investor-side yield.');
+      }
 
       const bondedPct = (lpBondedE8 / totalCapitalE8 * 100).toFixed(1);
       const liquidPct = (lpBalanceE8 / totalCapitalE8 * 100).toFixed(1);
@@ -996,6 +1273,7 @@
         setText('split-investor-note', 'Investor side updates when gross LP APY is ready.');
       }
       setText('proj-capital', formatRune(totalCapitalE8));
+      updateYieldStatus();
     }
 
     async function fetchAll() {
@@ -1005,6 +1283,20 @@
       refreshButton.disabled = true;
       refreshButton.textContent = 'Refreshing…';
       setText('last-update', 'Refreshing live data…');
+      redemptionsLoaded = false;
+      redemptionStatus = 'loading';
+      usdUsedFallback = false;
+      updateYieldStatus();
+      updateSourceHealthStatus(0, true);
+      setProviderSyncStatus('loading', 'Syncing');
+      if (primeRunePriceFromCache()) {
+        updateUsdStatus();
+      } else {
+        runePrice = null;
+        runePriceSource = 'loading';
+        runePriceTimestamp = 0;
+        updateUsdStatus();
+      }
 
       refreshPromise = (async () => {
         const startedAt = new Date();
@@ -1019,6 +1311,7 @@
         setText('last-update', coreWarnings
           ? `Core data refreshed with ${coreWarnings} warning${coreWarnings > 1 ? 's' : ''}; loading history…`
           : 'Core data refreshed; loading history…');
+        updateSourceHealthStatus(coreWarnings, false);
 
         const runePricePromise = fetchRunePrice()
           .finally(() => {
@@ -1040,8 +1333,9 @@
         ]);
 
         const backgroundWarnings = backgroundResults.filter(result => result.status === 'rejected').length;
-        const totalWarnings = coreWarnings + backgroundWarnings;
+        const totalWarnings = coreWarnings + backgroundWarnings + (usdUsedFallback ? 1 : 0);
         const stamp = startedAt.toLocaleTimeString();
+        updateSourceHealthStatus(totalWarnings, false);
         setText(
           'last-update',
           totalWarnings
@@ -1051,6 +1345,7 @@
       })().catch(err => {
         console.error('Fetch error:', err);
         setText('last-update', `Update failed · ${err.message}`);
+        updateSourceHealthStatus(1, false);
       }).finally(() => {
         refreshButton.disabled = false;
         refreshButton.textContent = '↻ Refresh Data';
@@ -1135,6 +1430,12 @@
       } catch (err) {
         console.error('fetchDepositors failed:', err);
         setText('providers-count', 'Error loading');
+        setProviderSyncStatus('warning', 'Warning');
+        setText('provider-summary-deposited', '—');
+        setText('provider-summary-gross', '—');
+        setText('provider-summary-investor-yield', '—');
+        setText('provider-summary-value', '—');
+        setText('provider-summary-value-note', 'Deposited capital plus investor-side yield.');
         document.getElementById('providers-tbody').innerHTML = 
           `<tr class="table-message"><td colspan="6" style="color:var(--red);padding:32px">
             Failed to load provider data: ${err.message}<br>
@@ -1148,7 +1449,21 @@
       providerRows = providers;
       providerDepositedTotalE8 = totalDeposited;
       setText('providers-count', `${providers.length} investors · ${formatRune(totalDeposited)} deposited capital`);
+      setProviderSyncStatus('live', 'Live');
       updateSortButtons('providers', providerSort, ['addr', 'totalE8', 'share', 'grossEarningsE8', 'investorEarningsE8', 'currentValueE8']);
+
+      const grossEarningsTotalE8 = providers.reduce((sum, provider) => sum + provider.grossEarningsE8, 0);
+      const investorYieldTotalE8 = providers.reduce((sum, provider) => sum + provider.investorEarningsE8, 0);
+      const investorValueTotalE8 = providers.reduce((sum, provider) => sum + provider.currentValueE8, 0);
+
+      setText('provider-summary-deposited', formatRune(totalDeposited));
+      setText('provider-summary-deposited-note', `${providers.length} investor wallet${providers.length === 1 ? '' : 's'} tracked in the pool`);
+      setText('provider-summary-gross', formatSignedRune(grossEarningsTotalE8));
+      setText('provider-summary-gross-note', 'Before the 50 / 50 positive-yield split.');
+      setText('provider-summary-investor-yield', formatSignedRune(investorYieldTotalE8));
+      setText('provider-summary-investor-yield-note', 'Yield allocated to investors after the split.');
+      setText('provider-summary-value', formatRune(Math.round(investorValueTotalE8)));
+      setText('provider-summary-value-note', formatUSD(Math.round(investorValueTotalE8)) || 'Deposited capital plus investor-side yield.');
 
       const tbody = document.getElementById('providers-tbody');
       if (providers.length === 0) {
