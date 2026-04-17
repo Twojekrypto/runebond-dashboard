@@ -145,16 +145,15 @@
     .nodes-section .table-scroll{max-height:612px}
     table{width:100%;min-width:760px;border-collapse:collapse}
     th{text-align:left;padding:14px 24px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text3);border-bottom:1px solid rgba(255,255,255,.06);background:rgba(8,17,29,.94);backdrop-filter:blur(16px);position:sticky;top:0;z-index:1}
-    td{padding:16px 24px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.035);transition:background .2s,color .2s}
+    tbody tr{--table-row-bg:rgba(255,255,255,.014)}
+    td{padding:16px 24px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.035);background:var(--table-row-bg);transition:background .2s,color .2s}
     .table-message td{text-align:center;color:var(--text3);padding:48px}
-    tbody tr:nth-child(even) td{background:rgba(255,255,255,.012)}
+    tbody tr:nth-child(even){--table-row-bg:rgba(255,255,255,.014)}
     tr:last-child td{border-bottom:none}
-    tr:hover td{background:rgba(255,255,255,.03)}
+    tr:hover{--table-row-bg:rgba(255,255,255,.024)}
     .sticky-col{position:sticky;left:0;z-index:2}
     th.sticky-col{background:rgba(8,17,29,.98);z-index:3}
-    td.sticky-col{background:rgba(8,17,29,.9);backdrop-filter:blur(16px)}
-    tbody tr:nth-child(even) td.sticky-col{background:rgba(10,22,36,.93)}
-    tr:hover td.sticky-col{background:rgba(11,24,38,.96)}
+    td.sticky-col{background:var(--table-row-bg);backdrop-filter:none}
     .th-sort{display:inline-flex;align-items:center;gap:8px;padding:0;border:0;background:none;color:inherit;font:inherit;font-weight:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer}
     .th-sort .sort-indicator{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:999px;background:rgba(255,255,255,.06);font-size:9px;color:var(--text3)}
     .th-sort.active{color:var(--text)}
@@ -216,10 +215,11 @@
       tbody{display:grid;gap:14px;padding:16px}
       tbody tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:18px;border:1px solid rgba(255,255,255,.08);border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.02))}
       tbody tr.table-message{display:block;padding:0;border:none;background:none}
-      tbody tr:nth-child(even) td{background:none}
+      tbody tr:nth-child(even){--table-row-bg:rgba(255,255,255,.014)}
       td{display:flex;flex-direction:column;gap:4px;padding:0;border-bottom:none;background:none}
       td::before{content:attr(data-label);font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--text3)}
       td.sticky-col{position:static;background:none;backdrop-filter:none}
+      tr:hover{--table-row-bg:rgba(255,255,255,.014)}
       tr:hover td, tr:hover td.sticky-col{background:none}
       .primary-cell{grid-column:1/-1}
       .primary-cell::before{margin-bottom:2px}
