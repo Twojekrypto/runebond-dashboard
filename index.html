@@ -568,7 +568,8 @@
     const LP_FEE = 0.05;
     const INVESTOR_SHARE = 0.5;
     const RUNE_PRICE_CACHE_KEY = 'runebond_rune_price_cache';
-    const REQUEST_TIMEOUT_MS = 4000;
+    const INITIAL_REQUEST_TIMEOUT_MS = 15000;
+    const FOLLOWUP_REQUEST_TIMEOUT_MS = 6000;
     const REFRESH_INTERVAL_MS = 24 * 60 * 60 * 1000;
 
     const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
@@ -587,6 +588,7 @@
     let runePriceTimestamp = 0;
     let usdUsedFallback = false;
     let refreshPromise = null;
+    let hasCompletedInitialHydration = false;
 
     const endpointState = {
       midgard: { bases: MIDGARD_BASES, preferred: MIDGARD_BASES[0] },
@@ -788,7 +790,13 @@
       return [config.preferred, ...config.bases.filter(base => base !== config.preferred)];
     }
 
-    async function fetchWithRetry(url, maxRetries = 3, timeoutMs = REQUEST_TIMEOUT_MS) {
+    function getRequestTimeoutMs() {
+      return hasCompletedInitialHydration
+        ? FOLLOWUP_REQUEST_TIMEOUT_MS
+        : INITIAL_REQUEST_TIMEOUT_MS;
+    }
+
+    async function fetchWithRetry(url, maxRetries = 3, timeoutMs = getRequestTimeoutMs()) {
       for (let attempt = 0; attempt < maxRetries; attempt++) {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), timeoutMs);
@@ -1306,6 +1314,7 @@
             ? `Last updated ${stamp} · ${totalWarnings} source warning${totalWarnings > 1 ? 's' : ''}`
             : `Last updated ${stamp}`
         );
+        hasCompletedInitialHydration = true;
       })().catch(err => {
         console.error('Fetch error:', err);
         setText('last-update', `Update failed · ${err.message}`);
