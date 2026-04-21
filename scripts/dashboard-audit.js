@@ -96,6 +96,8 @@ function collectDomSnapshot(window) {
 
 function validateSnapshot(snapshot) {
   const checks = [];
+  const sourceWarningCount = Number((snapshot.lastUpdate.match(/(\d+)\s+source warning/) || [])[1] || 0);
+  const hasSourceWarnings = sourceWarningCount > 0;
 
   const investorsApy = parsePercent(snapshot.investorsApy);
   const lpApy = parsePercent(snapshot.lpApy);
@@ -142,18 +144,24 @@ function validateSnapshot(snapshot) {
   });
 
   checks.push({
-    ok: parseRune(snapshot.nodeSummary.bonded) !== null &&
+    ok: hasSourceWarnings || (
+      parseRune(snapshot.nodeSummary.bonded) !== null &&
       parsePercent(snapshot.nodeSummary.largest) !== null &&
       /^\d+\s+active$/i.test(snapshot.nodeSummary.activity) &&
       /\d+\s+standby/i.test(snapshot.nodeSummary.activityNote) &&
-      /^\d+$/.test(snapshot.nodeSummary.withBond),
-    message: `node summary populated (${snapshot.nodeSummary.bonded}, ${snapshot.nodeSummary.activity})`
+      /^\d+$/.test(snapshot.nodeSummary.withBond)
+    ),
+    message: hasSourceWarnings
+      ? `node summary skipped because upstream sources warned (${snapshot.lastUpdate})`
+      : `node summary populated (${snapshot.nodeSummary.bonded}, ${snapshot.nodeSummary.activity})`
   });
 
   checks.push({
-    ok: /^https:\/\/thorchain\.net\/address\/thor1/i.test(snapshot.links.firstNode) &&
-      /^https:\/\/thorchain\.net\/address\/thor1/i.test(snapshot.links.firstProvider),
-    message: 'table address links point to thorchain address explorer'
+    ok: /^https:\/\/thorchain\.net\/address\/thor1/i.test(snapshot.links.firstProvider) &&
+      (hasSourceWarnings || /^https:\/\/thorchain\.net\/address\/thor1/i.test(snapshot.links.firstNode)),
+    message: hasSourceWarnings
+      ? 'provider explorer link valid; node link check skipped because upstream sources warned'
+      : 'table address links point to thorchain address explorer'
   });
 
   return checks;

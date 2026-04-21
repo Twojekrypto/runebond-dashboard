@@ -62,13 +62,6 @@
     .header .address-label{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text3)}
     .header .address a{color:var(--accent);text-decoration:none;transition:opacity .2s}
     .header .address a:hover{opacity:.8}
-    .source-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
-    .source-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);font-size:11px;font-weight:600;letter-spacing:.3px;color:var(--text2)}
-    .source-chip::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--text3);box-shadow:0 0 12px rgba(255,255,255,.08)}
-    .source-chip.live::before{background:var(--accent);box-shadow:0 0 12px rgba(0,228,184,.28)}
-    .source-chip.midgard::before{background:var(--gold);box-shadow:0 0 12px rgba(247,198,109,.24)}
-    .source-chip.thornode::before{background:var(--purple);box-shadow:0 0 12px rgba(124,115,255,.24)}
-    .source-chip.inferred::before{background:var(--amber);box-shadow:0 0 12px rgba(245,158,11,.24)}
     .status-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.05);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);white-space:nowrap}
     .status-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--text3);box-shadow:0 0 10px rgba(255,255,255,.08)}
     .status-pill[data-tone="live"]::before{background:var(--accent);box-shadow:0 0 10px rgba(0,228,184,.22)}
@@ -277,12 +270,6 @@
           <a href="https://thorchain.net/address/thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l" target="_blank" rel="noopener">
             thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l
           </a>
-        </div>
-        <div class="source-strip">
-          <span class="source-chip live">Live operating view</span>
-          <span class="source-chip midgard">Midgard network and bond data</span>
-          <span class="source-chip thornode">Thornode wallet balances</span>
-          <span class="source-chip inferred">30d fee model inferred from exits</span>
         </div>
       </div>
       <div class="header-aside">
@@ -587,7 +574,7 @@
     const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
     const MIDGARD_BASES = isLocal
       ? ['/api/midgard']
-      : ['https://gateway.liquify.com/chain/thorchain_midgard/v2'];
+      : ['https://gateway.liquify.com/chain/thorchain_midgard/v2', 'https://midgard.ninerealms.com/v2'];
     const THORNODE_BASES = isLocal
       ? ['/api/thornode']
       : ['https://thornode.thorchain.liquify.com', 'https://gateway.liquify.com/chain/thorchain_api'];
