@@ -72,12 +72,6 @@ function collectDomSnapshot(window) {
     splitFees: text('split-fees'),
     feeYield: text('fee-yield-pct'),
     statuses: {
-      yield: text('yield-status'),
-      yieldDetail: text('yield-status-detail'),
-      usd: text('usd-status'),
-      usdDetail: text('usd-status-detail'),
-      sources: text('source-health-status'),
-      sourcesDetail: text('source-health-detail'),
       providers: text('providers-sync-status')
     },
     providerSummary: {
@@ -115,8 +109,8 @@ function validateSnapshot(snapshot) {
   });
 
   checks.push({
-    ok: snapshot.statuses.yield !== 'Syncing' && snapshot.statuses.providers !== 'Syncing',
-    message: `yield/providers status settled (${snapshot.statuses.yield} / ${snapshot.statuses.providers})`
+    ok: snapshot.statuses.providers !== 'Syncing',
+    message: `provider status settled (${snapshot.statuses.providers})`
   });
 
   checks.push({
@@ -172,8 +166,6 @@ async function waitForDashboard(window) {
     const settled =
       snapshot.statuses.providers &&
       snapshot.statuses.providers !== 'Syncing' &&
-      snapshot.statuses.yield &&
-      snapshot.statuses.yield !== 'Syncing' &&
       /Last updated|source warning/.test(snapshot.lastUpdate);
 
     if (settled) return snapshot;

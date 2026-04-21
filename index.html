@@ -69,17 +69,12 @@
     .source-chip.midgard::before{background:var(--gold);box-shadow:0 0 12px rgba(247,198,109,.24)}
     .source-chip.thornode::before{background:var(--purple);box-shadow:0 0 12px rgba(124,115,255,.24)}
     .source-chip.inferred::before{background:var(--amber);box-shadow:0 0 12px rgba(245,158,11,.24)}
-    .status-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
-    .status-card{padding:13px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));backdrop-filter:blur(16px)}
-    .status-kicker{font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text3)}
-    .status-card-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
     .status-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.05);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);white-space:nowrap}
     .status-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--text3);box-shadow:0 0 10px rgba(255,255,255,.08)}
     .status-pill[data-tone="live"]::before{background:var(--accent);box-shadow:0 0 10px rgba(0,228,184,.22)}
     .status-pill[data-tone="loading"]::before{background:var(--text2);box-shadow:0 0 10px rgba(158,178,201,.18)}
     .status-pill[data-tone="cached"]::before{background:var(--gold);box-shadow:0 0 10px rgba(247,198,109,.22)}
     .status-pill[data-tone="warning"]::before{background:var(--amber);box-shadow:0 0 10px rgba(245,158,11,.22)}
-    .status-detail{font-size:12px;color:var(--text3);line-height:1.45}
     .header-note{width:100%;max-width:360px;padding:18px 20px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));border:1px solid var(--border);border-radius:22px;backdrop-filter:blur(20px);box-shadow:0 16px 40px rgba(0,0,0,.16)}
     .header-note-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:14px}
     .header-focus{list-style:none;display:grid;gap:10px}
@@ -220,7 +215,6 @@
       .header{grid-template-columns:1fr}
       .header-aside{justify-content:flex-start}
       .header-note{max-width:none}
-      .status-strip{grid-template-columns:1fr}
       .hero-top{grid-template-columns:1fr}
       .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
       .table-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -289,29 +283,6 @@
           <span class="source-chip midgard">Midgard network and bond data</span>
           <span class="source-chip thornode">Thornode wallet balances</span>
           <span class="source-chip inferred">30d fee model inferred from exits</span>
-        </div>
-        <div class="status-strip">
-          <div class="status-card">
-            <div class="status-kicker">Yield engine</div>
-            <div class="status-card-row">
-              <span class="status-pill" id="yield-status" data-tone="loading">Syncing</span>
-            </div>
-            <div class="status-detail" id="yield-status-detail">Waiting for bond and fee inputs.</div>
-          </div>
-          <div class="status-card">
-            <div class="status-kicker">USD helper</div>
-            <div class="status-card-row">
-              <span class="status-pill" id="usd-status" data-tone="loading">Syncing</span>
-            </div>
-            <div class="status-detail" id="usd-status-detail">Fetching the RUNE/USD helper for capital cards.</div>
-          </div>
-          <div class="status-card">
-            <div class="status-kicker">Source health</div>
-            <div class="status-card-row">
-              <span class="status-pill" id="source-health-status" data-tone="loading">Syncing</span>
-            </div>
-            <div class="status-detail" id="source-health-detail">Verifying Midgard, Thornode, and helper sources.</div>
-          </div>
         </div>
       </div>
       <div class="header-aside">
