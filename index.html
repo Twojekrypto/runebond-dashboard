@@ -509,14 +509,14 @@
             <div class="summary-note" id="provider-summary-deposited-note">Tracked principal across the investor pool.</div>
           </div>
           <div class="summary-item">
-            <div class="summary-label">Gross LP profit</div>
+            <div class="summary-label">Gross pool profit</div>
             <div class="summary-value" id="provider-summary-gross">—</div>
-            <div class="summary-note" id="provider-summary-gross-note">Before the 50 / 50 positive-yield split.</div>
+            <div class="summary-note" id="provider-summary-gross-note">Accrued before the 50 / 50 positive-yield split.</div>
           </div>
           <div class="summary-item">
             <div class="summary-label">Investor-side yield</div>
             <div class="summary-value" id="provider-summary-investor-yield">—</div>
-            <div class="summary-note" id="provider-summary-investor-yield-note">Yield allocated to investors after the split.</div>
+            <div class="summary-note" id="provider-summary-investor-yield-note">The investor share of positive pool profit.</div>
           </div>
           <div class="summary-item">
             <div class="summary-label">Investor-side pool value</div>
@@ -610,6 +610,8 @@
     const LP_FEE = 0.05;
     const INVESTOR_SHARE = 0.5;
     const RUNE_PRICE_CACHE_KEY = 'runebond_rune_price_cache';
+    const REQUEST_TIMEOUT_MS = 4000;
+    const REFRESH_INTERVAL_MS = 24 * 60 * 60 * 1000;
 
     const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
     const MIDGARD_BASES = isLocal
@@ -828,10 +830,13 @@
       return [config.preferred, ...config.bases.filter(base => base !== config.preferred)];
     }
 
-    async function fetchWithRetry(url, maxRetries = 5) {
+    async function fetchWithRetry(url, maxRetries = 3, timeoutMs = REQUEST_TIMEOUT_MS) {
       for (let attempt = 0; attempt < maxRetries; attempt++) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), timeoutMs);
         try {
-          const r = await fetch(url, { cache: 'no-store' });
+          const r = await fetch(url, { cache: 'no-store', signal: controller.signal });
+          clearTimeout(timeout);
           if (r.status === 429) {
             await new Promise(res => setTimeout(res, 1500 * (attempt + 1)));
             continue;
@@ -839,6 +844,7 @@
           if (!r.ok) throw new Error(`HTTP ${r.status}`);
           return r;
         } catch(e) {
+          clearTimeout(timeout);
           if (attempt < maxRetries - 1) {
             await new Promise(res => setTimeout(res, 1500 * (attempt + 1)));
             continue;
@@ -961,8 +967,8 @@
 
       setText('node-summary-bonded', formatRune(totalBondedAcrossNodes));
       setText('node-summary-bonded-note', formatUSD(totalBondedAcrossNodes) || 'Capital currently parked in node bonds.');
-      setText('node-summary-activity', `${activeNodeCount} / ${standbyNodeCount}`);
-      setText('node-summary-activity-note', `${activeNodeCount} active · ${standbyNodeCount} standby`);
+      setText('node-summary-activity', `${activeNodeCount} active`);
+      setText('node-summary-activity-note', `${standbyNodeCount} standby · ${nodes.length} tracked total`);
       setText('node-summary-largest', largestBond > 0 ? formatPercent(largestShare, 1) : '—');
       setText('node-summary-largest-note', largestBond > 0 ? `${formatRune(largestBond)} on the largest allocation` : 'No bonded node allocation yet.');
       setText('node-summary-with-bond', `${bondedNodeCount}`);
@@ -1459,9 +1465,9 @@
       setText('provider-summary-deposited', formatRune(totalDeposited));
       setText('provider-summary-deposited-note', `${providers.length} investor wallet${providers.length === 1 ? '' : 's'} tracked in the pool`);
       setText('provider-summary-gross', formatSignedRune(grossEarningsTotalE8));
-      setText('provider-summary-gross-note', 'Before the 50 / 50 positive-yield split.');
+      setText('provider-summary-gross-note', 'Accrued before the 50 / 50 positive-yield split.');
       setText('provider-summary-investor-yield', formatSignedRune(investorYieldTotalE8));
-      setText('provider-summary-investor-yield-note', 'Yield allocated to investors after the split.');
+      setText('provider-summary-investor-yield-note', 'The investor share of positive pool profit.');
       setText('provider-summary-value', formatRune(Math.round(investorValueTotalE8)));
       setText('provider-summary-value-note', formatUSD(Math.round(investorValueTotalE8)) || 'Deposited capital plus investor-side yield.');
 
@@ -1507,7 +1513,7 @@
     }
 
     fetchAll();
-    setInterval(fetchAll, 24 * 60 * 60 * 1000);
+    setInterval(fetchAll, REFRESH_INTERVAL_MS);
   </script>
 </body>
 </html>

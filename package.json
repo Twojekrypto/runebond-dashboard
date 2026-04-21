@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "jsdom": "^29.0.1"
+  },
+  "name": "apy-runebond",
+  "version": "1.0.0",
+  "description": "Runebond LP dashboard with a live smoke audit for APY and data integrity checks.",
+  "main": "scripts/dashboard-audit.js",
+  "private": true,
+  "devDependencies": {},
+  "scripts": {
+    "audit": "node scripts/dashboard-audit.js",
+    "test": "npm run audit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Twojekrypto/runebond-dashboard.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Twojekrypto/runebond-dashboard/issues"
+  },
+  "homepage": "https://github.com/Twojekrypto/runebond-dashboard#readme"
+}
