@@ -186,6 +186,21 @@
 
     /* ─── LP Providers ─── */
     .providers-section{animation:fadeUp .95s ease-out}
+    .swap-section{margin-top:48px;animation:fadeUp 1s ease-out}
+    .swap-section .table-wrap{max-width:1160px;margin:0 auto}
+    .swap-section .table-header{padding:16px 20px}
+    .swap-section .table-header span:first-child{font-size:13px}
+    .swap-section .table-summary{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .swap-section .summary-item{padding:14px 20px}
+    .swap-section .summary-value{margin-top:8px;font-size:18px;letter-spacing:-.4px}
+    .swap-section .summary-note{margin-top:5px;font-size:11px;line-height:1.4}
+    .swap-section .table-scroll{max-height:380px;overflow:auto}
+    .swap-section table{min-width:760px}
+    .swap-section th{padding:12px 20px}
+    .swap-section td{padding:12px 20px;font-size:12px}
+    .swap-section .node-addr{font-size:11px}
+    .swap-section .deposited,.swap-section .current-val,.swap-section .bond-amount,.swap-section .bond-zero{font-size:11px}
+    .swap-section .cell-sub{font-size:10px}
     .share-bar{height:4px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:7px}
     .share-bar .fill{height:100%;border-radius:999px;background:var(--accent);transition:width .6s ease}
     .growth-pos{color:var(--accent);font-weight:600;font-size:12px}
@@ -212,6 +227,7 @@
       .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
       .table-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
       .summary-item:nth-child(3){border-left:none}
+      .swap-section .table-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
     @media(max-width:768px){
       .container{padding:28px 16px 64px}
@@ -223,6 +239,7 @@
       .stats{grid-template-columns:1fr}
       .row-num{display:none}
       .nodes-section .table-scroll{max-height:560px}
+      .swap-section .table-scroll{max-height:none}
       .hero-split{grid-template-columns:1fr;gap:12px}
       .split-operator{min-height:24px}
       .table-header{align-items:flex-start;flex-direction:column}
@@ -446,62 +463,6 @@
       </div>
     </div>
 
-    <!-- Swap Activity -->
-    <div class="providers-section">
-      <div class="section-header">
-        <h2>Recent bRUNE to RUNE Swaps</h2>
-        <button class="info-tip" type="button" aria-label="How recent swaps are inferred" data-tip="Each row represents an outgoing LP payout from the last 30 days. Net RUNE paid out is treated as 95% of a gross exit, so the table shows the estimated gross redemption volume and the 5% fee retained by the LP."></button>
-      </div>
-      <div class="table-wrap">
-        <div class="table-header">
-          <span>Recent user exits powered by the LP</span>
-          <div class="table-header-meta">
-            <span class="count" id="swap-count">Loading…</span>
-          </div>
-        </div>
-        <div class="table-summary">
-          <div class="summary-item">
-            <div class="summary-label">Gross exit volume</div>
-            <div class="summary-value" id="swap-summary-gross">—</div>
-            <div class="summary-note" id="swap-summary-gross-note">Estimated from net RUNE payouts over the last 30 days.</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-label">Net RUNE paid out</div>
-            <div class="summary-value" id="swap-summary-net">—</div>
-            <div class="summary-note" id="swap-summary-net-note">RUNE that left the LP and landed in user wallets.</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-label">Fee retained</div>
-            <div class="summary-value" id="swap-summary-fee">—</div>
-            <div class="summary-note" id="swap-summary-fee-note">The 5% LP fee inferred from the same exits.</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-label">Unique wallets</div>
-            <div class="summary-value" id="swap-summary-wallets">—</div>
-            <div class="summary-note" id="swap-summary-wallets-note">Distinct wallets that received RUNE from the LP.</div>
-          </div>
-        </div>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th><button class="th-sort" id="swaps-sort-dateMs" onclick="setSwapSort('dateMs')">Time <span class="sort-indicator">-</span></button></th>
-                <th class="sticky-col"><button class="th-sort" id="swaps-sort-recipient" onclick="setSwapSort('recipient')">Recipient <span class="sort-indicator">-</span></button></th>
-                <th><button class="th-sort" id="swaps-sort-netPayoutE8" onclick="setSwapSort('netPayoutE8')">Net RUNE Out <span class="sort-indicator">-</span></button></th>
-                <th><button class="th-sort" id="swaps-sort-grossExitE8" onclick="setSwapSort('grossExitE8')">Gross Exit <span class="sort-indicator">-</span></button></th>
-                <th><button class="th-sort" id="swaps-sort-feeRetainedE8" onclick="setSwapSort('feeRetainedE8')">Fee Retained <span class="sort-indicator">-</span></button></th>
-              </tr>
-            </thead>
-            <tbody id="swaps-tbody">
-              <tr class="table-message"><td colspan="5">
-                <span class="loading" style="font-size:14px">Loading recent swap activity…</span>
-              </td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
     <!-- Liquidity Providers -->
     <div class="providers-section">
       <div class="section-header">
@@ -605,6 +566,62 @@
             <tbody id="nodes-tbody">
               <tr class="table-message"><td colspan="4">
                 <span class="loading" style="font-size:14px">Loading node data…</span>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Swap Activity -->
+    <div class="swap-section">
+      <div class="section-header">
+        <h2>Recent User Exits</h2>
+        <button class="info-tip" type="button" aria-label="How recent swaps are inferred" data-tip="Each row represents an outgoing LP payout from the last 30 days. Net RUNE paid out is treated as 95% of a gross exit, so the table shows the estimated gross redemption volume and the 5% fee retained by the LP."></button>
+      </div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <span>30-day bRUNE to RUNE exits served by the LP</span>
+          <div class="table-header-meta">
+            <span class="count" id="swap-count">Loading…</span>
+          </div>
+        </div>
+        <div class="table-summary">
+          <div class="summary-item">
+            <div class="summary-label">Gross exits</div>
+            <div class="summary-value" id="swap-summary-gross">—</div>
+            <div class="summary-note" id="swap-summary-gross-note">Estimated from recent net payouts.</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Net paid out</div>
+            <div class="summary-value" id="swap-summary-net">—</div>
+            <div class="summary-note" id="swap-summary-net-note">RUNE that left the LP.</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Fee retained</div>
+            <div class="summary-value" id="swap-summary-fee">—</div>
+            <div class="summary-note" id="swap-summary-fee-note">The LP's inferred 5% fee.</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Wallets</div>
+            <div class="summary-value" id="swap-summary-wallets">—</div>
+            <div class="summary-note" id="swap-summary-wallets-note">Distinct exit recipients in 30d.</div>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th><button class="th-sort" id="swaps-sort-dateMs" onclick="setSwapSort('dateMs')">Time <span class="sort-indicator">-</span></button></th>
+                <th class="sticky-col"><button class="th-sort" id="swaps-sort-recipient" onclick="setSwapSort('recipient')">Wallet <span class="sort-indicator">-</span></button></th>
+                <th><button class="th-sort" id="swaps-sort-netPayoutE8" onclick="setSwapSort('netPayoutE8')">Net Out <span class="sort-indicator">-</span></button></th>
+                <th><button class="th-sort" id="swaps-sort-grossExitE8" onclick="setSwapSort('grossExitE8')">Gross Exit <span class="sort-indicator">-</span></button></th>
+                <th><button class="th-sort" id="swaps-sort-feeRetainedE8" onclick="setSwapSort('feeRetainedE8')">Fee <span class="sort-indicator">-</span></button></th>
+              </tr>
+            </thead>
+            <tbody id="swaps-tbody">
+              <tr class="table-message"><td colspan="5">
+                <span class="loading" style="font-size:14px">Loading recent swap activity…</span>
               </td></tr>
             </tbody>
           </table>
@@ -901,11 +918,11 @@
       tbody.innerHTML = sortedSwaps.map((swap) => `<tr>
           <td data-label="Time">
             <div>${formatDateTime(swap.dateMs)}</div>
-            <div class="cell-sub">${swap.dayLabel}</div>
+            <div class="cell-sub">Observed LP payout</div>
           </td>
           <td class="sticky-col primary-cell" data-label="Recipient">
             <div class="node-addr"><a href="https://thorchain.net/address/${swap.recipient}" target="_blank" rel="noopener">${truncAddr(swap.recipient)}</a></div>
-            <div class="cell-sub">${swap.txId ? `${truncAddr(swap.txId)} tx hash captured` : 'LP payout recorded'}</div>
+            <div class="cell-sub">${swap.txId ? `Tx ${truncAddr(swap.txId)}` : 'Recipient wallet'}</div>
           </td>
           <td class="deposited" data-label="Net RUNE out">${formatRune(swap.netPayoutE8)}</td>
           <td data-label="Gross exit">
@@ -1256,8 +1273,7 @@
             grossExitE8,
             feeRetainedE8,
             dateMs,
-            txId: action.in?.[0]?.txID || action.out?.[0]?.txID || '',
-            dayLabel: new Date(dateMs).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+            txId: action.in?.[0]?.txID || action.out?.[0]?.txID || ''
           };
         }).filter((swap) => swap.recipient && swap.netPayoutE8 > 0);
 
