@@ -209,6 +209,8 @@
     .current-val{font-family:'SF Mono','Fira Code',monospace;font-size:12px;font-weight:600;color:var(--text)}
     .share-pct{font-weight:700;color:var(--text);font-size:13px}
     .cell-sub{font-size:10px;color:var(--text3);margin-top:4px}
+    .cell-sub a{color:inherit;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.14);transition:color .2s,border-color .2s}
+    .cell-sub a:hover{color:var(--accent);border-color:rgba(0,228,184,.32)}
 
     /* ─── Footer ─── */
     .footer{text-align:center;margin-top:64px;padding-top:28px;border-top:1px solid var(--border);color:var(--text3);font-size:12px;display:flex;flex-direction:column;align-items:center;gap:8px}
@@ -922,7 +924,9 @@
           </td>
           <td class="sticky-col primary-cell" data-label="Recipient">
             <div class="node-addr"><a href="https://thorchain.net/address/${swap.recipient}" target="_blank" rel="noopener">${truncAddr(swap.recipient)}</a></div>
-            <div class="cell-sub">${swap.txId ? `Tx ${truncAddr(swap.txId)}` : 'Recipient wallet'}</div>
+            <div class="cell-sub">${swap.txId
+              ? `<a href="https://runescan.io/tx/${swap.txId}" target="_blank" rel="noopener">Tx ${truncAddr(swap.txId)}</a>`
+              : 'Recipient wallet'}</div>
           </td>
           <td class="deposited" data-label="Net RUNE out">${formatRune(swap.netPayoutE8)}</td>
           <td data-label="Gross exit">
