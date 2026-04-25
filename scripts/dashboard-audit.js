@@ -80,6 +80,13 @@ function collectDomSnapshot(window) {
       investor: text('provider-summary-investor-yield'),
       value: text('provider-summary-value')
     },
+    swapSummary: {
+      count: text('swap-count'),
+      gross: text('swap-summary-gross'),
+      net: text('swap-summary-net'),
+      fee: text('swap-summary-fee'),
+      wallets: text('swap-summary-wallets')
+    },
     nodeSummary: {
       bonded: text('node-summary-bonded'),
       activity: text('node-summary-activity'),
@@ -88,6 +95,7 @@ function collectDomSnapshot(window) {
       withBond: text('node-summary-with-bond')
     },
     links: {
+      firstSwap: doc.querySelector('#swaps-tbody a')?.getAttribute('href') || '',
       firstNode: doc.querySelector('#nodes-tbody a')?.getAttribute('href') || '',
       firstProvider: doc.querySelector('#providers-tbody a')?.getAttribute('href') || ''
     }
@@ -143,6 +151,19 @@ function validateSnapshot(snapshot) {
     message: `provider summary populated (${snapshot.providerSummary.deposited}, ${snapshot.providerSummary.value})`
   });
 
+  const swapSummaryLooksPopulated =
+    parseRune(snapshot.swapSummary.gross) !== null &&
+    parseRune(snapshot.swapSummary.net) !== null &&
+    parseRune(snapshot.swapSummary.fee) !== null &&
+    (parseRune(snapshot.swapSummary.wallets) !== null || /^\d+$/.test(snapshot.swapSummary.wallets));
+
+  checks.push({
+    ok: swapSummaryLooksPopulated || /Source warning/i.test(snapshot.swapSummary.count) || hasSourceWarnings,
+    message: /Source warning/i.test(snapshot.swapSummary.count) || hasSourceWarnings
+      ? `swap summary skipped because a source warned (${snapshot.swapSummary.count || snapshot.lastUpdate})`
+      : `swap summary populated (${snapshot.swapSummary.gross}, ${snapshot.swapSummary.fee})`
+  });
+
   checks.push({
     ok: hasSourceWarnings || (
       parseRune(snapshot.nodeSummary.bonded) !== null &&
@@ -158,9 +179,10 @@ function validateSnapshot(snapshot) {
 
   checks.push({
     ok: /^https:\/\/thorchain\.net\/address\/thor1/i.test(snapshot.links.firstProvider) &&
-      (hasSourceWarnings || /^https:\/\/thorchain\.net\/address\/thor1/i.test(snapshot.links.firstNode)),
+      (hasSourceWarnings || /^https:\/\/thorchain\.net\/address\/thor1/i.test(snapshot.links.firstNode)) &&
+      (!snapshot.links.firstSwap || /^https:\/\/thorchain\.net\/address\/thor1/i.test(snapshot.links.firstSwap)),
     message: hasSourceWarnings
-      ? 'provider explorer link valid; node link check skipped because upstream sources warned'
+      ? 'provider explorer link valid; other explorer link checks skipped because upstream sources warned'
       : 'table address links point to thorchain address explorer'
   });
 

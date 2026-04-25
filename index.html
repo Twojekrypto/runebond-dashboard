@@ -446,6 +446,62 @@
       </div>
     </div>
 
+    <!-- Swap Activity -->
+    <div class="providers-section">
+      <div class="section-header">
+        <h2>Recent bRUNE to RUNE Swaps</h2>
+        <button class="info-tip" type="button" aria-label="How recent swaps are inferred" data-tip="Each row represents an outgoing LP payout from the last 30 days. Net RUNE paid out is treated as 95% of a gross exit, so the table shows the estimated gross redemption volume and the 5% fee retained by the LP."></button>
+      </div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <span>Recent user exits powered by the LP</span>
+          <div class="table-header-meta">
+            <span class="count" id="swap-count">Loading…</span>
+          </div>
+        </div>
+        <div class="table-summary">
+          <div class="summary-item">
+            <div class="summary-label">Gross exit volume</div>
+            <div class="summary-value" id="swap-summary-gross">—</div>
+            <div class="summary-note" id="swap-summary-gross-note">Estimated from net RUNE payouts over the last 30 days.</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Net RUNE paid out</div>
+            <div class="summary-value" id="swap-summary-net">—</div>
+            <div class="summary-note" id="swap-summary-net-note">RUNE that left the LP and landed in user wallets.</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Fee retained</div>
+            <div class="summary-value" id="swap-summary-fee">—</div>
+            <div class="summary-note" id="swap-summary-fee-note">The 5% LP fee inferred from the same exits.</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Unique wallets</div>
+            <div class="summary-value" id="swap-summary-wallets">—</div>
+            <div class="summary-note" id="swap-summary-wallets-note">Distinct wallets that received RUNE from the LP.</div>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th><button class="th-sort" id="swaps-sort-dateMs" onclick="setSwapSort('dateMs')">Time <span class="sort-indicator">-</span></button></th>
+                <th class="sticky-col"><button class="th-sort" id="swaps-sort-recipient" onclick="setSwapSort('recipient')">Recipient <span class="sort-indicator">-</span></button></th>
+                <th><button class="th-sort" id="swaps-sort-netPayoutE8" onclick="setSwapSort('netPayoutE8')">Net RUNE Out <span class="sort-indicator">-</span></button></th>
+                <th><button class="th-sort" id="swaps-sort-grossExitE8" onclick="setSwapSort('grossExitE8')">Gross Exit <span class="sort-indicator">-</span></button></th>
+                <th><button class="th-sort" id="swaps-sort-feeRetainedE8" onclick="setSwapSort('feeRetainedE8')">Fee Retained <span class="sort-indicator">-</span></button></th>
+              </tr>
+            </thead>
+            <tbody id="swaps-tbody">
+              <tr class="table-message"><td colspan="5">
+                <span class="loading" style="font-size:14px">Loading recent swap activity…</span>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- Liquidity Providers -->
     <div class="providers-section">
       <div class="section-header">
@@ -597,6 +653,7 @@
     };
     const providerSort = { key: 'totalE8', direction: 'desc' };
     const nodeSort = { key: 'bond', direction: 'desc' };
+    const swapSort = { key: 'dateMs', direction: 'desc' };
 
     function setText(id, text) {
       const el = document.getElementById(id);
@@ -745,12 +802,23 @@
       return `${sign}${val.toLocaleString('en-US', { maximumFractionDigits: Math.abs(val) >= 1000 ? 0 : digits })} ᚱ`;
     }
 
+    function formatDateTime(dateMs) {
+      if (!dateMs) return '—';
+      return new Date(dateMs).toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      });
+    }
+
     function truncAddr(addr) {
       return addr.slice(0, 10) + '…' + addr.slice(-6);
     }
 
     function isStringSort(key) {
-      return key === 'addr' || key === 'address' || key === 'status';
+      return key === 'addr' || key === 'address' || key === 'status' || key === 'recipient';
     }
 
     function defaultSortDirection(key) {
@@ -784,6 +852,71 @@
         const indicator = btn.querySelector('.sort-indicator');
         if (indicator) indicator.textContent = active ? (sort.direction === 'desc' ? 'v' : '^') : '-';
       });
+    }
+
+    function renderSwaps(swaps, options = {}) {
+      const { error = null } = options;
+      swapRows = swaps;
+      updateSortButtons('swaps', swapSort, ['dateMs', 'recipient', 'netPayoutE8', 'grossExitE8', 'feeRetainedE8']);
+
+      const tbody = document.getElementById('swaps-tbody');
+      const uniqueWallets = new Set(swaps.map((swap) => swap.recipient)).size;
+      const grossExitTotalE8 = swaps.reduce((sum, swap) => sum + swap.grossExitE8, 0);
+      const netPayoutTotalE8 = swaps.reduce((sum, swap) => sum + swap.netPayoutE8, 0);
+      const feeRetainedTotalE8 = swaps.reduce((sum, swap) => sum + swap.feeRetainedE8, 0);
+
+      if (error) {
+        setText('swap-count', 'Source warning');
+        setText('swap-summary-gross', '—');
+        setText('swap-summary-gross-note', 'Recent exits could not be loaded from Midgard.');
+        setText('swap-summary-net', '—');
+        setText('swap-summary-net-note', 'Net payout feed unavailable right now.');
+        setText('swap-summary-fee', '—');
+        setText('swap-summary-fee-note', 'Fee inference resumes when the exit feed returns.');
+        setText('swap-summary-wallets', '—');
+        setText('swap-summary-wallets-note', 'Wallet count unavailable on this refresh.');
+        tbody.innerHTML = `<tr class="table-message"><td colspan="5" style="color:var(--red);padding:32px">
+          Failed to load recent swaps: ${error}
+        </td></tr>`;
+        return;
+      }
+
+      setText('swap-count', `${swaps.length} exits · ${uniqueWallets} wallet${uniqueWallets === 1 ? '' : 's'}`);
+      setText('swap-summary-gross', grossExitTotalE8 > 0 ? formatRune(grossExitTotalE8) : '0 ᚱ');
+      setText('swap-summary-gross-note', `${swaps.length} inferred gross exit${swaps.length === 1 ? '' : 's'} over the last 30 days.`);
+      setText('swap-summary-net', netPayoutTotalE8 > 0 ? formatRune(netPayoutTotalE8) : '0 ᚱ');
+      setText('swap-summary-net-note', 'RUNE that actually left the LP and reached user wallets.');
+      setText('swap-summary-fee', feeRetainedTotalE8 > 0 ? formatRune(feeRetainedTotalE8) : '0 ᚱ');
+      setText('swap-summary-fee-note', 'The retained 5% inferred from those same LP payouts.');
+      setText('swap-summary-wallets', `${uniqueWallets}`);
+      setText('swap-summary-wallets-note', 'Distinct recipient wallets seen in the last 30 days.');
+
+      if (!swaps.length) {
+        tbody.innerHTML = '<tr class="table-message"><td colspan="5" style="padding:32px">No recent exits found in the last 30 days.</td></tr>';
+        return;
+      }
+
+      const sortedSwaps = [...swaps].sort((a, b) => compareSorted(a, b, swapSort.key, swapSort.direction));
+
+      tbody.innerHTML = sortedSwaps.map((swap) => `<tr>
+          <td data-label="Time">
+            <div>${formatDateTime(swap.dateMs)}</div>
+            <div class="cell-sub">${swap.dayLabel}</div>
+          </td>
+          <td class="sticky-col primary-cell" data-label="Recipient">
+            <div class="node-addr"><a href="https://thorchain.net/address/${swap.recipient}" target="_blank" rel="noopener">${truncAddr(swap.recipient)}</a></div>
+            <div class="cell-sub">${swap.txId ? `${truncAddr(swap.txId)} tx hash captured` : 'LP payout recorded'}</div>
+          </td>
+          <td class="deposited" data-label="Net RUNE out">${formatRune(swap.netPayoutE8)}</td>
+          <td data-label="Gross exit">
+            <div>${formatRune(swap.grossExitE8)}</div>
+            <div class="cell-sub">Implied by the 95% user payout</div>
+          </td>
+          <td data-label="Fee retained">
+            <div class="growth-pos">+${(swap.feeRetainedE8 / 1e8).toFixed(2)} ᚱ</div>
+            <div class="cell-sub">LP retained ~5% on this exit</div>
+          </td>
+        </tr>`).join('');
     }
 
     function getOrderedBases(config) {
@@ -903,6 +1036,7 @@
     let providerRows = [];
     let providerDepositedTotalE8 = 0;
     let nodeRows = [];
+    let swapRows = [];
 
     function setProviderSort(key) {
       providerSort.direction = providerSort.key === key
@@ -918,6 +1052,14 @@
         : defaultSortDirection(key);
       nodeSort.key = key;
       renderNodes(nodeRows);
+    }
+
+    function setSwapSort(key) {
+      swapSort.direction = swapSort.key === key
+        ? (swapSort.direction === 'desc' ? 'asc' : 'desc')
+        : defaultSortDirection(key);
+      swapSort.key = key;
+      renderSwaps(swapRows);
     }
 
     function renderNodes(nodes) {
@@ -1103,10 +1245,27 @@
           return sum + coins.reduce((s, c) => s + Number(c.amount), 0);
         }, 0);
 
+        swapRows = outgoingPayouts.map((action) => {
+          const netPayoutE8 = (action.out?.[0]?.coins || []).reduce((sum, coin) => sum + Number(coin.amount), 0);
+          const grossExitE8 = Math.round(netPayoutE8 / (1 - LP_FEE));
+          const feeRetainedE8 = grossExitE8 - netPayoutE8;
+          const dateMs = Number(BigInt(action.date) / 1000000n);
+          return {
+            recipient: action.out?.[0]?.address || '',
+            netPayoutE8,
+            grossExitE8,
+            feeRetainedE8,
+            dateMs,
+            txId: action.in?.[0]?.txID || action.out?.[0]?.txID || '',
+            dayLabel: new Date(dateMs).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+          };
+        }).filter((swap) => swap.recipient && swap.netPayoutE8 > 0);
+
         redemptionVolume30dE8 = Math.round(payoutVolume30dE8 / (1 - LP_FEE));
         feeIncome30dE8 = redemptionVolume30dE8 - payoutVolume30dE8;
         redemptionCount30d = outgoingPayouts.length;
         redemptionDays = 30;
+        renderSwaps(swapRows);
 
         const incomingDeposits = allActions.filter(a => {
           if (a.type !== 'send') return false;
@@ -1125,6 +1284,7 @@
       } catch (err) {
         redemptionsLoaded = false;
         redemptionStatus = 'error';
+        renderSwaps([], { error: err.message });
         console.warn('fetchRedemptionVolume failed:', err.message);
         throw err;
       }
