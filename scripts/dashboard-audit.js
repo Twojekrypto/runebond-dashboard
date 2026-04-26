@@ -5,6 +5,8 @@ const { JSDOM } = require('jsdom');
 
 const HOST = '127.0.0.1';
 const ROOT = process.cwd();
+const pageArg = process.argv[2] || 'index.html';
+const PAGE_PATH = `/${pageArg.replace(/^\/+/, '')}`;
 
 function getContentType(filePath) {
   const ext = path.extname(filePath).toLowerCase();
@@ -216,7 +218,7 @@ async function run() {
 
   try {
     const port = server.address().port;
-    const pageUrl = `http://lvh.me:${port}/index.html`;
+    const pageUrl = `http://lvh.me:${port}${PAGE_PATH}`;
     const dom = await JSDOM.fromURL(pageUrl, {
       runScripts: 'dangerously',
       resources: 'usable',
