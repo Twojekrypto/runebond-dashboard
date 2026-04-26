@@ -62,8 +62,6 @@
     .addr-mono:hover{color:var(--accent)}
     .stamp{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-3)}
     .stamp .stamp-val{color:var(--text-2);font-weight:500;letter-spacing:.4px;text-transform:none;margin-left:6px}
-    .live-dot{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent)}
-    .live-dot::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(201,160,99,.55);animation:livePulse 2.4s ease-in-out infinite}
     @keyframes livePulse{0%,100%{opacity:1}50%{opacity:.55}}
     .icon-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--text-2);cursor:pointer;transition:all .18s}
     .icon-btn:hover{border-color:var(--accent-line);color:var(--accent);background:var(--accent-soft)}
@@ -309,13 +307,10 @@
     }
 
     /* ─── How we calculate (collapsible) ─── */
-    .howcalc{margin:24px auto 0;max-width:780px;padding:0;border:0}
-    .howcalc summary{display:inline-flex;align-items:center;gap:10px;font-family:var(--serif);font-style:italic;font-weight:400;font-size:13px;color:var(--text-3);cursor:pointer;list-style:none;padding:8px 0;letter-spacing:.2px;transition:color .15s}
-    .howcalc summary::-webkit-details-marker{display:none}
-    .howcalc summary::before{content:'+';color:var(--accent);font-style:normal;font-family:var(--sans);font-weight:400;font-size:14px;width:14px;display:inline-flex;justify-content:center}
-    .howcalc[open] summary::before{content:'−'}
-    .howcalc summary:hover{color:var(--text-2)}
-    .howcalc-body{padding:18px 0 8px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;border-top:1px solid var(--line);margin-top:6px}
+    .howcalc{margin:20px auto 36px;max-width:980px;padding-top:18px;border-top:1px solid var(--line)}
+    .howcalc-heading{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-style:italic;font-weight:400;font-size:13px;color:var(--text-3);letter-spacing:.2px;margin-bottom:18px}
+    .howcalc-heading::before{content:'';width:28px;height:1px;background:var(--accent);opacity:.9}
+    .howcalc-body{padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
     @media(max-width:880px){.howcalc-body{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}}
     @media(max-width:520px){.howcalc-body{grid-template-columns:1fr}}
     .driver{padding:0;text-align:left}
@@ -355,7 +350,6 @@
         </div>
         <div class="topbar-spacer"></div>
         <div class="topbar-meta">
-          <span class="live-dot">Live</span>
           <span class="stale-flag" id="stale-chip" hidden>Stale</span>
           <span class="panel-status" id="usd-status" data-tone="loading" style="border:0;background:transparent;padding:0;letter-spacing:1.2px">Syncing</span>
           <a class="addr-mono" href="https://thorchain.net/address/thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l" target="_blank" rel="noopener" title="thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l">thor1dk9…l8x2l</a>
@@ -411,32 +405,6 @@
         <span class="seg"><span class="lbl">Investors</span><span class="val accent" id="split-investor">—</span></span>
       </div>
 
-      <details class="howcalc">
-        <summary>How we build the APY · Yield drivers</summary>
-        <div class="howcalc-body">
-          <div class="driver">
-            <div class="driver-label">Network base APY</div>
-            <div class="driver-value" id="network-apy">—</div>
-            <div class="driver-note" id="network-apy-note">Midgard reported network APY</div>
-          </div>
-          <div class="driver">
-            <div class="driver-label">Bonding yield</div>
-            <div class="driver-value accent" id="bonding-yield-pct">—</div>
-            <div class="driver-note" id="bonding-yield-rune">&nbsp;</div>
-          </div>
-          <div class="driver">
-            <div class="driver-label">30d fee contribution</div>
-            <div class="driver-value accent" id="fee-yield-pct">—</div>
-            <div class="driver-note" id="fee-yield-rune">&nbsp;</div>
-          </div>
-          <div class="driver">
-            <div class="driver-label">30d exit volume</div>
-            <div class="driver-value" id="redemption-volume">—</div>
-            <div class="driver-note" id="redemption-count">&nbsp;</div>
-          </div>
-        </div>
-      </details>
-
       <span class="sr" id="apy-note">—</span>
       <span class="sr" id="split-bonding-note">—</span>
       <span class="sr" id="split-fees-note">—</span>
@@ -472,6 +440,32 @@
         <div class="vital-label">Active nodes</div>
         <div class="vital-value" id="active-nodes"><span class="loading">—</span></div>
         <div class="vital-sub" id="node-breakdown">&nbsp;</div>
+      </div>
+    </section>
+
+    <section class="howcalc" aria-label="APY build explanation">
+      <div class="howcalc-heading">How we build the APY · Yield drivers</div>
+      <div class="howcalc-body">
+        <div class="driver">
+          <div class="driver-label">Network base APY</div>
+          <div class="driver-value" id="network-apy">—</div>
+          <div class="driver-note" id="network-apy-note">Midgard reported network APY</div>
+        </div>
+        <div class="driver">
+          <div class="driver-label">Bonding yield</div>
+          <div class="driver-value accent" id="bonding-yield-pct">—</div>
+          <div class="driver-note" id="bonding-yield-rune">&nbsp;</div>
+        </div>
+        <div class="driver">
+          <div class="driver-label">30d fee contribution</div>
+          <div class="driver-value accent" id="fee-yield-pct">—</div>
+          <div class="driver-note" id="fee-yield-rune">&nbsp;</div>
+        </div>
+        <div class="driver">
+          <div class="driver-label">30d exit volume</div>
+          <div class="driver-value" id="redemption-volume">—</div>
+          <div class="driver-note" id="redemption-count">&nbsp;</div>
+        </div>
       </div>
     </section>
 
@@ -806,6 +800,8 @@
     const LP_FEE = 0.05;
     const INVESTOR_SHARE = 0.5;
     const RUNE_PRICE_CACHE_KEY = 'runebond_rune_price_cache';
+    const ALL_ACTIONS_CACHE_KEY = 'runebond_all_actions';
+    const SEND_ACTIONS_CACHE_KEY = 'runebond_send_actions';
     const INITIAL_REQUEST_TIMEOUT_MS = 15000;
     const FOLLOWUP_REQUEST_TIMEOUT_MS = 6000;
     const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
@@ -919,6 +915,11 @@
       if (redemptionStatus === 'ready') {
         setStatusPill('yield-status', 'live', 'Live');
         setText('yield-status-detail', 'Bonding and 30d fee inputs are both confirmed.');
+        return;
+      }
+      if (redemptionStatus === 'cached') {
+        setStatusPill('yield-status', 'cached', 'Cached');
+        setText('yield-status-detail', 'Showing the last synced 30d exit feed while the live refresh finishes.');
         return;
       }
       if (redemptionStatus === 'error') {
@@ -1163,13 +1164,14 @@
       return response.json();
     }
 
-    async function fetchFromPreferredBase(config, path, maxRetries = 5) {
+    async function fetchFromPreferredBase(config, path, maxRetries = 5, options = {}) {
+      const { stickyPreference = true, orderedBases = null } = options;
       let lastError = null;
 
-      for (const base of getOrderedBases(config)) {
+      for (const base of (orderedBases || getOrderedBases(config))) {
         try {
           const data = await fetchJSON(`${base}${path}`, maxRetries);
-          config.preferred = base;
+          if (stickyPreference) config.preferred = base;
           return data;
         } catch (error) {
           lastError = error;
@@ -1181,7 +1183,17 @@
     }
 
     async function fetchMidgard(path, maxRetries = 5) {
-      return fetchFromPreferredBase(endpointState.midgard, path, maxRetries);
+      const isActionFeed = path.startsWith('/actions');
+      const orderedBases = isActionFeed
+        ? [
+            ...endpointState.midgard.bases.filter(base => base.includes('gateway.liquify.com')),
+            ...endpointState.midgard.bases.filter(base => !base.includes('gateway.liquify.com'))
+          ]
+        : null;
+      return fetchFromPreferredBase(endpointState.midgard, path, maxRetries, {
+        stickyPreference: !isActionFeed,
+        orderedBases
+      });
     }
 
     async function fetchThornode(path, maxRetries = 5) {
@@ -1444,66 +1456,97 @@
       return unique;
     }
 
+    function buildRedemptionSnapshot(allActions, thirtyDaysAgoNs) {
+      const outgoingPayouts = allActions.filter(a => {
+        if (a.type !== 'send') return false;
+        if (BigInt(a.date) < thirtyDaysAgoNs) return false;
+        if (a.in?.[0]?.address !== LP_ADDRESS) return false;
+        const outAddr = a.out?.[0]?.address;
+        if (!outAddr || outAddr === LP_ADDRESS) return false;
+        return true;
+      });
+
+      const payoutVolume = outgoingPayouts.reduce((sum, action) => {
+        const coins = action.out?.[0]?.coins || [];
+        return sum + coins.reduce((acc, coin) => acc + Number(coin.amount), 0);
+      }, 0);
+
+      const swaps = outgoingPayouts.map((action) => {
+        const netPayoutE8 = (action.out?.[0]?.coins || []).reduce((sum, coin) => sum + Number(coin.amount), 0);
+        const grossExitE8 = Math.round(netPayoutE8 / (1 - LP_FEE));
+        const feeRetainedE8 = grossExitE8 - netPayoutE8;
+        const dateMs = Number(BigInt(action.date) / 1000000n);
+        return {
+          recipient: action.out?.[0]?.address || '',
+          netPayoutE8,
+          grossExitE8,
+          feeRetainedE8,
+          dateMs,
+          txId: action.in?.[0]?.txID || action.out?.[0]?.txID || ''
+        };
+      }).filter((swap) => swap.recipient && swap.netPayoutE8 > 0);
+
+      const incomingDeposits = allActions.filter(a => {
+        if (a.type !== 'send') return false;
+        if (BigInt(a.date) < thirtyDaysAgoNs) return false;
+        return a.out?.[0]?.address === LP_ADDRESS;
+      });
+
+      const deposits = incomingDeposits.reduce((sum, action) => {
+        const coins = action.out?.[0]?.coins || [];
+        return sum + coins.reduce((acc, coin) => acc + Number(coin.amount), 0);
+      }, 0);
+
+      const grossRedemptions = Math.round(payoutVolume / (1 - LP_FEE));
+      return {
+        payoutVolume30dE8: payoutVolume,
+        redemptionVolume30dE8: grossRedemptions,
+        feeIncome30dE8: grossRedemptions - payoutVolume,
+        redemptionCount30d: outgoingPayouts.length,
+        redemptionDays: 30,
+        deposits30dE8: deposits,
+        swaps
+      };
+    }
+
+    function applyRedemptionSnapshot(snapshot, source = 'ready') {
+      payoutVolume30dE8 = snapshot.payoutVolume30dE8;
+      redemptionVolume30dE8 = snapshot.redemptionVolume30dE8;
+      feeIncome30dE8 = snapshot.feeIncome30dE8;
+      redemptionCount30d = snapshot.redemptionCount30d;
+      redemptionDays = snapshot.redemptionDays || 30;
+      deposits30dE8 = snapshot.deposits30dE8 || 0;
+      swapRows = snapshot.swaps || [];
+      renderSwaps(swapRows);
+      redemptionsLoaded = true;
+      redemptionStatus = source;
+    }
+
+    function primeRedemptionFromCache() {
+      const thirtyDaysAgoNs = BigInt(Date.now() - 30 * 24 * 60 * 60 * 1000) * 1000000n;
+      const cachedActions = getCachedActions(ALL_ACTIONS_CACHE_KEY, thirtyDaysAgoNs);
+      if (!cachedActions.length) return false;
+      applyRedemptionSnapshot(buildRedemptionSnapshot(cachedActions, thirtyDaysAgoNs), 'cached');
+      return true;
+    }
+
     async function fetchRedemptionVolume() {
-      redemptionStatus = 'loading';
+      const hadSnapshot = redemptionsLoaded;
+      const previousStatus = redemptionStatus;
+      if (!hadSnapshot) redemptionStatus = 'loading';
       try {
         const thirtyDaysAgoNs = BigInt(Date.now() - 30 * 24 * 60 * 60 * 1000) * 1000000n;
         const pathBase = `/actions?address=${LP_ADDRESS}&limit=50`;
-        const allActions = await fetchActionsIncremental('runebond_all_actions', pathBase, thirtyDaysAgoNs);
-
-        const outgoingPayouts = allActions.filter(a => {
-          if (a.type !== 'send') return false;
-          if (BigInt(a.date) < thirtyDaysAgoNs) return false;
-          if (a.in?.[0]?.address !== LP_ADDRESS) return false;
-          const outAddr = a.out?.[0]?.address;
-          if (!outAddr || outAddr === LP_ADDRESS) return false;
-          return true;
-        });
-
-        payoutVolume30dE8 = outgoingPayouts.reduce((sum, a) => {
-          const coins = a.out?.[0]?.coins || [];
-          return sum + coins.reduce((s, c) => s + Number(c.amount), 0);
-        }, 0);
-
-        swapRows = outgoingPayouts.map((action) => {
-          const netPayoutE8 = (action.out?.[0]?.coins || []).reduce((sum, coin) => sum + Number(coin.amount), 0);
-          const grossExitE8 = Math.round(netPayoutE8 / (1 - LP_FEE));
-          const feeRetainedE8 = grossExitE8 - netPayoutE8;
-          const dateMs = Number(BigInt(action.date) / 1000000n);
-          return {
-            recipient: action.out?.[0]?.address || '',
-            netPayoutE8,
-            grossExitE8,
-            feeRetainedE8,
-            dateMs,
-            txId: action.in?.[0]?.txID || action.out?.[0]?.txID || ''
-          };
-        }).filter((swap) => swap.recipient && swap.netPayoutE8 > 0);
-
-        redemptionVolume30dE8 = Math.round(payoutVolume30dE8 / (1 - LP_FEE));
-        feeIncome30dE8 = redemptionVolume30dE8 - payoutVolume30dE8;
-        redemptionCount30d = outgoingPayouts.length;
-        redemptionDays = 30;
-        renderSwaps(swapRows);
-
-        const incomingDeposits = allActions.filter(a => {
-          if (a.type !== 'send') return false;
-          if (BigInt(a.date) < thirtyDaysAgoNs) return false;
-          const outAddr = a.out?.[0]?.address;
-          if (outAddr !== LP_ADDRESS) return false;
-          return true;
-        });
-        deposits30dE8 = incomingDeposits.reduce((sum, a) => {
-          const coins = a.out?.[0]?.coins || [];
-          return sum + coins.reduce((s, c) => s + Number(c.amount), 0);
-        }, 0);
-
-        redemptionsLoaded = true;
-        redemptionStatus = 'ready';
+        const allActions = await fetchActionsIncremental(ALL_ACTIONS_CACHE_KEY, pathBase, thirtyDaysAgoNs);
+        applyRedemptionSnapshot(buildRedemptionSnapshot(allActions, thirtyDaysAgoNs), 'ready');
       } catch (err) {
-        redemptionsLoaded = false;
-        redemptionStatus = 'error';
-        renderSwaps([], { error: err.message });
+        if (hadSnapshot) {
+          redemptionStatus = previousStatus || 'cached';
+        } else {
+          redemptionsLoaded = false;
+          redemptionStatus = 'error';
+          renderSwaps([], { error: err.message });
+        }
         console.warn('fetchRedemptionVolume failed:', err.message);
         throw err;
       }
@@ -1557,22 +1600,37 @@
       let feeYieldOnTotal = null;
 
       if (redemptionsLoaded) {
+        const usingCachedFeeFeed = redemptionStatus === 'cached';
         const feeIncome30d = feeIncome30dE8 / 1e8;
         const feeIncomeAnnual = feeIncome30d * (365 / redemptionDays);
         feeYieldOnTotal = (feeIncomeAnnual / totalRune) * 100;
         setText('fee-yield-pct', formatPercent(feeYieldOnTotal));
         setText(
           'fee-yield-rune',
-          `${feeIncome30d.toFixed(2)} ᚱ retained last 30d · ~${(payoutVolume30dE8 / 1e8).toFixed(2)} ᚱ paid out net`
+          `${feeIncome30d.toFixed(2)} ᚱ retained last 30d · ~${(payoutVolume30dE8 / 1e8).toFixed(2)} ᚱ paid out net${usingCachedFeeFeed ? ' · cached snapshot' : ''}`
         );
         setText('hero-fee-yield', formatPercent(feeYieldOnTotal));
-        setText('hero-fee-note', `${redemptionCount30d} payouts · ${formatRune(redemptionVolume30dE8)} gross exit volume in 30d`);
+        setText(
+          'hero-fee-note',
+          `${redemptionCount30d} payouts · ${formatRune(redemptionVolume30dE8)} gross exit volume in 30d${usingCachedFeeFeed ? ' · refreshing live' : ''}`
+        );
         setText('split-fees', formatPercent(feeYieldOnTotal));
-        setText('split-fees-note', `${redemptionCount30d} payouts drove ${formatRune(redemptionVolume30dE8)} of gross exits.`);
+        setText(
+          'split-fees-note',
+          `${redemptionCount30d} payouts drove ${formatRune(redemptionVolume30dE8)} of gross exits${usingCachedFeeFeed ? ' on the last synced snapshot' : ''}.`
+        );
 
         setText('redemption-volume', formatRune(redemptionVolume30dE8));
-        setText('redemption-count', `${redemptionCount30d} payouts · gross volume inferred from net sends`);
-        setText('apy-note', 'Gross LP yield from bonding + payout fees before the 50 / 50 split');
+        setText(
+          'redemption-count',
+          `${redemptionCount30d} payouts · gross volume inferred from net sends${usingCachedFeeFeed ? ' · cached while syncing' : ''}`
+        );
+        setText(
+          'apy-note',
+          usingCachedFeeFeed
+            ? 'Showing the last synced fee model first, then refreshing to live 30-day exits'
+            : 'Gross LP yield from bonding + payout fees before the 50 / 50 split'
+        );
       } else if (redemptionStatus === 'error') {
         setText('fee-yield-pct', '—');
         setText('fee-yield-rune', '30d claim history unavailable');
@@ -1641,6 +1699,7 @@
       if (refreshPromise) return refreshPromise;
 
       const refreshButton = document.getElementById('refresh-button');
+      let corePhaseComplete = false;
       if (refreshButton) {
         refreshButton.disabled = true;
         refreshButton.textContent = '…';
@@ -1648,8 +1707,10 @@
         refreshButton.setAttribute('title', 'Refreshing data');
       }
       setText('last-update', 'Refreshing live data…');
-      redemptionsLoaded = false;
-      redemptionStatus = 'loading';
+      if (!primeRedemptionFromCache()) {
+        redemptionsLoaded = false;
+        redemptionStatus = 'loading';
+      }
       usdUsedFallback = false;
       updateYieldStatus();
       updateSourceHealthStatus(0, true);
@@ -1664,20 +1725,6 @@
       }
 
       refreshPromise = (async () => {
-        const startedAt = new Date();
-        const coreResults = await Promise.allSettled([
-          fetchAPY(),
-          fetchBonds(),
-          fetchBalance()
-        ]);
-
-        calculateLPMetrics();
-        const coreWarnings = coreResults.filter(result => result.status === 'rejected').length;
-        setText('last-update', coreWarnings
-          ? `Core data refreshed with ${coreWarnings} warning${coreWarnings > 1 ? 's' : ''}; loading history…`
-          : 'Core data refreshed; loading history…');
-        updateSourceHealthStatus(coreWarnings, false);
-
         const runePricePromise = fetchRunePrice()
           .finally(() => {
             calculateLPMetrics();
@@ -1686,8 +1733,26 @@
         const redemptionPromise = fetchRedemptionVolume()
           .finally(() => {
             calculateLPMetrics();
-            setText('last-update', 'Yield data refreshed; syncing investor table…');
+            setText('last-update', corePhaseComplete
+              ? 'Yield data refreshed; syncing investor table…'
+              : 'Exit history ready; finishing the core LP sync…');
           });
+
+        const startedAt = new Date();
+        const coreResults = await Promise.allSettled([
+          fetchAPY(),
+          fetchBonds(),
+          fetchBalance()
+        ]);
+
+        corePhaseComplete = true;
+        calculateLPMetrics();
+        primeDepositorsFromCache();
+        const coreWarnings = coreResults.filter(result => result.status === 'rejected').length;
+        setText('last-update', coreWarnings
+          ? `Core data refreshed with ${coreWarnings} warning${coreWarnings > 1 ? 's' : ''}; finishing live history…`
+          : 'Core data refreshed; finishing live history…');
+        updateSourceHealthStatus(coreWarnings, false);
 
         const depositorPromise = fetchDepositors();
 
@@ -1728,79 +1793,84 @@
     }
 
     // Depositors tracking
+    function buildProvidersFromSends(allSends) {
+      const deposits = allSends.filter(action => action.out?.[0]?.address === LP_ADDRESS);
+      const now = Date.now();
+      const individualDeposits = deposits.map((action) => {
+        const sender = action.in?.[0]?.address;
+        const amount = action.in?.[0]?.coins?.reduce((sum, coin) => sum + Number(coin.amount), 0) || 0;
+        const dateMs = Number(BigInt(action.date) / 1000000n);
+        const daysInLP = Math.max(1, (now - dateMs) / (24 * 60 * 60 * 1000));
+        return { sender, amount, dateMs, daysInLP };
+      }).filter((deposit) => deposit.sender && deposit.amount > 0);
+
+      const totalDeposited = individualDeposits.reduce((sum, deposit) => sum + deposit.amount, 0);
+      const totalCapitalE8 = lpBondedE8 + lpBalanceE8;
+      const grossProfitE8 = totalCapitalE8 - totalDeposited;
+      const investorEarningsPoolE8 = investorTake(grossProfitE8);
+      const totalWeight = individualDeposits.reduce((sum, deposit) => sum + deposit.amount * deposit.daysInLP, 0);
+      const depositorMap = {};
+
+      individualDeposits.forEach((deposit) => {
+        if (!depositorMap[deposit.sender]) {
+          depositorMap[deposit.sender] = {
+            totalE8: 0,
+            grossEarningsE8: 0,
+            investorEarningsE8: 0,
+            firstDateMs: deposit.dateMs,
+            lastDateMs: deposit.dateMs,
+            txCount: 0
+          };
+        }
+
+        const row = depositorMap[deposit.sender];
+        row.totalE8 += deposit.amount;
+        row.txCount += 1;
+        const weight = deposit.amount * deposit.daysInLP;
+        const earningsShare = totalWeight > 0 ? weight / totalWeight : 0;
+        row.grossEarningsE8 += grossProfitE8 * earningsShare;
+        row.investorEarningsE8 += investorEarningsPoolE8 * earningsShare;
+        if (deposit.dateMs < row.firstDateMs) row.firstDateMs = deposit.dateMs;
+        if (deposit.dateMs > row.lastDateMs) row.lastDateMs = deposit.dateMs;
+      });
+
+      const providers = Object.entries(depositorMap)
+        .filter(([, data]) => data.totalE8 >= 1e8)
+        .map(([addr, data]) => {
+          const share = totalDeposited > 0 ? data.totalE8 / totalDeposited : 0;
+          const currentValueE8 = data.totalE8 + data.investorEarningsE8;
+          const grossGrowthPct = data.totalE8 > 0 ? (data.grossEarningsE8 / data.totalE8) * 100 : 0;
+          const investorGrowthPct = data.totalE8 > 0 ? (data.investorEarningsE8 / data.totalE8) * 100 : 0;
+          const firstDate = new Date(data.firstDateMs);
+          const daysIn = Math.max(1, (now - data.firstDateMs) / (24 * 60 * 60 * 1000));
+          return { addr, ...data, share, currentValueE8, grossGrowthPct, investorGrowthPct, firstDate, daysIn };
+        })
+        .sort((a, b) => b.totalE8 - a.totalE8);
+
+      return { providers, totalDeposited };
+    }
+
+    function primeDepositorsFromCache() {
+      const cachedSends = getCachedActions(SEND_ACTIONS_CACHE_KEY, 0n);
+      if (!cachedSends.length || (lpBondedE8 + lpBalanceE8) === 0) return false;
+      const { providers, totalDeposited } = buildProvidersFromSends(cachedSends);
+      renderDepositors(providers, totalDeposited, 'cached');
+      return true;
+    }
+
     async function fetchDepositors() {
+      const hadSnapshot = providerRows.length > 0;
       try {
-        // Fetch ALL send actions (no time limit) to find all depositors
         const pathBase = `/actions?address=${LP_ADDRESS}&type=send&limit=50`;
-        const allSends = await fetchActionsIncremental('runebond_send_actions', pathBase, 0n);
-
-        // Find deposits: sends WHERE out.address === LP_ADDRESS (someone sent TO LP)
-        const deposits = allSends.filter(a => {
-          const outAddr = a.out?.[0]?.address;
-          return outAddr === LP_ADDRESS;
-        });
-
-        // Track INDIVIDUAL deposits (not grouped yet) for time-weighting
-        const now = Date.now();
-        const individualDeposits = deposits.map(a => {
-          const sender = a.in?.[0]?.address;
-          const amount = a.in?.[0]?.coins?.reduce((s, c) => s + Number(c.amount), 0) || 0;
-          const dateMs = Number(BigInt(a.date) / 1000000n);
-          const daysInLP = Math.max(1, (now - dateMs) / (24 * 60 * 60 * 1000));
-          return { sender, amount, dateMs, daysInLP };
-        }).filter(d => d.sender && d.amount > 0);
-
-        // Total deposited and total earnings
-        const totalDeposited = individualDeposits.reduce((s, d) => s + d.amount, 0);
-        const totalCapitalE8 = lpBondedE8 + lpBalanceE8;
-        const grossProfitE8 = totalCapitalE8 - totalDeposited;
-        const investorEarningsPoolE8 = investorTake(grossProfitE8);
-
-        // Time-weighted earnings: weight = amount × days_in_LP
-        // Each deposit's share of earnings = its weight / total weight
-        const totalWeight = individualDeposits.reduce((s, d) => s + d.amount * d.daysInLP, 0);
-
-        // Group by address with time-weighted earnings
-        const depositorMap = {};
-        individualDeposits.forEach(d => {
-          if (!depositorMap[d.sender]) {
-            depositorMap[d.sender] = { 
-              totalE8: 0, grossEarningsE8: 0, investorEarningsE8: 0,
-              firstDateMs: d.dateMs, lastDateMs: d.dateMs, txCount: 0 
-            };
-          }
-          depositorMap[d.sender].totalE8 += d.amount;
-          depositorMap[d.sender].txCount++;
-          // Time-weighted share of earnings for this individual deposit
-          const weight = d.amount * d.daysInLP;
-          const earningsShare = totalWeight > 0 ? weight / totalWeight : 0;
-          depositorMap[d.sender].grossEarningsE8 += grossProfitE8 * earningsShare;
-          depositorMap[d.sender].investorEarningsE8 += investorEarningsPoolE8 * earningsShare;
-          // Track dates
-          if (d.dateMs < depositorMap[d.sender].firstDateMs) {
-            depositorMap[d.sender].firstDateMs = d.dateMs;
-          }
-          if (d.dateMs > depositorMap[d.sender].lastDateMs) {
-            depositorMap[d.sender].lastDateMs = d.dateMs;
-          }
-        });
-
-        const providers = Object.entries(depositorMap)
-          .filter(([, data]) => data.totalE8 >= 1e8) // min 1 RUNE
-          .map(([addr, data]) => {
-            const share = totalDeposited > 0 ? data.totalE8 / totalDeposited : 0;
-            const currentValueE8 = data.totalE8 + data.investorEarningsE8;
-            const grossGrowthPct = data.totalE8 > 0 ? (data.grossEarningsE8 / data.totalE8) * 100 : 0;
-            const investorGrowthPct = data.totalE8 > 0 ? (data.investorEarningsE8 / data.totalE8) * 100 : 0;
-            const firstDate = new Date(data.firstDateMs);
-            const daysIn = Math.max(1, (now - data.firstDateMs) / (24 * 60 * 60 * 1000));
-            return { addr, ...data, share, currentValueE8, grossGrowthPct, investorGrowthPct, firstDate, daysIn };
-          })
-          .sort((a, b) => b.totalE8 - a.totalE8);
-
-        renderDepositors(providers, totalDeposited);
+        const allSends = await fetchActionsIncremental(SEND_ACTIONS_CACHE_KEY, pathBase, 0n);
+        const { providers, totalDeposited } = buildProvidersFromSends(allSends);
+        renderDepositors(providers, totalDeposited, 'live');
       } catch (err) {
         console.error('fetchDepositors failed:', err);
+        if (hadSnapshot) {
+          setProviderSyncStatus('cached', 'Cached');
+          throw err;
+        }
         setText('providers-count', 'Error loading');
         setProviderSyncStatus('warning', 'Warning');
         setText('provider-summary-deposited', '—');
@@ -1817,11 +1887,11 @@
       }
     }
 
-    function renderDepositors(providers, totalDeposited) {
+    function renderDepositors(providers, totalDeposited, source = 'live') {
       providerRows = providers;
       providerDepositedTotalE8 = totalDeposited;
       setText('providers-count', `${providers.length} investors · ${formatRune(totalDeposited)} deposited capital`);
-      setProviderSyncStatus('live', 'Live');
+      setProviderSyncStatus(source === 'cached' ? 'cached' : 'live', source === 'cached' ? 'Cached' : 'Live');
       updateSortButtons('providers', providerSort, ['addr', 'totalE8', 'share', 'grossEarningsE8', 'investorEarningsE8', 'currentValueE8']);
 
       const grossEarningsTotalE8 = providers.reduce((sum, provider) => sum + provider.grossEarningsE8, 0);
