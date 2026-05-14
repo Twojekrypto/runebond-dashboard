@@ -342,416 +342,335 @@
     .help[data-tip]::after{content:attr(data-tip);position:absolute;left:50%;transform:translateX(-50%) translateY(4px);top:calc(100% + 8px);background:var(--surface-2);border:1px solid var(--line-strong);border-radius:6px;padding:10px 12px;font-size:11px;font-weight:400;letter-spacing:0;text-transform:none;line-height:1.55;color:var(--text-2);width:280px;max-width:80vw;z-index:20;font-family:var(--sans);font-style:normal;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;white-space:normal;text-align:left}
     .help[data-tip]:hover::after,.help[data-tip]:focus-visible::after,.help[data-tip].open::after{opacity:1;transform:translateX(-50%) translateY(0)}
   </style>
-  <link rel="stylesheet" href="./vult-runebond.css?v=20260514-refit">
 </head>
 <body>
-  <div class="ambient-glow" aria-hidden="true">
-    <span class="glow glow-1"></span>
-    <span class="glow glow-2"></span>
-  </div>
 
-  <div class="page">
-    <header class="header">
-      <div class="dashboard-banner">
-        <span class="stale-flag" id="stale-chip" hidden>Stale</span>
-        <div class="dashboard-banner-main">
-          <div class="banner-brand">
-            <div class="banner-orb">
-              <img src="./assets/runebond-isologo.svg" alt="Runebond logo">
-            </div>
-            <div class="banner-copy">
-              <strong>Runebond LP Dashboard</strong>
-              <p>Real-time yield tracking for the Runebond liquidity provider, using THORChain bond, wallet, and 30-day exit data to show what investors earn, what the LP captures, and how the capital is currently parked.</p>
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="container">
+      <div class="topbar-inner">
+        <div class="brand">
+          <span class="brand-mark"></span>
+          <div class="brand-copy">
+            <span class="brand-kicker">THORChain liquidity monitor</span>
+            <div class="brand-row">
+              <span class="brand-name">Runebond</span>
+              <span class="brand-tag">LP Dashboard</span>
             </div>
           </div>
-          <div class="banner-meta">
-            <span class="chip">
-              <span class="chip-label">LP address</span>
-              <a class="chip-link" href="https://thorchain.net/address/thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l" target="_blank" rel="noopener" title="thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l">thor1dk9…l8x2l</a>
-            </span>
-            <span class="chip">
-              <span class="chip-label">Data feed</span>
-              <span class="chip-value">THORChain live sources</span>
-            </span>
-          </div>
+        </div>
+        <div class="topbar-spacer"></div>
+        <div class="topbar-meta">
+          <span class="stale-flag" id="stale-chip" hidden>Stale</span>
+          <span class="panel-status" id="usd-status" data-tone="loading" style="border:0;background:transparent;padding:0;letter-spacing:1.2px">Syncing</span>
+          <a class="addr-mono" href="https://thorchain.net/address/thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l" target="_blank" rel="noopener" title="thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l">thor1dk9…l8x2l</a>
+          <button class="icon-btn" id="refresh-button" onclick="fetchAll()" type="button" aria-label="Refresh data" title="Refresh data">↻</button>
         </div>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <main>
-      <section class="calculator-shell">
-        <section class="hero">
-          <div class="hero-text">
-            <h1>Start with the investor APY, then see exactly what is driving it.</h1>
-            <p>The page is built to read like a premium LP console: first the investor return, then the gross LP yield, then the live mix of bonding rewards and 30-day exit fees behind that number.</p>
+  <main class="container">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="eyebrow">
+        <span class="sep"></span>
+        <span>LIVE LP YIELD VIEW · <span id="hero-date">—</span></span>
+        <span class="sep"></span>
+      </div>
+
+      <div class="display-lead">Investors earn</div>
+      <div class="display-num" id="investors-apy"><span class="loading">Loading…</span></div>
+      <div class="display-trail">per year, after the <span class="accent-text">50/50 split</span> on positive yield.</div>
+      <span class="est-badge" title="Derived from 30-day bonding earnings and inferred 5% exit fees, not forward guidance.">30 day · estimate</span>
+
+      <div class="hero-spark">
+        <div class="spark-label">30-day bonding APY</div>
+        <div class="spark-stage">
+          <div class="spark-canvas" id="hero-sparkline">
+            <svg viewBox="0 0 220 64" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <g class="spark-grid"></g>
+              <g class="spark-area"></g>
+              <g class="spark-line"></g>
+              <line class="spark-cursor" x1="0" y1="0" x2="0" y2="64"></line>
+              <circle class="spark-dot" cx="0" cy="0" r="3.5"></circle>
+            </svg>
+            <div class="spark-tooltip">
+              <div class="tt-date"></div>
+              <div class="tt-val"></div>
+            </div>
           </div>
-          <div class="read-guide">
-            <div class="read-step"><span>1</span><strong>Read Investors APY first</strong></div>
-            <div class="read-step"><span>2</span><strong>Check bonding vs fee mix</strong></div>
-            <div class="read-step"><span>3</span><strong>Review investors, nodes and exits</strong></div>
-          </div>
-          <span class="sr" id="hero-date">—</span>
-        </section>
-
-        <section class="core">
-          <article class="card">
-            <div class="card-head">
-              <div class="section-title">
-                <span class="section-note">Position setup</span>
-                <h2>LP capital overview</h2>
-              </div>
-              <a class="pill-link" href="https://thorchain.net/address/thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l" target="_blank" rel="noopener">View LP wallet</a>
-            </div>
-
-            <div class="setup-preview">
-              <div class="setup-preview-main">
-                <span>Total capital tracked</span>
-                <strong id="total-capital"><span class="loading">—</span></strong>
-                <small id="total-capital-usd">&nbsp;</small>
-              </div>
-
-              <div class="setup-preview-grid">
-                <div>
-                  <span>Bonded bRUNE</span>
-                  <strong id="total-bonded"><span class="loading">—</span></strong>
-                  <small id="bonded-pct">&nbsp;</small>
-                </div>
-                <div>
-                  <span>Liquid RUNE</span>
-                  <strong id="rune-balance"><span class="loading">—</span></strong>
-                  <small id="liquid-pct">&nbsp;</small>
-                </div>
-                <div>
-                  <span>Active nodes</span>
-                  <strong id="active-nodes"><span class="loading">—</span></strong>
-                  <small id="node-breakdown">&nbsp;</small>
-                </div>
-                <div>
-                  <span>Investor split</span>
-                  <strong>50 / 50</strong>
-                  <small>Positive LP yield is split equally between investors and Runebond.</small>
-                </div>
-              </div>
-
-              <div class="model-strip">
-                <div class="model-item">
-                  <span>Network APY</span>
-                  <strong id="network-apy">—</strong>
-                </div>
-                <div class="model-item">
-                  <span>30d gross exits</span>
-                  <strong id="redemption-volume">—</strong>
-                </div>
-                <div class="model-item">
-                  <span>Tracked principal</span>
-                  <strong id="proj-capital">—</strong>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card output">
-            <div class="card-head">
-              <div class="section-title">
-                <span class="section-note">Position summary</span>
-                <h2>Yield snapshot</h2>
-              </div>
-              <span class="panel-status" id="providers-sync-status" data-tone="loading">Syncing</span>
-            </div>
-
-            <div class="hero-total">
-              <span class="metric-label">Investors APY</span>
-              <strong id="investors-apy"><span class="loading">Loading…</span></strong>
-              <small id="apy-note">Loading live APY inputs</small>
-            </div>
-
-            <div class="metrics">
-              <div class="metric">
-                <span class="metric-label">Projected LP APY</span>
-                <strong id="lp-effective-apy">—</strong>
-                <small id="split-gross-note">Waiting for the 30-day fee history to finish syncing.</small>
-              </div>
-              <div class="metric">
-                <span class="metric-label">Runebond capture APY</span>
-                <strong id="runebond-apy">—</strong>
-                <small id="split-investor-note">Runebond capture updates once gross LP APY is confirmed.</small>
-              </div>
-              <div class="metric">
-                <span class="metric-label">Bonding contribution</span>
-                <strong id="bonding-yield-pct">—</strong>
-                <small id="bonding-yield-rune">&nbsp;</small>
-              </div>
-              <div class="metric">
-                <span class="metric-label">30d fee contribution</span>
-                <strong id="fee-yield-pct">—</strong>
-                <small id="fee-yield-rune">&nbsp;</small>
-              </div>
-            </div>
-
-            <div class="composition">
-              <div class="composition-head">
-                <span>Gross LP APY build</span>
-              </div>
-
-              <div class="formula">
-                <span class="seg"><span class="lbl">Bonding</span><span class="val" id="split-bonding">—</span></span>
-                <span class="op">+</span>
-                <span class="seg"><span class="lbl">Fees 30d</span><span class="val" id="split-fees">—</span></span>
-                <span class="op">=</span>
-                <span class="seg"><span class="lbl">Gross LP APY</span><span class="val" id="split-gross">—</span></span>
-                <span class="op">→</span>
-                <span class="seg"><span class="lbl">Investors</span><span class="val accent" id="split-investor">—</span></span>
-              </div>
-
-              <div class="hero-spark">
-                <div class="spark-label">30-day APY history</div>
-                <div class="spark-stage">
-                  <div class="spark-canvas" id="hero-sparkline">
-                    <svg viewBox="0 0 220 64" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                      <g class="spark-grid"></g>
-                      <g class="spark-area"></g>
-                      <g class="spark-line"></g>
-                      <line class="spark-cursor" x1="0" y1="0" x2="0" y2="64"></line>
-                      <circle class="spark-dot" cx="0" cy="0" r="3.5"></circle>
-                    </svg>
-                    <div class="spark-tooltip">
-                      <div class="tt-date"></div>
-                      <div class="tt-val"></div>
-                    </div>
-                  </div>
-                  <div class="spark-yaxis"><span></span><span></span><span></span></div>
-                  <div class="spark-xaxis"><span></span><span></span></div>
-                </div>
-              </div>
-            </div>
-          </article>
-        </section>
-      </section>
-
-      <section class="card block">
-        <div class="howcalc-card-head">
-          <div class="section-title">
-            <span class="section-note">Yield drivers</span>
-            <h3>How we build the APY</h3>
-          </div>
-          <span class="pill-link">Live 30-day model</span>
+          <div class="spark-yaxis"><span></span><span></span><span></span></div>
+          <div class="spark-xaxis"><span></span><span></span></div>
         </div>
+      </div>
 
-        <section class="howcalc" aria-label="APY build explanation">
-          <div class="howcalc-body">
-            <div class="driver">
-              <div class="driver-label">Network APY source</div>
-              <div class="driver-value">Midgard /network</div>
-              <div class="driver-note" id="network-apy-note">Midgard reported network APY</div>
-            </div>
-            <div class="driver">
-              <div class="driver-label">Bonding model</div>
-              <div class="driver-value accent">Live bond mix</div>
-              <div class="driver-note" id="split-bonding-note">Bonding contribution updates from the live bond share.</div>
-            </div>
-            <div class="driver">
-              <div class="driver-label">Fee model</div>
-              <div class="driver-value accent">5% exit spread</div>
-              <div class="driver-note" id="split-fees-note">Recent payouts infer the LP fee retained on exits.</div>
-            </div>
-            <div class="driver">
-              <div class="driver-label">Exit feed</div>
-              <div class="driver-value">30d payouts</div>
-              <div class="driver-note" id="redemption-count">&nbsp;</div>
-            </div>
-          </div>
-        </section>
-      </section>
+      <div class="formula">
+        <span class="seg"><span class="lbl">Bonding</span><span class="val" id="split-bonding">—</span></span>
+        <span class="op">+</span>
+        <span class="seg"><span class="lbl">Fees 30d</span><span class="val" id="split-fees">—</span></span>
+        <span class="op">=</span>
+        <span class="seg"><span class="lbl">Gross LP APY</span><span class="val" id="lp-effective-apy">—</span></span>
+        <span class="op">→</span>
+        <span class="seg"><span class="lbl">Investors</span><span class="val accent" id="split-investor">—</span></span>
+      </div>
 
-      <section class="card block">
-        <nav class="section-nav" role="tablist" aria-label="Dashboard sections">
-          <button class="section-btn tab-btn active" role="tab" aria-selected="true" data-tab="investors" type="button">
-            Investor pool <span class="count" id="tab-count-investors">—</span>
-          </button>
-          <button class="section-btn tab-btn" role="tab" aria-selected="false" data-tab="bonds" type="button">
-            LP bond parked <span class="count" id="tab-count-bonds">—</span>
-          </button>
-          <button class="section-btn tab-btn" role="tab" aria-selected="false" data-tab="exits" type="button">
-            Recent exits <span class="count" id="tab-count-exits">—</span>
-          </button>
-        </nav>
-
-        <section class="panel" id="panel-investors" role="tabpanel">
-          <header class="panel-head">
-            <div>
-              <h2 class="panel-title">Investor pool</h2>
-              <p class="panel-sub">Every wallet funding the LP, its share of principal, and the current investor-side value after the positive-yield split.</p>
-            </div>
-            <div class="panel-meta">
-              <span class="panel-count" id="providers-count">—</span>
-              <input class="filter-input" id="filter-investors" type="search" placeholder="Filter wallet…" autocomplete="off" />
-            </div>
-          </header>
-
-          <div class="panel-summary">
-            <div>
-              <span class="key">Deposited capital</span>
-              <span class="val" id="provider-summary-deposited">—</span>
-              <span class="note" id="provider-summary-deposited-note">Tracked principal across the pool.</span>
-            </div>
-            <div>
-              <span class="key">Gross pool yield</span>
-              <span class="val" id="provider-summary-gross">—</span>
-              <span class="note" id="provider-summary-gross-note">Yield before the investor split.</span>
-            </div>
-            <div>
-              <span class="key">Investor yield</span>
-              <span class="val pos" id="provider-summary-investor-yield">—</span>
-              <span class="note" id="provider-summary-investor-yield-note">Investor share after the split.</span>
-            </div>
-            <div>
-              <span class="key">Investor value</span>
-              <span class="val" id="provider-summary-value">—</span>
-              <span class="note" id="provider-summary-value-note">Deposited capital plus investor yield.</span>
-            </div>
-          </div>
-
-          <div class="table-container">
-            <table data-table="investors">
-              <thead>
-                <tr>
-                  <th><button class="th-sort" id="providers-sort-addr" onclick="setProviderSort('addr')" type="button">Address <span class="sort-indicator">−</span></button></th>
-                  <th><button class="th-sort" id="providers-sort-totalE8" onclick="setProviderSort('totalE8')" type="button">Deposited <span class="sort-indicator">↓</span></button></th>
-                  <th><button class="th-sort" id="providers-sort-share" onclick="setProviderSort('share')" type="button">Share <span class="sort-indicator">−</span></button></th>
-                  <th><button class="th-sort" id="providers-sort-grossEarningsE8" onclick="setProviderSort('grossEarningsE8')" type="button">Gross yield <span class="sort-indicator">−</span></button></th>
-                  <th><button class="th-sort" id="providers-sort-investorEarningsE8" onclick="setProviderSort('investorEarningsE8')" type="button">Investor yield <span class="sort-indicator">−</span></button></th>
-                  <th><button class="th-sort" id="providers-sort-currentValueE8" onclick="setProviderSort('currentValueE8')" type="button">Investor value <span class="sort-indicator">−</span></button></th>
-                </tr>
-              </thead>
-              <tbody id="providers-tbody">
-                <tr class="table-message"><td colspan="6">Loading provider data…</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section class="panel" id="panel-bonds" role="tabpanel" hidden>
-          <header class="panel-head">
-            <div>
-              <h2 class="panel-title">Where the LP bond is currently parked</h2>
-              <p class="panel-sub">Each node allocation that currently carries the LP bond, including active earners and standby capacity kept ready for the next cycle.</p>
-            </div>
-            <div class="panel-meta">
-              <span class="panel-count" id="node-count">—</span>
-              <input class="filter-input" id="filter-bonds" type="search" placeholder="Filter node…" autocomplete="off" />
-            </div>
-          </header>
-
-          <div class="panel-summary">
-            <div>
-              <span class="key">Bonded across nodes</span>
-              <span class="val" id="node-summary-bonded">—</span>
-              <span class="note" id="node-summary-bonded-note">Capital currently parked in node bonds.</span>
-            </div>
-            <div>
-              <span class="key">Active vs standby</span>
-              <span class="val" id="node-summary-activity">—</span>
-              <span class="note" id="node-summary-activity-note">Distribution across node states.</span>
-            </div>
-            <div>
-              <span class="key">Largest share</span>
-              <span class="val" id="node-summary-largest">—</span>
-              <span class="note" id="node-summary-largest-note">Largest single allocation.</span>
-            </div>
-            <div>
-              <span class="key">Nodes with bond</span>
-              <span class="val" id="node-summary-with-bond">—</span>
-              <span class="note" id="node-summary-with-bond-note">Tracked nodes holding bond.</span>
-            </div>
-          </div>
-
-          <div class="table-container">
-            <table data-table="bonds">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th><button class="th-sort" id="nodes-sort-address" onclick="setNodeSort('address')" type="button">Node address <span class="sort-indicator">−</span></button></th>
-                  <th><button class="th-sort" id="nodes-sort-bond" onclick="setNodeSort('bond')" type="button">Bond <span class="sort-indicator">↓</span></button></th>
-                  <th><button class="th-sort" id="nodes-sort-status" onclick="setNodeSort('status')" type="button">Status <span class="sort-indicator">−</span></button></th>
-                </tr>
-              </thead>
-              <tbody id="nodes-tbody">
-                <tr class="table-message"><td colspan="4">Loading node data…</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section class="panel" id="panel-exits" role="tabpanel" hidden>
-          <header class="panel-head">
-            <div>
-              <h2 class="panel-title">Recent bRUNE → RUNE exits</h2>
-              <p class="panel-sub">The last 30 days of user exits served by the LP, with net payouts, inferred gross redemptions, retained fee, and the explorer transaction behind each payout.</p>
-            </div>
-            <div class="panel-meta">
-              <span class="panel-count" id="swap-count">—</span>
-              <input class="filter-input" id="filter-exits" type="search" placeholder="Filter recipient…" autocomplete="off" />
-            </div>
-          </header>
-
-          <div class="panel-summary">
-            <div>
-              <span class="key">Gross exits 30d</span>
-              <span class="val" id="swap-summary-gross">—</span>
-              <span class="note" id="swap-summary-gross-note">Estimated from net payouts.</span>
-            </div>
-            <div>
-              <span class="key">Net paid out</span>
-              <span class="val" id="swap-summary-net">—</span>
-              <span class="note" id="swap-summary-net-note">RUNE that left the LP.</span>
-            </div>
-            <div>
-              <span class="key">Fee retained</span>
-              <span class="val pos" id="swap-summary-fee">—</span>
-              <span class="note" id="swap-summary-fee-note">Inferred 5% spread.</span>
-            </div>
-            <div>
-              <span class="key">Distinct wallets</span>
-              <span class="val" id="swap-summary-wallets">—</span>
-              <span class="note" id="swap-summary-wallets-note">Recipients in 30d.</span>
-            </div>
-          </div>
-
-          <div class="table-container">
-            <table data-table="exits">
-              <thead>
-                <tr>
-                  <th><button class="th-sort" id="swaps-sort-dateMs" onclick="setSwapSort('dateMs')" type="button">Time <span class="sort-indicator">↓</span></button></th>
-                  <th><button class="th-sort" id="swaps-sort-recipient" onclick="setSwapSort('recipient')" type="button">Wallet <span class="sort-indicator">−</span></button></th>
-                  <th><button class="th-sort" id="swaps-sort-netPayoutE8" onclick="setSwapSort('netPayoutE8')" type="button">Net out <span class="sort-indicator">−</span></button></th>
-                  <th><button class="th-sort" id="swaps-sort-grossExitE8" onclick="setSwapSort('grossExitE8')" type="button">Gross exit <span class="sort-indicator">−</span></button></th>
-                  <th><button class="th-sort" id="swaps-sort-feeRetainedE8" onclick="setSwapSort('feeRetainedE8')" type="button">Fee <span class="sort-indicator">−</span></button></th>
-                </tr>
-              </thead>
-              <tbody id="swaps-tbody">
-                <tr class="table-message"><td colspan="5">Loading recent swap activity…</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </section>
-
-      <p class="footer-copy">Runebond live dashboard for LP capital, investor returns, bonded node allocation, and recent exit flow.</p>
-
+      <span class="sr" id="apy-note">—</span>
+      <span class="sr" id="split-bonding-note">—</span>
+      <span class="sr" id="split-fees-note">—</span>
+      <span class="sr" id="split-gross">—</span>
+      <span class="sr" id="split-gross-note">—</span>
+      <span class="sr" id="split-investor-note">—</span>
       <span class="sr" id="hero-bonding-yield">—</span>
       <span class="sr" id="hero-bonding-note">—</span>
       <span class="sr" id="hero-fee-yield">—</span>
       <span class="sr" id="hero-fee-note">—</span>
-      <span class="sr" id="last-update">Refreshing live data…</span>
-      <button class="sr" id="refresh-button" onclick="fetchAll()" type="button" aria-label="Refresh data" title="Refresh data">Refresh</button>
-      <span class="sr panel-status" id="usd-status" data-tone="loading">Syncing</span>
-      <span class="sr panel-status" id="yield-status" data-tone="loading">Syncing yield</span>
-      <span class="sr panel-status" id="source-health-status" data-tone="loading">Verifying sources</span>
+      <span class="sr" id="runebond-apy">—</span>
+      <span class="sr" id="proj-capital">—</span>
+    </section>
+
+    <!-- Vitals -->
+    <section class="vitals" aria-label="LP vitals">
+      <div class="vital">
+        <div class="vital-label">Capital tracked</div>
+        <div class="vital-value accent" id="total-capital"><span class="loading">—</span></div>
+        <div class="vital-sub" id="total-capital-usd">&nbsp;</div>
+      </div>
+      <div class="vital">
+        <div class="vital-label">Bonded · bRUNE</div>
+        <div class="vital-value" id="total-bonded"><span class="loading">—</span></div>
+        <div class="vital-sub" id="bonded-pct">&nbsp;</div>
+      </div>
+      <div class="vital">
+        <div class="vital-label">Liquid · RUNE</div>
+        <div class="vital-value" id="rune-balance"><span class="loading">—</span></div>
+        <div class="vital-sub" id="liquid-pct">&nbsp;</div>
+      </div>
+      <div class="vital">
+        <div class="vital-label">Active nodes</div>
+        <div class="vital-value" id="active-nodes"><span class="loading">—</span></div>
+        <div class="vital-sub" id="node-breakdown">&nbsp;</div>
+      </div>
+    </section>
+
+    <section class="howcalc" aria-label="APY build explanation">
+      <div class="howcalc-heading">How we build the APY · Yield drivers</div>
+      <div class="howcalc-body">
+        <div class="driver">
+          <div class="driver-label">Network base APY</div>
+          <div class="driver-value" id="network-apy">—</div>
+          <div class="driver-note" id="network-apy-note">Midgard reported network APY</div>
+        </div>
+        <div class="driver">
+          <div class="driver-label">Bonding yield</div>
+          <div class="driver-value accent" id="bonding-yield-pct">—</div>
+          <div class="driver-note" id="bonding-yield-rune">&nbsp;</div>
+        </div>
+        <div class="driver">
+          <div class="driver-label">30d fee contribution</div>
+          <div class="driver-value accent" id="fee-yield-pct">—</div>
+          <div class="driver-note" id="fee-yield-rune">&nbsp;</div>
+        </div>
+        <div class="driver">
+          <div class="driver-label">30d exit volume</div>
+          <div class="driver-value" id="redemption-volume">—</div>
+          <div class="driver-note" id="redemption-count">&nbsp;</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section nav -->
+    <nav class="section-nav" role="tablist" aria-label="Dashboard sections">
+      <button class="section-btn tab-btn active" role="tab" aria-selected="true" data-tab="investors" type="button">
+        Investors <span class="count" id="tab-count-investors">—</span>
+      </button>
+      <button class="section-btn tab-btn" role="tab" aria-selected="false" data-tab="bonds" type="button">
+        Bonded positions <span class="count" id="tab-count-bonds">—</span>
+      </button>
+      <button class="section-btn tab-btn" role="tab" aria-selected="false" data-tab="exits" type="button">
+        Recent exits <span class="count" id="tab-count-exits">—</span>
+      </button>
+    </nav>
+
+    <!-- INVESTORS panel -->
+    <section class="panel" id="panel-investors" role="tabpanel">
+      <header class="panel-head">
+        <div>
+          <h2 class="panel-title">Investor pool</h2>
+          <p class="panel-sub">What each wallet holds, the share of the pool, and what their position is worth after the 50/50 split on positive yield.</p>
+        </div>
+        <div class="panel-meta">
+          <span class="panel-status" id="providers-sync-status" data-tone="loading">Syncing</span>
+          <span class="panel-count" id="providers-count">—</span>
+          <input class="filter-input" id="filter-investors" type="search" placeholder="Filter wallet…" autocomplete="off" />
+        </div>
+      </header>
+
+      <div class="panel-summary">
+        <div>
+          <span class="key">Deposited capital</span>
+          <span class="val" id="provider-summary-deposited">—</span>
+          <span class="note" id="provider-summary-deposited-note">Tracked principal across the pool.</span>
+        </div>
+        <div>
+          <span class="key">Investor yield</span>
+          <span class="val pos" id="provider-summary-investor-yield">—</span>
+          <span class="note" id="provider-summary-investor-yield-note">Investor share after the split.</span>
+        </div>
+        <div>
+          <span class="key">Pool value</span>
+          <span class="val" id="provider-summary-value">—</span>
+          <span class="note" id="provider-summary-value-note">Deposited capital plus investor yield.</span>
+        </div>
+        <span class="sr" id="provider-summary-gross">—</span>
+        <span class="sr" id="provider-summary-gross-note">—</span>
+      </div>
+
+      <div class="table-container">
+        <table data-table="investors">
+          <thead>
+            <tr>
+              <th><button class="th-sort" id="providers-sort-addr" onclick="setProviderSort('addr')" type="button">Address <span class="sort-indicator">−</span></button></th>
+              <th><button class="th-sort" id="providers-sort-totalE8" onclick="setProviderSort('totalE8')" type="button">Deposited <span class="sort-indicator">↓</span></button></th>
+              <th><button class="th-sort" id="providers-sort-share" onclick="setProviderSort('share')" type="button">Share <span class="sort-indicator">−</span></button></th>
+              <th><button class="th-sort" id="providers-sort-grossEarningsE8" onclick="setProviderSort('grossEarningsE8')" type="button">Gross yield <span class="sort-indicator">−</span></button></th>
+              <th><button class="th-sort" id="providers-sort-investorEarningsE8" onclick="setProviderSort('investorEarningsE8')" type="button">Investor yield <span class="sort-indicator">−</span></button></th>
+              <th><button class="th-sort" id="providers-sort-currentValueE8" onclick="setProviderSort('currentValueE8')" type="button">Investor value <span class="sort-indicator">−</span></button></th>
+            </tr>
+          </thead>
+          <tbody id="providers-tbody">
+            <tr class="table-message"><td colspan="6">Loading provider data…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BONDS panel -->
+    <section class="panel" id="panel-bonds" role="tabpanel" hidden>
+      <header class="panel-head">
+        <div>
+          <h2 class="panel-title">Bonded positions</h2>
+          <p class="panel-sub">Where the LP bond is currently parked. Active nodes earn the bonding APY; standby holds capacity.</p>
+        </div>
+        <div class="panel-meta">
+          <span class="panel-count" id="node-count">—</span>
+          <input class="filter-input" id="filter-bonds" type="search" placeholder="Filter node…" autocomplete="off" />
+        </div>
+      </header>
+
+      <div class="panel-summary">
+        <div>
+          <span class="key">Bonded across nodes</span>
+          <span class="val" id="node-summary-bonded">—</span>
+          <span class="note" id="node-summary-bonded-note">Capital parked in node bonds.</span>
+        </div>
+        <div>
+          <span class="key">Active vs standby</span>
+          <span class="val" id="node-summary-activity">—</span>
+          <span class="note" id="node-summary-activity-note">Distribution across node states.</span>
+        </div>
+        <div>
+          <span class="key">Largest share</span>
+          <span class="val" id="node-summary-largest">—</span>
+          <span class="note" id="node-summary-largest-note">Largest single allocation.</span>
+        </div>
+        <div>
+          <span class="key">Nodes with bond</span>
+          <span class="val" id="node-summary-with-bond">—</span>
+          <span class="note" id="node-summary-with-bond-note">Tracked nodes holding bond.</span>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table data-table="bonds">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th><button class="th-sort" id="nodes-sort-address" onclick="setNodeSort('address')" type="button">Node address <span class="sort-indicator">−</span></button></th>
+              <th><button class="th-sort" id="nodes-sort-bond" onclick="setNodeSort('bond')" type="button">Bond <span class="sort-indicator">↓</span></button></th>
+              <th><button class="th-sort" id="nodes-sort-status" onclick="setNodeSort('status')" type="button">Status <span class="sort-indicator">−</span></button></th>
+            </tr>
+          </thead>
+          <tbody id="nodes-tbody">
+            <tr class="table-message"><td colspan="4">Loading node data…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- EXITS panel -->
+    <section class="panel" id="panel-exits" role="tabpanel" hidden>
+      <header class="panel-head">
+        <div>
+          <h2 class="panel-title">Recent exits</h2>
+          <p class="panel-sub">30-day bRUNE → RUNE redemptions served by the LP. Net out leaves the pool; the inferred 5% spread stays as fee income.</p>
+        </div>
+        <div class="panel-meta">
+          <span class="panel-count" id="swap-count">—</span>
+          <input class="filter-input" id="filter-exits" type="search" placeholder="Filter recipient…" autocomplete="off" />
+        </div>
+      </header>
+
+      <div class="panel-summary">
+        <div>
+          <span class="key">Gross exits 30d</span>
+          <span class="val" id="swap-summary-gross">—</span>
+          <span class="note" id="swap-summary-gross-note">Estimated from net payouts.</span>
+        </div>
+        <div>
+          <span class="key">Net paid out</span>
+          <span class="val" id="swap-summary-net">—</span>
+          <span class="note" id="swap-summary-net-note">RUNE that left the LP.</span>
+        </div>
+        <div>
+          <span class="key">Fee retained</span>
+          <span class="val pos" id="swap-summary-fee">—</span>
+          <span class="note" id="swap-summary-fee-note">Inferred 5% spread.</span>
+        </div>
+        <div>
+          <span class="key">Distinct wallets</span>
+          <span class="val" id="swap-summary-wallets">—</span>
+          <span class="note" id="swap-summary-wallets-note">Recipients in 30d.</span>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table data-table="exits">
+          <thead>
+            <tr>
+              <th><button class="th-sort" id="swaps-sort-dateMs" onclick="setSwapSort('dateMs')" type="button">Time <span class="sort-indicator">↓</span></button></th>
+              <th><button class="th-sort" id="swaps-sort-recipient" onclick="setSwapSort('recipient')" type="button">Wallet <span class="sort-indicator">−</span></button></th>
+              <th><button class="th-sort" id="swaps-sort-netPayoutE8" onclick="setSwapSort('netPayoutE8')" type="button">Net out <span class="sort-indicator">−</span></button></th>
+              <th><button class="th-sort" id="swaps-sort-grossExitE8" onclick="setSwapSort('grossExitE8')" type="button">Gross exit <span class="sort-indicator">−</span></button></th>
+              <th><button class="th-sort" id="swaps-sort-feeRetainedE8" onclick="setSwapSort('feeRetainedE8')" type="button">Fee <span class="sort-indicator">−</span></button></th>
+            </tr>
+          </thead>
+          <tbody id="swaps-tbody">
+            <tr class="table-message"><td colspan="5">Loading recent swap activity…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="footer-left">
+        <span class="footer-mark">Runebond</span>
+        <span>·</span>
+        <span class="panel-status" id="yield-status" data-tone="loading" style="border:0;background:transparent;padding:0">Syncing yield</span>
+        <span>·</span>
+        <span class="panel-status" id="source-health-status" data-tone="loading" style="border:0;background:transparent;padding:0">Verifying sources</span>
+      </div>
+      <div class="footer-right">
+        <span class="last-update" id="last-update">—</span>
+      </div>
       <span class="sr" id="usd-status-detail">—</span>
       <span class="sr" id="yield-status-detail">—</span>
       <span class="sr" id="source-health-detail">—</span>
-    </main>
-  </div>
+    </div>
+
+  </main>
 
   <!-- Tab switcher + filter wiring -->
   <script>
