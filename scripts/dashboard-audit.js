@@ -109,7 +109,8 @@ function collectDomSnapshot(window) {
     links: {
       firstSwap: doc.querySelector('#swaps-tbody a')?.getAttribute('href') || '',
       firstSwapTx: doc.querySelector('#swaps-tbody .cell-sub a')?.getAttribute('href') || '',
-      firstNode: doc.querySelector('#nodes-tbody a')?.getAttribute('href') || '',
+      firstNode: doc.querySelector('#nodes-tbody a[href^="https://thorchain.net/node/"]')?.getAttribute('href') || '',
+      firstNodeRunebond: doc.querySelector('#nodes-tbody a[href^="https://app.runebond.com/nodes/"]')?.getAttribute('href') || '',
       firstProvider: doc.querySelector('#providers-tbody a')?.getAttribute('href') || ''
     }
   };
@@ -211,12 +212,13 @@ function validateSnapshot(snapshot) {
 
   checks.push({
     ok: /^https:\/\/thorchain\.net\/address\/thor1/i.test(snapshot.links.firstProvider) &&
-      (hasSourceWarnings || /^https:\/\/thorchain\.net\/address\/thor1/i.test(snapshot.links.firstNode)) &&
+      (hasSourceWarnings || /^https:\/\/thorchain\.net\/node\/thor1/i.test(snapshot.links.firstNode)) &&
+      (hasSourceWarnings || /^https:\/\/app\.runebond\.com\/nodes\/thor1/i.test(snapshot.links.firstNodeRunebond)) &&
       (!snapshot.links.firstSwap || /^https:\/\/thorchain\.net\/address\/thor1/i.test(snapshot.links.firstSwap)) &&
       (!snapshot.links.firstSwapTx || /^https:\/\/runescan\.io\/tx\//i.test(snapshot.links.firstSwapTx)),
     message: hasSourceWarnings
       ? 'provider explorer link valid; other explorer link checks skipped because upstream sources warned'
-      : 'table address links point to thorchain address explorer'
+      : 'table links point to THORChain node scanner and RUNEBOND node page'
   });
 
   return checks;

@@ -260,6 +260,29 @@
     .node-addr{font-family:var(--mono);font-size:12px;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .node-addr a{color:var(--text);transition:color .15s}
     .node-addr a:hover{color:var(--accent)}
+    .node-link-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:7px}
+    .node-link-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      min-height:24px;
+      padding:0 9px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:rgba(255,255,255,.72);
+      color:var(--text-2);
+      font-family:var(--sans);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.02em;
+      transition:background .15s,border-color .15s,color .15s,transform .15s;
+    }
+    .node-link-pill:hover{
+      transform:translateY(-1px);
+      border-color:var(--accent-line);
+      background:var(--accent-soft);
+      color:var(--accent);
+    }
     .deposited,.current-val,.bond-amount{font-family:var(--mono);font-size:12.5px;color:var(--text);font-variant-numeric:tabular-nums;font-weight:500}
     .deposited{color:var(--text-2);font-weight:400}
     .bond-zero{font-family:var(--mono);font-size:12.5px;color:var(--text-3)}
@@ -3337,7 +3360,11 @@
         return `<tr>
           <td class="row-num" data-label="Rank">${i + 1}</td>
           <td class="node-addr sticky-col primary-cell" data-label="Node address">
-            <a href="https://thorchain.net/address/${n.address}" target="_blank" rel="noopener">${truncAddr(n.address)}</a>
+            <a href="https://thorchain.net/node/${n.address}" target="_blank" rel="noopener" title="Open this validator in THORChain scanner">${truncAddr(n.address)}</a>
+            <div class="node-link-row" aria-label="Node external links">
+              <a class="node-link-pill" href="https://thorchain.net/node/${n.address}" target="_blank" rel="noopener" title="Open this validator in THORChain scanner">THORChain</a>
+              <a class="node-link-pill" href="https://app.runebond.com/nodes/${n.address}" target="_blank" rel="noopener" title="Open this validator in RUNEBOND">RUNEBOND</a>
+            </div>
           </td>
           <td class="${bond > 0 ? 'bond-amount' : 'bond-zero'}" data-label="Bond">${bond > 0 ? formatRune(n.bond) : '0 ᚱ'}</td>
           <td data-label="Status"><span class="badge ${statusClass}">${n.status}</span></td>
