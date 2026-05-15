@@ -119,6 +119,8 @@ function collectDomSnapshot(window) {
       oldSimpleExplainer: !!doc.querySelector('.simple-explainer'),
       oldVitals: !!doc.querySelector('section.vitals'),
       oldHowcalc: !!doc.querySelector('section.howcalc'),
+      flowOperators: doc.querySelectorAll('.apy-flow-operator').length,
+      investorStep: !!doc.querySelector('.apy-flow-step.is-investor'),
       text: doc.querySelector('.apy-build-panel')?.textContent?.replace(/\s+/g, ' ').trim() || ''
     }
   };
@@ -176,8 +178,13 @@ function validateSnapshot(snapshot) {
       !snapshot.apyBuildPanel.oldHowcalc &&
       /Live APY inputs/i.test(snapshot.apyBuildPanel.text) &&
       /Gross LP yield/i.test(snapshot.apyBuildPanel.text) &&
+      /Bonding yield/i.test(snapshot.apyBuildPanel.text) &&
+      /5% exit fee yield/i.test(snapshot.apyBuildPanel.text) &&
+      /Investor APY/i.test(snapshot.apyBuildPanel.text) &&
+      snapshot.apyBuildPanel.flowOperators === 3 &&
+      snapshot.apyBuildPanel.investorStep &&
       /Live data behind the APY/i.test(snapshot.apyBuildPanel.text),
-    message: 'APY explanation, capital snapshot, and live input cards are merged into one panel'
+    message: 'APY explanation is a logical bonding + fee -> gross LP -> investor APY flow'
   });
 
   checks.push({

@@ -1660,34 +1660,46 @@
       gap:14px;
       margin-bottom:12px;
     }
+    .apy-card-head > div:first-child{
+      min-width:0;
+    }
     .apy-card-note{
       color:var(--text-3);
       font-size:12px;
       font-weight:800;
+      text-align:right;
+    }
+    .apy-card-copy{
+      margin-top:5px;
+      color:var(--text-2);
+      font-size:12.5px;
+      line-height:1.45;
+      font-weight:700;
     }
     .apy-flow{
       display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:9px;
+      grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr) 34px minmax(0,1.04fr) 34px minmax(0,1.04fr);
+      gap:8px;
+      align-items:stretch;
     }
     .apy-flow-step{
-      display:grid;
-      grid-template-columns:auto minmax(0,1fr);
-      gap:12px;
-      align-items:start;
-      min-height:86px;
-      padding:14px 15px;
-      border:1px solid rgba(11,12,22,.065);
-      border-radius:16px;
-      background:#f8faff;
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      min-height:128px;
+      padding:16px;
+      border:1px solid rgba(11,12,22,.07);
+      border-radius:18px;
+      background:linear-gradient(180deg,#fff,#f8faff);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
     }
     .apy-flow-step strong{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      width:26px;
-      height:26px;
-      margin-bottom:0;
+      width:30px;
+      height:30px;
+      margin-bottom:15px;
       border-radius:999px;
       background:var(--accent);
       color:#fff;
@@ -1695,13 +1707,61 @@
       font-weight:900;
       box-shadow:0 10px 22px rgba(11,76,255,.18);
     }
-    .apy-flow-step span{
+    .apy-flow-title,
+    .apy-flow-copy{
       display:block;
+    }
+    .apy-flow-title{
       color:var(--text);
-      font-size:12.5px;
-      line-height:1.4;
-      font-weight:800;
-      letter-spacing:-.01em;
+      font-size:15px;
+      line-height:1.08;
+      font-weight:900;
+      letter-spacing:-.025em;
+    }
+    .apy-flow-copy{
+      margin-top:8px;
+      color:var(--text-2);
+      font-size:12px;
+      line-height:1.45;
+      font-weight:700;
+    }
+    .apy-flow-step.is-result{
+      border-color:rgba(11,76,255,.13);
+      background:linear-gradient(180deg,#fff,#eef3ff);
+    }
+    .apy-flow-step.is-investor{
+      border-color:transparent;
+      background:linear-gradient(135deg,#0b4cff,#2563eb);
+      box-shadow:0 18px 42px rgba(11,76,255,.20);
+    }
+    .apy-flow-step.is-investor strong{
+      background:rgba(255,255,255,.18);
+      color:#fff;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);
+    }
+    .apy-flow-step.is-investor .apy-flow-title,
+    .apy-flow-step.is-investor .apy-flow-copy{
+      color:#fff;
+    }
+    .apy-flow-step.is-investor .apy-flow-copy{
+      color:rgba(255,255,255,.80);
+    }
+    .apy-flow-operator{
+      width:34px;
+      height:34px;
+      align-self:center;
+      justify-self:center;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid rgba(11,76,255,.12);
+      border-radius:999px;
+      background:#fff;
+      color:var(--accent);
+      font-size:16px;
+      line-height:1;
+      font-weight:900;
+      box-shadow:0 12px 26px rgba(11,76,255,.08);
     }
     .apy-drivers-grid{
       display:grid;
@@ -1808,9 +1868,18 @@
       .apy-build-metrics{
         grid-template-columns:repeat(2,minmax(0,1fr));
       }
-      .apy-flow,
       .apy-drivers-grid{
         grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+      .apy-flow{
+        grid-template-columns:1fr;
+      }
+      .apy-flow-operator{
+        margin:-3px auto;
+      }
+      .apy-card-note{
+        max-width:none;
+        text-align:left;
       }
     }
     @media(max-width:760px){
@@ -1907,11 +1976,23 @@
         padding:20px;
         border-radius:24px;
       }
+      .apy-flow-card{
+        overflow:hidden;
+      }
       .apy-build-head h2{font-size:30px}
       .apy-build-head p{font-size:14px}
       .apy-build-badge{max-width:none}
+      .apy-card-copy,
+      .apy-card-note,
+      .apy-flow-copy{
+        max-width:100%;
+        overflow-wrap:anywhere;
+      }
+      .apy-card-note{
+        font-size:11.5px;
+        line-height:1.4;
+      }
       .apy-build-metrics,
-      .apy-flow,
       .apy-drivers-grid{
         grid-template-columns:1fr;
       }
@@ -1930,14 +2011,14 @@
         min-height:0;
       }
       .apy-flow-step{
-        display:flex;
-        align-items:center;
-        gap:13px;
-        padding:13px;
+        width:100%;
+        min-width:0;
+        min-height:0;
+        padding:14px;
       }
       .apy-flow-step strong{
         flex:0 0 auto;
-        margin-bottom:0;
+        margin-bottom:12px;
       }
       .apy-card-head{
         align-items:flex-start;
@@ -2782,14 +2863,36 @@
       <div class="apy-build-lower">
         <div class="apy-flow-card">
           <div class="apy-card-head">
-            <div class="apy-card-label">APY explained simply</div>
-            <div class="apy-card-note">Gross LP yield → investor half</div>
+            <div>
+              <div class="apy-card-label">APY explained simply</div>
+              <div class="apy-card-copy">The page first builds the full LP yield, then shows the investor half after the split.</div>
+            </div>
+            <div class="apy-card-note">Bonding + 5% exit fees = gross LP yield → 50% to investors</div>
           </div>
           <div class="apy-flow">
-            <div class="apy-flow-step"><strong>1</strong><span>RUNE is parked in node bonds and earns network yield.</span></div>
-            <div class="apy-flow-step"><strong>2</strong><span>bRUNE exits generate a retained 5% LP fee.</span></div>
-            <div class="apy-flow-step"><strong>3</strong><span>Those two sources create the full LP yield.</span></div>
-            <div class="apy-flow-step"><strong>4</strong><span>The headline shows the investor half after the split.</span></div>
+            <div class="apy-flow-step">
+              <strong>1</strong>
+              <span class="apy-flow-title">Bonding yield</span>
+              <span class="apy-flow-copy">Bonded RUNE earns THORChain network yield.</span>
+            </div>
+            <div class="apy-flow-operator" aria-hidden="true">+</div>
+            <div class="apy-flow-step">
+              <strong>2</strong>
+              <span class="apy-flow-title">5% exit fee yield</span>
+              <span class="apy-flow-copy">bRUNE exits add retained LP fees.</span>
+            </div>
+            <div class="apy-flow-operator" aria-hidden="true">=</div>
+            <div class="apy-flow-step is-result">
+              <strong>3</strong>
+              <span class="apy-flow-title">Gross LP yield</span>
+              <span class="apy-flow-copy">Both sources create the full pool yield.</span>
+            </div>
+            <div class="apy-flow-operator" aria-hidden="true">→</div>
+            <div class="apy-flow-step is-investor">
+              <strong>4</strong>
+              <span class="apy-flow-title">Investor APY</span>
+              <span class="apy-flow-copy">Headline APY is 50% of positive LP yield.</span>
+            </div>
           </div>
         </div>
 
