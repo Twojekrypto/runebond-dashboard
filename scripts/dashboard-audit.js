@@ -122,6 +122,11 @@ function collectDomSnapshot(window) {
       flowOperators: doc.querySelectorAll('.apy-flow-operator').length,
       investorStep: !!doc.querySelector('.apy-flow-step.is-investor'),
       text: doc.querySelector('.apy-build-panel')?.textContent?.replace(/\s+/g, ' ').trim() || ''
+    },
+    dataWorkbench: {
+      hintText: doc.querySelector('.data-hint')?.textContent?.trim() || '',
+      investorPanelTitle: doc.querySelector('#panel-investors .panel-title')?.textContent?.trim() || '',
+      investorHeaderMetaOnly: !!doc.querySelector('#panel-investors .panel-head.panel-head-meta-only')
     }
   };
 }
@@ -190,6 +195,13 @@ function validateSnapshot(snapshot) {
   checks.push({
     ok: approxEqual(investorsApy, lpApy / 2) && approxEqual(runebondApy, investorsApy),
     message: `50 / 50 split holds (${snapshot.lpApy} -> ${snapshot.investorsApy} / ${snapshot.runebondApy})`
+  });
+
+  checks.push({
+    ok: !snapshot.dataWorkbench.hintText &&
+      !snapshot.dataWorkbench.investorPanelTitle &&
+      snapshot.dataWorkbench.investorHeaderMetaOnly,
+    message: 'data table area avoids duplicate hint and Investor pool heading'
   });
 
   checks.push({
