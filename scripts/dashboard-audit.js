@@ -92,6 +92,10 @@ function collectDomSnapshot(window) {
     splitFees: text('split-fees'),
     feeYield: text('fee-yield-pct'),
     heroChartYield: text('hero-chart-yield'),
+    hero: {
+      displayTrail: !!doc.querySelector('.hero .display-trail'),
+      text: doc.querySelector('.hero')?.textContent?.replace(/\s+/g, ' ').trim() || ''
+    },
     statuses: {
       providers: text('providers-sync-status')
     },
@@ -226,6 +230,11 @@ function validateSnapshot(snapshot) {
   checks.push({
     ok: approxEqual(investorsApy, lpApy / 2) && approxEqual(runebondApy, investorsApy),
     message: `50 / 50 split holds (${snapshot.lpApy} -> ${snapshot.investorsApy} / ${snapshot.runebondApy})`
+  });
+
+  checks.push({
+    ok: !snapshot.hero.displayTrail && !/Shown APY/i.test(snapshot.hero.text),
+    message: 'hero APY area does not show the extra Shown APY caption'
   });
 
   checks.push({
