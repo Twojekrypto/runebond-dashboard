@@ -113,6 +113,13 @@ function collectDomSnapshot(window) {
       firstNode: doc.querySelector('#nodes-tbody a[href^="https://thorchain.net/node/"]')?.getAttribute('href') || '',
       firstNodeRunebond: doc.querySelector('#nodes-tbody a[href^="https://app.runebond.com/nodes/"]')?.getAttribute('href') || '',
       firstProvider: doc.querySelector('#providers-tbody a')?.getAttribute('href') || ''
+    },
+    apyBuildPanel: {
+      exists: !!doc.querySelector('.apy-build-panel'),
+      oldSimpleExplainer: !!doc.querySelector('.simple-explainer'),
+      oldVitals: !!doc.querySelector('section.vitals'),
+      oldHowcalc: !!doc.querySelector('section.howcalc'),
+      text: doc.querySelector('.apy-build-panel')?.textContent?.replace(/\s+/g, ' ').trim() || ''
     }
   };
 }
@@ -160,6 +167,17 @@ function validateSnapshot(snapshot) {
   checks.push({
     ok: approxEqual(investorsApy, heroChartYield),
     message: `yield monitor chart tile shows investor APY after split (${snapshot.heroChartYield})`
+  });
+
+  checks.push({
+    ok: snapshot.apyBuildPanel.exists &&
+      !snapshot.apyBuildPanel.oldSimpleExplainer &&
+      !snapshot.apyBuildPanel.oldVitals &&
+      !snapshot.apyBuildPanel.oldHowcalc &&
+      /Live APY inputs/i.test(snapshot.apyBuildPanel.text) &&
+      /Gross LP yield/i.test(snapshot.apyBuildPanel.text) &&
+      /Live data behind the APY/i.test(snapshot.apyBuildPanel.text),
+    message: 'APY explanation, capital snapshot, and live input cards are merged into one panel'
   });
 
   checks.push({

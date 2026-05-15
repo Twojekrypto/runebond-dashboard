@@ -1503,6 +1503,226 @@
       font-weight:700;
       letter-spacing:-.015em;
     }
+    .apy-build-panel{
+      position:relative;
+      margin:-12px 0 42px;
+      padding:30px;
+      overflow:hidden;
+      border:1px solid rgba(11,12,22,.075);
+      border-radius:30px;
+      background:linear-gradient(135deg,#fff 0%,#f8faff 58%,#eef4ff 100%);
+      box-shadow:0 30px 90px rgba(11,12,22,.07);
+      isolation:isolate;
+    }
+    .apy-build-panel::before{
+      content:"";
+      position:absolute;
+      right:-120px;
+      top:-140px;
+      width:360px;
+      height:360px;
+      border-radius:999px;
+      background:radial-gradient(circle,rgba(11,76,255,.18),rgba(11,76,255,0) 68%);
+      z-index:-1;
+    }
+    .apy-build-head{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:22px;
+      align-items:end;
+      margin-bottom:22px;
+    }
+    .apy-build-kicker{
+      color:var(--accent);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.045em;
+      text-transform:uppercase;
+      margin-bottom:10px;
+    }
+    .apy-build-head h2{
+      color:var(--text);
+      font-size:clamp(28px,2.5vw,40px);
+      line-height:1.04;
+      letter-spacing:-.06em;
+      margin:0 0 12px;
+    }
+    .apy-build-head p{
+      max-width:760px;
+      color:var(--text-2);
+      font-size:15px;
+      line-height:1.68;
+    }
+    .apy-build-badge{
+      min-width:184px;
+      padding:16px 18px;
+      border:1px solid rgba(11,76,255,.14);
+      border-radius:20px;
+      background:rgba(255,255,255,.78);
+      box-shadow:0 20px 50px rgba(11,76,255,.07);
+    }
+    .apy-build-badge span{
+      display:block;
+      color:var(--text-3);
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.045em;
+      text-transform:uppercase;
+      margin-bottom:7px;
+    }
+    .apy-build-badge strong{
+      display:block;
+      color:var(--accent);
+      font-size:22px;
+      font-weight:900;
+      line-height:1;
+      letter-spacing:-.045em;
+    }
+    .apy-build-metrics{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .apy-metric,
+    .apy-flow-card,
+    .apy-drivers-card{
+      border:1px solid rgba(11,12,22,.075);
+      background:rgba(255,255,255,.82);
+      box-shadow:0 18px 48px rgba(11,12,22,.045);
+    }
+    .apy-metric{
+      min-height:132px;
+      padding:18px;
+      border-radius:20px;
+    }
+    .apy-metric.is-primary{
+      background:linear-gradient(135deg,var(--accent),#2f68ff);
+      color:#fff;
+      box-shadow:0 22px 52px rgba(11,76,255,.20);
+    }
+    .apy-metric-label,
+    .apy-card-label,
+    .apy-driver-label{
+      color:var(--accent);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.018em;
+      text-transform:none;
+    }
+    .apy-metric.is-primary .apy-metric-label,
+    .apy-metric.is-primary .apy-metric-sub{
+      color:rgba(255,255,255,.78);
+    }
+    .apy-metric-value{
+      margin-top:10px;
+      color:var(--text);
+      font-size:clamp(24px,2vw,32px);
+      font-weight:900;
+      line-height:1;
+      letter-spacing:-.055em;
+      font-variant-numeric:tabular-nums;
+    }
+    .apy-metric.is-primary .apy-metric-value{color:#fff}
+    .apy-metric-sub{
+      margin-top:9px;
+      color:var(--text-2);
+      font-size:12.5px;
+      line-height:1.45;
+      font-variant-numeric:tabular-nums;
+    }
+    .apy-metric-value .loading,
+    .apy-driver-value .loading{
+      color:inherit;
+      font-size:15px;
+      font-style:italic;
+      letter-spacing:0;
+    }
+    .apy-build-lower{
+      display:grid;
+      grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);
+      gap:14px;
+      align-items:start;
+    }
+    .apy-flow-card,
+    .apy-drivers-card{
+      padding:20px;
+      border-radius:22px;
+    }
+    .apy-card-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:14px;
+    }
+    .apy-card-note{
+      color:var(--text-3);
+      font-size:12px;
+      font-weight:800;
+    }
+    .apy-flow{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:9px;
+    }
+    .apy-flow-step{
+      min-height:112px;
+      padding:14px;
+      border:1px solid rgba(11,12,22,.065);
+      border-radius:16px;
+      background:#f8faff;
+    }
+    .apy-flow-step strong{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:26px;
+      height:26px;
+      margin-bottom:12px;
+      border-radius:999px;
+      background:var(--accent);
+      color:#fff;
+      font-size:12px;
+      font-weight:900;
+      box-shadow:0 10px 22px rgba(11,76,255,.18);
+    }
+    .apy-flow-step span{
+      display:block;
+      color:var(--text);
+      font-size:12.5px;
+      line-height:1.4;
+      font-weight:800;
+      letter-spacing:-.01em;
+    }
+    .apy-drivers-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+    .apy-driver{
+      min-height:110px;
+      padding:15px;
+      border:1px solid rgba(11,76,255,.08);
+      border-radius:16px;
+      background:linear-gradient(180deg,#f8faff,#f2f5ff);
+    }
+    .apy-driver-value{
+      margin-top:7px;
+      color:var(--text);
+      font-size:22px;
+      line-height:1;
+      font-weight:900;
+      letter-spacing:-.05em;
+      font-variant-numeric:tabular-nums;
+    }
+    .apy-driver-value.accent{color:var(--accent)}
+    .apy-driver-note{
+      margin-top:7px;
+      color:var(--text-2);
+      font-size:11.5px;
+      line-height:1.4;
+    }
     @media(min-width:1500px){
       .container{
         max-width:1640px;
@@ -1554,6 +1774,8 @@
       .vitals{
         gap:24px;
       }
+      .apy-build-panel{padding:34px}
+      .apy-build-metrics{gap:14px}
     }
     @media(max-width:980px){
       .formula{
@@ -1566,6 +1788,16 @@
         grid-template-columns:1fr;
       }
       .simple-flow{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+      .apy-build-head,
+      .apy-build-lower{
+        grid-template-columns:1fr;
+      }
+      .apy-build-badge{
+        max-width:260px;
+      }
+      .apy-build-metrics{
         grid-template-columns:repeat(2,minmax(0,1fr));
       }
     }
@@ -1657,6 +1889,47 @@
       .simple-flow strong{
         margin-bottom:0;
         flex:0 0 auto;
+      }
+      .apy-build-panel{
+        margin:0 0 30px;
+        padding:20px;
+        border-radius:24px;
+      }
+      .apy-build-head h2{font-size:30px}
+      .apy-build-head p{font-size:14px}
+      .apy-build-badge{max-width:none}
+      .apy-build-metrics,
+      .apy-flow,
+      .apy-drivers-grid{
+        grid-template-columns:1fr;
+      }
+      .apy-build-metrics{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+      .apy-metric{
+        padding:16px;
+      }
+      .apy-metric-value{
+        font-size:28px;
+      }
+      .apy-metric,
+      .apy-flow-step,
+      .apy-driver{
+        min-height:0;
+      }
+      .apy-flow-step{
+        display:flex;
+        align-items:center;
+        gap:13px;
+        padding:13px;
+      }
+      .apy-flow-step strong{
+        flex:0 0 auto;
+        margin-bottom:0;
+      }
+      .apy-card-head{
+        align-items:flex-start;
+        flex-direction:column;
       }
     }
 
@@ -2458,66 +2731,83 @@
       <span class="sr" id="proj-capital">—</span>
     </section>
 
-    <section class="simple-explainer" aria-label="APY explained simply">
-      <div>
-        <div class="simple-kicker">APY explained simply</div>
-        <h2>Where this APY comes from</h2>
-        <p>First we calculate the full LP yield from bonding and bRUNE exit fees. Then investors receive half of that positive yield.</p>
+    <section class="apy-build-panel" aria-label="How RUNEBOND APY is built">
+      <div class="apy-build-head">
+        <div>
+          <div class="apy-build-kicker">Live APY inputs</div>
+          <h2>How this APY is built</h2>
+          <p>Full LP yield comes from bonded RUNE plus retained 5% bRUNE exit fees. Investors receive 50% of positive LP yield, so the headline already shows the investor-side APY.</p>
+        </div>
+        <div class="apy-build-badge" aria-label="Investor APY rule">
+          <span>Headline APY</span>
+          <strong>After split</strong>
+        </div>
       </div>
-      <div class="simple-flow">
-        <div><strong>1</strong><span>RUNE is parked in node bonds and earns network yield.</span></div>
-        <div><strong>2</strong><span>bRUNE exits generate a retained 5% LP fee.</span></div>
-        <div><strong>3</strong><span>Those two sources create the full LP yield.</span></div>
-        <div><strong>4</strong><span>The headline shows the investor half after the split.</span></div>
-      </div>
-    </section>
 
-    <!-- Vitals -->
-    <section class="vitals" aria-label="LP vitals">
-      <div class="vital">
-        <div class="vital-label">Tracked LP capital</div>
-        <div class="vital-value accent" id="total-capital"><span class="loading">—</span></div>
-        <div class="vital-sub" id="total-capital-usd">&nbsp;</div>
+      <div class="apy-build-metrics" aria-label="LP capital snapshot">
+        <div class="apy-metric is-primary">
+          <div class="apy-metric-label">Tracked LP capital</div>
+          <div class="apy-metric-value" id="total-capital"><span class="loading">—</span></div>
+          <div class="apy-metric-sub" id="total-capital-usd">&nbsp;</div>
+        </div>
+        <div class="apy-metric">
+          <div class="apy-metric-label">Bonded RUNE</div>
+          <div class="apy-metric-value" id="total-bonded"><span class="loading">—</span></div>
+          <div class="apy-metric-sub" id="bonded-pct">&nbsp;</div>
+        </div>
+        <div class="apy-metric">
+          <div class="apy-metric-label">Liquid RUNE</div>
+          <div class="apy-metric-value" id="rune-balance"><span class="loading">—</span></div>
+          <div class="apy-metric-sub" id="liquid-pct">&nbsp;</div>
+        </div>
+        <div class="apy-metric">
+          <div class="apy-metric-label">Active bond nodes</div>
+          <div class="apy-metric-value" id="active-nodes"><span class="loading">—</span></div>
+          <div class="apy-metric-sub" id="node-breakdown">&nbsp;</div>
+        </div>
       </div>
-      <div class="vital">
-        <div class="vital-label">Bonded RUNE in nodes</div>
-        <div class="vital-value" id="total-bonded"><span class="loading">—</span></div>
-        <div class="vital-sub" id="bonded-pct">&nbsp;</div>
-      </div>
-      <div class="vital">
-        <div class="vital-label">Liquid RUNE</div>
-        <div class="vital-value" id="rune-balance"><span class="loading">—</span></div>
-        <div class="vital-sub" id="liquid-pct">&nbsp;</div>
-      </div>
-      <div class="vital">
-        <div class="vital-label">Active bond nodes</div>
-        <div class="vital-value" id="active-nodes"><span class="loading">—</span></div>
-        <div class="vital-sub" id="node-breakdown">&nbsp;</div>
-      </div>
-    </section>
 
-    <section class="howcalc" aria-label="APY build explanation">
-      <div class="howcalc-heading">Live data behind the APY</div>
-      <div class="howcalc-body">
-        <div class="driver">
-          <div class="driver-label">THORChain bond APY</div>
-          <div class="driver-value" id="network-apy">—</div>
-          <div class="driver-note" id="network-apy-note">Network bond APY from THORChain data</div>
+      <div class="apy-build-lower">
+        <div class="apy-flow-card">
+          <div class="apy-card-head">
+            <div class="apy-card-label">APY explained simply</div>
+            <div class="apy-card-note">Gross LP yield → investor half</div>
+          </div>
+          <div class="apy-flow">
+            <div class="apy-flow-step"><strong>1</strong><span>RUNE is parked in node bonds and earns network yield.</span></div>
+            <div class="apy-flow-step"><strong>2</strong><span>bRUNE exits generate a retained 5% LP fee.</span></div>
+            <div class="apy-flow-step"><strong>3</strong><span>Those two sources create the full LP yield.</span></div>
+            <div class="apy-flow-step"><strong>4</strong><span>The headline shows the investor half after the split.</span></div>
+          </div>
         </div>
-        <div class="driver">
-          <div class="driver-label">LP bonding yield</div>
-          <div class="driver-value accent" id="bonding-yield-pct">—</div>
-          <div class="driver-note" id="bonding-yield-rune">&nbsp;</div>
-        </div>
-        <div class="driver">
-          <div class="driver-label">Exit fee yield</div>
-          <div class="driver-value accent" id="fee-yield-pct">—</div>
-          <div class="driver-note" id="fee-yield-rune">&nbsp;</div>
-        </div>
-        <div class="driver">
-          <div class="driver-label">bRUNE exits 30d</div>
-          <div class="driver-value" id="redemption-volume">—</div>
-          <div class="driver-note" id="redemption-count">&nbsp;</div>
+
+        <div class="apy-drivers-card">
+          <div class="apy-card-head">
+            <div class="apy-card-label">Live data behind the APY</div>
+            <div class="apy-card-note">On-chain inputs</div>
+          </div>
+          <div class="apy-drivers-grid">
+            <div class="apy-driver">
+              <div class="apy-driver-label">THORChain bond APY</div>
+              <div class="apy-driver-value" id="network-apy">—</div>
+              <div class="apy-driver-note" id="network-apy-note">Network bond APY from THORChain data</div>
+            </div>
+            <div class="apy-driver">
+              <div class="apy-driver-label">LP bonding yield</div>
+              <div class="apy-driver-value accent" id="bonding-yield-pct">—</div>
+              <div class="apy-driver-note" id="bonding-yield-rune">&nbsp;</div>
+            </div>
+            <div class="apy-driver">
+              <div class="apy-driver-label">Exit fee yield</div>
+              <div class="apy-driver-value accent" id="fee-yield-pct">—</div>
+              <div class="apy-driver-note" id="fee-yield-rune">&nbsp;</div>
+            </div>
+            <div class="apy-driver">
+              <div class="apy-driver-label">bRUNE exits 30d</div>
+              <div class="apy-driver-value" id="redemption-volume">—</div>
+              <div class="apy-driver-note" id="redemption-count">&nbsp;</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
