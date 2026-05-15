@@ -3053,7 +3053,7 @@
       <section class="panel" id="panel-bonds" role="tabpanel" aria-labelledby="tab-bonds" hidden>
       <header class="panel-head panel-head-meta-only" aria-label="LP bonded positions status">
         <div class="panel-meta">
-          <span class="panel-count" id="node-count">—</span>
+          <span class="sr" id="node-count">—</span>
           <label class="mobile-panel-filter" aria-label="Search node address">
             <span class="filter-lens" aria-hidden="true"></span>
             <input class="filter-input" id="filter-bonds-mobile" type="search" placeholder="Search node…" autocomplete="off" />
@@ -3113,7 +3113,7 @@
       <section class="panel" id="panel-exits" role="tabpanel" aria-labelledby="tab-exits" hidden>
       <header class="panel-head panel-head-meta-only" aria-label="Recent exits status">
         <div class="panel-meta">
-          <span class="panel-count" id="swap-count">—</span>
+          <span class="sr" id="swap-count">—</span>
           <label class="mobile-panel-filter" aria-label="Search exit wallet">
             <span class="filter-lens" aria-hidden="true"></span>
             <input class="filter-input" id="filter-exits-mobile" type="search" placeholder="Search wallet…" autocomplete="off" />
@@ -3889,7 +3889,7 @@
         return;
       }
 
-      setText('swap-count', `${swaps.length} exits · ${uniqueWallets} wallet${uniqueWallets === 1 ? '' : 's'}`);
+      setText('swap-count', `${swaps.length}`);
       setText('swap-summary-gross', grossExitTotalE8 > 0 ? formatRune(grossExitTotalE8) : `0 ${RUNE_UNIT_TOKEN}`);
       setText('swap-summary-gross-note', `${swaps.length} inferred gross exit${swaps.length === 1 ? '' : 's'} over the last 30 days.`);
       setText('swap-summary-net', netPayoutTotalE8 > 0 ? formatRune(netPayoutTotalE8) : `0 ${RUNE_UNIT_TOKEN}`);
@@ -4173,7 +4173,7 @@
 
       setText('active-nodes', activeNodes.length);
       setText('node-breakdown', `${withBond.length} bonded · ${standbyNodes.length} standby`);
-      setText('node-count', `${nodes.length} nodes · ${withBond.length} with bond`);
+      setText('node-count', `${nodes.length}`);
       renderNodes(nodes);
     }
 
@@ -4913,7 +4913,7 @@
       setText('liquid-pct', '20.3% of capital · ≈ $2.06M');
       setText('active-nodes', '7 / 9');
       setText('node-breakdown', '7 bonded · 2 standby');
-      setText('node-count', '9 nodes · 7 with bond');
+      setText('node-count', '9');
 
       // ─── APY ladder ───
       const grossLPapy = 22.86;

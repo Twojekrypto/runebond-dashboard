@@ -167,6 +167,10 @@ function collectDomSnapshot(window) {
       metaOnlyHeaders: doc.querySelectorAll('.data-workbench .panel-head.panel-head-meta-only').length,
       liveStatusInHead: !!doc.querySelector('.data-workbench-head #providers-sync-status'),
       providerCountText: doc.getElementById('providers-count')?.textContent?.trim() || '',
+      nodeCountText: doc.getElementById('node-count')?.textContent?.trim() || '',
+      swapCountText: doc.getElementById('swap-count')?.textContent?.trim() || '',
+      nodeCountHidden: doc.getElementById('node-count')?.classList.contains('sr') || false,
+      swapCountHidden: doc.getElementById('swap-count')?.classList.contains('sr') || false,
       bondRankHeader: doc.querySelector('table[data-table="bonds"] thead th')?.textContent?.trim() === '#',
       bondRankCells: doc.querySelectorAll('#nodes-tbody .row-num').length,
       bondColumnCount: doc.querySelectorAll('table[data-table="bonds"] thead th').length,
@@ -261,8 +265,12 @@ function validateSnapshot(snapshot) {
       snapshot.dataWorkbench.panelTitles.length === 0 &&
       snapshot.dataWorkbench.metaOnlyHeaders === 3 &&
       snapshot.dataWorkbench.liveStatusInHead &&
-      !/deposited capital/i.test(snapshot.dataWorkbench.providerCountText),
-    message: 'data table area avoids duplicate hint, repeated headings, and visible deposited-capital count'
+      snapshot.dataWorkbench.nodeCountHidden &&
+      snapshot.dataWorkbench.swapCountHidden &&
+      !/deposited capital/i.test(snapshot.dataWorkbench.providerCountText) &&
+      !/nodes|with bond/i.test(snapshot.dataWorkbench.nodeCountText) &&
+      !/exits|wallets/i.test(snapshot.dataWorkbench.swapCountText),
+    message: 'data table area avoids duplicate hint, repeated headings, and visible count-summary pills'
   });
 
   checks.push({
