@@ -262,6 +262,12 @@ function validateTabs(window) {
     const tab = doc.querySelector(`.tab-btn[data-tab="${key}"]`);
     const panel = doc.getElementById(`panel-${key}`);
     if (tab) tab.click();
+    const summary = panel?.querySelector('.panel-summary');
+    const nav = panel?.querySelector('.section-nav');
+    const table = panel?.querySelector('.table-container');
+    const navPlacedAboveColumns = !!summary && !!nav && !!table &&
+      summary.nextElementSibling === nav &&
+      nav.nextElementSibling === table;
 
     const otherPanelVisible = views
       .filter(([otherKey]) => otherKey !== key)
@@ -273,8 +279,9 @@ function validateTabs(window) {
         tab.textContent.includes(label) &&
         tab.getAttribute('aria-selected') === 'true' &&
         !panel.hidden &&
-        !otherPanelVisible,
-      message: `data switcher opens ${label}`
+        !otherPanelVisible &&
+        navPlacedAboveColumns,
+      message: `data switcher opens ${label} with tabs directly above table columns`
     };
   });
 }
