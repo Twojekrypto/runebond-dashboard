@@ -62,6 +62,7 @@ function approxEqual(a, b, tolerance = 0.03) {
 function collectDomSnapshot(window) {
   const doc = window.document;
   const text = (id) => doc.getElementById(id)?.textContent?.trim() || '';
+  const chart = doc.getElementById('hero-sparkline');
 
   return {
     lastUpdate: text('last-update'),
@@ -96,6 +97,15 @@ function collectDomSnapshot(window) {
       largest: text('node-summary-largest'),
       withBond: text('node-summary-with-bond')
     },
+    chart: {
+      label: doc.querySelector('.spark-label')?.textContent?.trim() || '',
+      points: Number(chart?.dataset?.points || 0),
+      min: chart?.dataset?.min || '',
+      max: chart?.dataset?.max || '',
+      last: chart?.dataset?.last || '',
+      unit: chart?.dataset?.unit || '',
+      lineStroke: chart?.querySelector('.spark-line polyline')?.getAttribute('stroke') || ''
+    },
     links: {
       firstSwap: doc.querySelector('#swaps-tbody a')?.getAttribute('href') || '',
       firstSwapTx: doc.querySelector('#swaps-tbody .cell-sub a')?.getAttribute('href') || '',
@@ -115,6 +125,9 @@ function validateSnapshot(snapshot) {
   const runebondApy = parsePercent(snapshot.runebondApy);
   const splitGross = parsePercent(snapshot.splitGross);
   const splitInvestor = parsePercent(snapshot.splitInvestor);
+  const chartLast = parsePercent(snapshot.chart.last);
+  const chartMin = parsePercent(snapshot.chart.min);
+  const chartMax = parsePercent(snapshot.chart.max);
 
   checks.push({
     ok: !!snapshot.lastUpdate && !/Refreshing|Update failed/i.test(snapshot.lastUpdate),
@@ -144,6 +157,22 @@ function validateSnapshot(snapshot) {
   checks.push({
     ok: approxEqual(investorsApy, lpApy / 2) && approxEqual(runebondApy, investorsApy),
     message: `50 / 50 split holds (${snapshot.lpApy} -> ${snapshot.investorsApy} / ${snapshot.runebondApy})`
+  });
+
+  checks.push({
+    ok: hasSourceWarnings || (
+      /investor apy build-up/i.test(snapshot.chart.label) &&
+      snapshot.chart.points >= 2 &&
+      snapshot.chart.unit === '%' &&
+      chartMin !== null &&
+      chartMax !== null &&
+      chartLast !== null &&
+      approxEqual(chartLast, investorsApy, 0.06) &&
+      /^#?0b4cff$/i.test(snapshot.chart.lineStroke)
+    ),
+    message: hasSourceWarnings
+      ? `yield chart skipped because upstream sources warned (${snapshot.lastUpdate})`
+      : `yield chart matches investor APY (${snapshot.chart.points} pts, last ${snapshot.chart.last}% vs ${snapshot.investorsApy})`
   });
 
   checks.push({

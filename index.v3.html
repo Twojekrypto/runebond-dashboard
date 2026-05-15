@@ -865,7 +865,7 @@
       margin-bottom:4px;
     }
     .hero-spark::after{
-      content:'Live bonding performance, 30-day fee contribution and investor split in one view.';
+      content:'Line shows investor APY after the split: live bonding yield plus accumulated 5% exit fees.';
       display:block;
       color:var(--text-3);
       font-size:13px;
@@ -1731,7 +1731,7 @@
       <span class="est-badge" title="Derived from 30-day bonding earnings and inferred 5% exit fees, not forward guidance.">30 day · estimate</span>
 
       <div class="hero-spark">
-        <div class="spark-label">30-day yield monitor</div>
+        <div class="spark-label">30-day investor APY build-up</div>
         <div class="spark-metrics" aria-label="Yield components">
           <div>
             <span>Bonding</span>
@@ -2225,7 +2225,6 @@
     let refreshPromise = null;
     let hasCompletedInitialHydration = false;
     let lastSuccessfulFetch = 0;
-    let dailyBondingHistory = [];
 
     const endpointState = {
       midgard: { bases: MIDGARD_BASES, preferred: MIDGARD_BASES[0] },
@@ -2374,6 +2373,26 @@
       return value > 0 ? value * (1 - INVESTOR_SHARE) : 0;
     }
 
+    function renderInvestorYieldBuildUpChart(bondingYieldOnTotal, totalRune) {
+      if (!redemptionsLoaded || bondingYieldOnTotal === null || !Number.isFinite(totalRune) || totalRune <= 0) return;
+
+      const chartDates = buildTrailingDayWindow(redemptionDays);
+      const feeByDayE8 = new Map();
+      swapRows.forEach((swap) => {
+        const key = utcDayKey(swap.dateMs);
+        feeByDayE8.set(key, (feeByDayE8.get(key) || 0) + swap.feeRetainedE8);
+      });
+
+      let cumulativeFeeE8 = 0;
+      const values = chartDates.map((date) => {
+        cumulativeFeeE8 += feeByDayE8.get(utcDayKey(date.getTime())) || 0;
+        const feeYieldToDate = ((cumulativeFeeE8 / 1e8) * (365 / redemptionDays) / totalRune) * 100;
+        return investorTake(bondingYieldOnTotal + feeYieldToDate);
+      });
+
+      renderSparkline('hero-sparkline', values, { unit: '%', dates: chartDates });
+    }
+
     function hasCapitalInputsReady() {
       return bondsLoaded && balanceLoaded && (lpBondedE8 + lpBalanceE8) > 0;
     }
@@ -2448,6 +2467,32 @@
         hour: 'numeric',
         minute: '2-digit'
       });
+    }
+
+    function utcDayStartMs(dateMs) {
+      const d = new Date(dateMs);
+      return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+    }
+
+    function utcDayKey(dateMs) {
+      return new Date(utcDayStartMs(dateMs)).toISOString().slice(0, 10);
+    }
+
+    function buildTrailingDayWindow(days) {
+      const endDay = utcDayStartMs(Date.now());
+      const startDay = utcDayStartMs(Date.now() - days * 24 * 60 * 60 * 1000);
+      const dates = [];
+      for (let day = startDay; day <= endDay; day += 24 * 60 * 60 * 1000) {
+        dates.push(new Date(day));
+      }
+      return dates;
+    }
+
+    function getCompleteDailyIntervals(intervals, limit = 30) {
+      const nowSec = Date.now() / 1000;
+      return (intervals || [])
+        .filter(i => Number(i.endTime || 0) <= nowSec)
+        .slice(-limit);
     }
 
     function truncAddr(addr) {
@@ -2750,11 +2795,11 @@
 
     async function fetchAPY() {
       const [earningsData, networkData] = await Promise.all([
-        fetchMidgard('/history/earnings?interval=day&count=30'),
+        fetchMidgard('/history/earnings?interval=day&count=31'),
         fetchMidgard('/network')
       ]);
 
-      const intervals = earningsData.intervals || [];
+      const intervals = getCompleteDailyIntervals(earningsData.intervals, 30);
       const totalBondingEarnings30d = intervals.reduce(
         (sum, i) => sum + Number(i.bondingEarnings), 0
       );
@@ -2773,22 +2818,6 @@
           'network-apy-note',
           reportedBondingAPY > 0 ? 'Live network bond APY from THORChain data' : `30-day network earnings estimate over ${days} days`
         );
-      dailyBondingHistory = intervals
-        .map(i => Number(i.bondingEarnings) / 1e8)
-        .filter(v => Number.isFinite(v));
-      const totalActiveBondRune = totalActiveBond / 1e8;
-      let dailyAPYHistory = [];
-      let dailyDates = [];
-      if (totalActiveBondRune > 0 && dailyBondingHistory.length > 1) {
-        dailyAPYHistory = dailyBondingHistory.map(daily => (daily / totalActiveBondRune) * 365 * 100);
-        dailyDates = intervals.map(iv => {
-          const ts = Number(iv.startTime || iv.endTime || 0);
-          return new Date((ts > 0 ? ts : (Date.now() / 1000)) * 1000);
-        });
-      }
-      if (dailyAPYHistory.length > 1) {
-        renderSparkline('hero-sparkline', dailyAPYHistory, { unit: '%', dates: dailyDates });
-      }
     }
 
     async function fetchBonds() {
@@ -3026,7 +3055,7 @@
         setText('bonding-yield-pct', formatPercent(bondingYieldOnTotal));
         setText('bonding-yield-rune', `~${bondingEarningsAnnual.toFixed(0)} ᚱ/yr from ${bondedRune.toFixed(0)} ᚱ bonded in nodes`);
         setText('hero-bonding-yield', formatPercent(bondingYieldOnTotal));
-        setText('hero-bonding-note', `Bonded RUNE earns network APY, weighted by how much LP capital is parked in nodes.`);
+        setText('hero-bonding-note', `Chart starts with the investor half of bonding yield, weighted by how much LP capital is parked in nodes.`);
         setText('split-bonding', formatPercent(bondingYieldOnTotal));
         setText('split-bonding-note', `${bondedPct}% of LP capital is bonded in node allocations.`);
       } else {
@@ -3053,7 +3082,7 @@
         setText('hero-fee-yield', formatPercent(feeYieldOnTotal));
         setText(
           'hero-fee-note',
-          `${redemptionCount30d} payouts · ${formatRune(redemptionVolume30dE8)} gross exit volume in 30d${usingCachedFeeFeed ? ' · refreshing live' : ''}`
+          `${redemptionCount30d} payouts add the retained 5% fee into the investor APY build-up${usingCachedFeeFeed ? ' · refreshing live' : ''}`
         );
         setText('split-fees', formatPercent(feeYieldOnTotal));
         setText(
@@ -3097,6 +3126,9 @@
       const lpEffectiveAPY = (bondingYieldOnTotal || 0) + (feeYieldOnTotal || 0);
       const investorsAPY = investorTake(lpEffectiveAPY);
       const runebondAPY = runebondTake(lpEffectiveAPY);
+      if (redemptionsLoaded && bondingYieldOnTotal !== null) {
+        renderInvestorYieldBuildUpChart(bondingYieldOnTotal, totalRune);
+      }
       if (redemptionsLoaded) {
         setText('lp-effective-apy', lpEffectiveAPY > 0 ? formatPercent(lpEffectiveAPY) : '—');
         setText('investors-apy', investorsAPY > 0 ? formatPercent(investorsAPY) : '—');
@@ -3437,6 +3469,12 @@
       const areaPath = `M0,${h} L${polyline.replace(/ /g, ' L')} L${(lastIdx * stepX).toFixed(2)},${h} Z`;
       const lastX = (lastIdx * stepX).toFixed(2);
       const lastY = yFor(values[lastIdx]).toFixed(2);
+      host.dataset.points = String(values.length);
+      host.dataset.min = min.toFixed(4);
+      host.dataset.max = max.toFixed(4);
+      host.dataset.last = values[lastIdx].toFixed(4);
+      host.dataset.unit = unit;
+      host.setAttribute('aria-label', `Investor APY build-up chart from ${values[0].toFixed(2)}% to ${values[lastIdx].toFixed(2)}%`);
       const style = getComputedStyle(document.documentElement);
       const chartLine = style.getPropertyValue('--chart-line').trim() || style.getPropertyValue('--accent').trim() || '#0b4cff';
       const chartEnd = style.getPropertyValue('--chart-end').trim() || style.getPropertyValue('--pos').trim() || chartLine;
@@ -3548,11 +3586,11 @@
       setText('bonding-yield-pct', `${bondingPart.toFixed(2)}%`);
       setText('bonding-yield-rune', `~272,860 ᚱ/yr from 1,920,000 ᚱ bonded at 14.50%`);
       setText('hero-bonding-yield', `${bondingPart.toFixed(2)}%`);
-      setText('hero-bonding-note', '79.7% of LP capital is earning the network bond rate');
+      setText('hero-bonding-note', 'Chart starts with the investor half of bonding yield, weighted by LP bonded capital.');
       setText('fee-yield-pct', `${feesPart.toFixed(2)}%`);
       setText('fee-yield-rune', '142 payouts · 165K ᚱ gross volume in 30d');
       setText('hero-fee-yield', `${feesPart.toFixed(2)}%`);
-      setText('hero-fee-note', '142 payouts drove 165K ᚱ of gross exits');
+      setText('hero-fee-note', '142 payouts add the retained 5% fee into the investor APY build-up.');
       setText('redemption-volume', formatRuneShort(16_500_000_000_000));
       setText('redemption-count', '142 payouts · gross volume inferred from net sends');
 
@@ -3572,21 +3610,19 @@
       setText('proj-capital', formatRune(totalE8));
       document.title = `Runebond LP · ${investorAPY.toFixed(2)}% APY · DEMO`;
 
-      // ─── Sparkline (30d bonding APY %, smooth wave with drift) ───
+      // ─── Sparkline (investor APY build-up after split) ───
       const days = 30;
-      const baseAPY = 14.20;
+      const baselineInvestorAPY = bondingPart * INVESTOR_SHARE;
+      const feeInvestorAPY = feesPart * INVESTOR_SHARE;
       const dailyAPYHistoryDemo = Array.from({ length: days }, (_, i) => {
         const t = i / (days - 1);
-        const wave = Math.sin(t * Math.PI * 2.4) * 1.05 + Math.sin(t * Math.PI * 5.1) * 0.45;
-        const drift = t * 0.40; // slight upward drift
-        const noise = (Math.sin(i * 7.13) + Math.cos(i * 3.7)) * 0.18;
-        return Math.max(8, baseAPY + wave + drift + noise);
+        const steppedFeeBuild = Math.min(1, Math.max(0, (t - 0.08) / 0.82));
+        return baselineInvestorAPY + feeInvestorAPY * steppedFeeBuild;
       });
       const today = new Date();
       const dailyDatesDemo = Array.from({ length: days }, (_, i) =>
         new Date(today.getTime() - (days - 1 - i) * 24 * 60 * 60 * 1000)
       );
-      dailyBondingHistory = dailyAPYHistoryDemo;
       renderSparkline('hero-sparkline', dailyAPYHistoryDemo, { unit: '%', dates: dailyDatesDemo });
 
       // ─── Investors table ───
