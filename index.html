@@ -694,6 +694,535 @@
       tbody tr td.primary-cell{border-bottom-color:rgba(0,71,60,.10)}
       .table-container{box-shadow:none}
     }
+
+    /* Official Runebond composition pass */
+    .container{max-width:1240px}
+    body{
+      background:
+        radial-gradient(circle at 6% 8%,rgba(0,179,15,.13),transparent 24%),
+        radial-gradient(circle at 88% 10%,rgba(37,99,235,.13),transparent 26%),
+        linear-gradient(180deg,#f7f6ef 0%,#efeee7 52%,#ffffff 100%);
+    }
+    body::after{
+      content:'';
+      position:fixed;
+      width:540px;
+      height:540px;
+      right:-230px;
+      top:210px;
+      z-index:-1;
+      background:url('assets/runebond-bg-shape.svg') center/contain no-repeat;
+      opacity:.07;
+      filter:blur(18px);
+      pointer-events:none;
+    }
+    .topbar{
+      background:rgba(255,255,255,.84);
+      border-bottom:1px solid rgba(0,71,60,.08);
+      box-shadow:0 12px 44px rgba(0,71,60,.055);
+    }
+    .topbar-inner{min-height:70px;padding:12px 0}
+    .brand-logo-img{width:223px;max-width:44vw}
+    .brand-dashboard-label{
+      color:#fff;
+      background:var(--accent);
+      border-color:transparent;
+      box-shadow:0 14px 32px rgba(0,179,15,.20);
+    }
+    .topbar-meta{
+      min-height:48px;
+      padding:7px 8px 7px 16px;
+      border-radius:999px;
+      background:#fff;
+      box-shadow:0 16px 42px rgba(0,71,60,.075);
+    }
+    .topbar-meta .panel-status{font-weight:800;color:var(--accent)}
+    .addr-mono{color:var(--text);font-size:10.5px}
+    .icon-btn{
+      width:34px;
+      height:34px;
+      border-radius:999px;
+      background:var(--accent);
+      color:#fff;
+      border-color:transparent;
+      box-shadow:0 12px 26px rgba(0,179,15,.20);
+    }
+    .icon-btn:hover{background:var(--text);color:#fff;border-color:transparent}
+    .hero{
+      display:grid;
+      grid-template-columns:minmax(0,.92fr) minmax(390px,.78fr);
+      column-gap:58px;
+      align-items:center;
+      min-height:620px;
+      padding:88px 0 64px;
+      text-align:left;
+      isolation:isolate;
+    }
+    .hero::before{
+      left:0;
+      top:74px;
+      width:86px;
+      height:5px;
+      transform:none;
+      opacity:1;
+    }
+    .hero::after{
+      display:block;
+      content:'';
+      position:absolute;
+      right:-90px;
+      top:46px;
+      width:480px;
+      height:480px;
+      transform:none;
+      background:url('assets/runebond-hero-orb.png') center/contain no-repeat;
+      opacity:.28;
+      z-index:-1;
+      filter:saturate(1.03);
+      pointer-events:none;
+    }
+    .hero > :not(.hero-spark):not(.sr){grid-column:1}
+    .eyebrow{
+      justify-content:flex-start;
+      margin:0 0 24px;
+      font-size:12px;
+      font-weight:800;
+      color:var(--accent);
+      text-transform:none;
+    }
+    .eyebrow .sep{display:none}
+    .display-lead{
+      max-width:640px;
+      margin:0 0 6px;
+      color:var(--text);
+      font-size:clamp(36px,4.4vw,58px);
+      line-height:1.02;
+      font-weight:800;
+      letter-spacing:-.05em!important;
+    }
+    .display-num{
+      justify-content:flex-start;
+      margin:0;
+      color:var(--text);
+      font-size:clamp(78px,9vw,132px);
+      line-height:.90;
+      letter-spacing:-.075em!important;
+    }
+    .display-num .pct-mark{margin-left:5px;margin-top:.12em;color:var(--accent)}
+    .display-trail{
+      max-width:600px;
+      margin-top:24px;
+      font-size:18px;
+      line-height:1.7;
+      color:var(--color-text,#887e7a);
+      font-weight:500;
+    }
+    .display-trail .accent-text{
+      display:inline-flex;
+      align-items:center;
+      color:#fff;
+      background:var(--text);
+      border:0;
+      padding:5px 10px;
+      margin:0 4px;
+      font-size:12px;
+      line-height:1;
+    }
+    .est-badge{
+      width:max-content;
+      margin-top:24px;
+      border:0;
+      background:#f5f5ff;
+      color:var(--accent-2);
+      font-size:12px;
+      font-weight:800;
+      padding:9px 13px;
+      border-radius:999px;
+    }
+    .hero-spark{
+      grid-column:2;
+      grid-row:1 / span 7;
+      align-self:center;
+      width:100%;
+      max-width:none;
+      min-height:360px;
+      margin:0;
+      padding:34px 34px 28px;
+      border-radius:24px;
+      background:rgba(255,255,255,.86);
+      border:1px solid rgba(0,71,60,.09);
+      box-shadow:0 36px 95px rgba(0,71,60,.12);
+      backdrop-filter:blur(14px);
+    }
+    .hero-spark::before{
+      content:'Runebond yield monitor';
+      display:block;
+      color:var(--text);
+      font-size:20px;
+      line-height:1.2;
+      font-weight:800;
+      letter-spacing:-.04em!important;
+      margin-bottom:4px;
+    }
+    .hero-spark::after{
+      content:'Live bonding performance, 30-day fee contribution and investor split in one view.';
+      display:block;
+      color:var(--text-3);
+      font-size:13px;
+      line-height:1.65;
+      max-width:360px;
+      margin:-6px 0 22px;
+    }
+    .spark-label{
+      justify-content:flex-start;
+      color:var(--accent);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:0!important;
+      text-transform:none;
+      margin-bottom:18px;
+    }
+    .spark-label::before,.spark-label::after{display:none}
+    .spark-stage{
+      padding-right:52px;
+      padding-bottom:24px;
+      border-radius:18px;
+      background:#f8f7f0;
+      padding-top:22px;
+      padding-left:20px;
+      border:1px solid rgba(0,71,60,.08);
+    }
+    .spark-canvas{height:128px}
+    .spark-yaxis{top:22px;bottom:24px;border-left-color:rgba(0,71,60,.12)}
+    .spark-xaxis{left:20px;right:52px;bottom:5px}
+    .formula{
+      max-width:690px;
+      width:100%;
+      justify-content:flex-start;
+      gap:8px 12px;
+      margin:28px 0 0;
+      padding:15px 17px;
+      border-radius:14px;
+      background:#fff;
+      box-shadow:0 20px 50px rgba(0,71,60,.075);
+    }
+    .formula .lbl{
+      color:var(--text-3);
+      font-size:10px;
+      font-weight:800;
+      text-transform:none;
+    }
+    .formula .val{color:var(--text);font-weight:800}
+    .formula .val.accent{color:var(--accent)}
+    .formula .op{color:rgba(0,71,60,.30);font-weight:800}
+    .vitals{
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:20px;
+      border:0;
+      background:transparent;
+      box-shadow:none;
+      margin-bottom:56px;
+    }
+    .vital{
+      min-height:154px;
+      padding:26px 26px;
+      background:#fff;
+      border:1px solid rgba(0,71,60,.09);
+      border-radius:20px;
+      box-shadow:0 24px 70px rgba(0,71,60,.07);
+    }
+    .vital + .vital::before{display:none}
+    .vital-label,.panel-summary .key,.driver-label{
+      color:var(--accent);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:0!important;
+      text-transform:none;
+    }
+    .vital-value{
+      margin-top:12px;
+      font-size:30px;
+      line-height:1.12;
+      letter-spacing:-.05em!important;
+      font-family:var(--sans);
+      font-weight:800;
+    }
+    .vital-sub{font-size:13px;line-height:1.55}
+    .howcalc{
+      margin:0 0 42px;
+      padding:30px;
+      border-radius:24px;
+      background:#00473c;
+      border:0;
+      box-shadow:0 28px 70px rgba(0,71,60,.16);
+      color:#fff;
+    }
+    .howcalc-heading{
+      color:#fff;
+      font-size:24px;
+      line-height:1.2;
+      letter-spacing:-.04em!important;
+      margin-bottom:24px;
+    }
+    .howcalc-heading::before{width:42px;height:4px;border-radius:999px;background:var(--accent)}
+    .driver{padding:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);border-radius:16px}
+    .driver-label{color:#89e691}
+    .driver-value{color:#fff;font-family:var(--sans);font-size:22px;font-weight:800}
+    .driver-value.accent{color:#fff}
+    .driver-note{color:rgba(255,255,255,.68)}
+    .section-nav{
+      justify-content:flex-start;
+      gap:8px;
+      margin-bottom:32px;
+      padding:8px;
+      border:1px solid rgba(0,71,60,.09);
+      border-radius:18px;
+      background:#fff;
+      box-shadow:0 20px 55px rgba(0,71,60,.06);
+    }
+    .section-btn{
+      margin:0;
+      border:0;
+      border-radius:12px;
+      padding:13px 18px;
+      color:var(--text-2);
+      font-size:13px;
+      font-weight:800;
+    }
+    .section-btn.active{
+      color:#fff;
+      background:var(--text);
+      border:0;
+      box-shadow:0 12px 26px rgba(0,71,60,.14);
+    }
+    .section-btn.active .count{color:#89e691}
+    .panel{padding-bottom:56px}
+    .panel-head{align-items:center;margin-bottom:24px}
+    .panel-title{
+      font-size:34px;
+      line-height:1.15;
+      letter-spacing:-.055em!important;
+    }
+    .panel-sub{font-size:15px;line-height:1.75;max-width:640px}
+    .filter-input{
+      height:42px;
+      min-width:220px;
+      padding:0 15px 0 42px;
+      border:1px solid rgba(0,71,60,.10);
+      border-radius:999px;
+      background-color:#fff;
+      background-position:17px center;
+      box-shadow:0 12px 30px rgba(0,71,60,.045);
+    }
+    .filter-input:focus{border-color:rgba(0,179,15,.42);box-shadow:0 0 0 4px rgba(0,179,15,.08)}
+    .panel-summary{
+      gap:16px;
+      border:0;
+      background:transparent;
+      box-shadow:none;
+      overflow:visible;
+      margin-bottom:20px;
+    }
+    .panel-summary > div{
+      min-height:126px;
+      padding:20px;
+      border:1px solid rgba(0,71,60,.09)!important;
+      border-radius:18px;
+      background:#fff;
+      box-shadow:0 18px 48px rgba(0,71,60,.055);
+    }
+    .panel-summary .val{
+      display:block;
+      margin-top:9px;
+      font-family:var(--sans);
+      font-size:23px;
+      font-weight:800;
+      letter-spacing:-.05em!important;
+    }
+    .panel-summary .note{font-size:12.5px;line-height:1.55}
+    .table-container{
+      border-radius:22px;
+      background:#fff;
+      border:1px solid rgba(0,71,60,.09);
+      box-shadow:0 26px 78px rgba(0,71,60,.08);
+    }
+    table{min-width:860px}
+    thead th{
+      padding:17px 20px;
+      background:#f5f5ff;
+      color:var(--text);
+      font-size:11px;
+      font-weight:800;
+      text-transform:none;
+      border-bottom:1px solid rgba(0,71,60,.09);
+    }
+    tbody td{
+      padding:18px 20px;
+      font-size:13.5px;
+    }
+    tbody tr:hover td{background:#f8fff8}
+    .badge{border-radius:999px;font-size:10px;font-weight:800;text-transform:none}
+    .share-bar{height:6px;border-radius:999px}
+    .footer{
+      margin-top:24px;
+      padding:34px 0 42px;
+    }
+    @media(max-width:980px){
+      .hero{
+        grid-template-columns:1fr;
+        min-height:0;
+        row-gap:34px;
+        padding-top:64px;
+      }
+      .hero > :not(.hero-spark):not(.sr),.hero-spark{grid-column:1}
+      .hero-spark{grid-row:auto}
+      .hero::after{right:-160px;top:120px;width:420px;height:420px;opacity:.18}
+      .vitals{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(max-width:760px){
+      .topbar-inner{gap:10px}
+      .topbar-meta{display:grid;grid-template-columns:minmax(0,1fr);position:relative;flex:0 0 calc(100vw - 36px);width:calc(100vw - 36px);max-width:calc(100vw - 36px);align-items:center;overflow:visible;gap:8px;padding:8px 12px}
+      .topbar-meta > *:not(:last-child)::after{display:none}
+      .addr-mono{justify-self:center;max-width:150px;font-size:10px}
+      .icon-btn{display:none!important}
+      .brand-logo-img{width:176px;max-width:52vw}
+      .hero{padding:54px 0 40px}
+      .hero::before{top:40px}
+      .display-lead{font-size:34px}
+      .display-num{font-size:74px}
+      .display-trail{font-size:15px}
+      .hero-spark{min-height:0;max-width:100%;overflow:hidden;padding:24px 18px;border-radius:20px}
+      .spark-stage{min-width:0;padding-left:14px;padding-right:46px}
+      .spark-xaxis{left:14px;right:46px}
+      .formula{width:100%;display:grid;grid-template-columns:1fr;gap:10px}
+      .formula .op{display:none}
+      .formula .seg{justify-content:space-between;border-bottom:1px solid rgba(0,71,60,.08);padding-bottom:8px}
+      .formula .seg:last-child{border-bottom:0;padding-bottom:0}
+      .vitals{grid-template-columns:1fr;gap:14px}
+      .vital{min-height:0}
+      .howcalc{padding:24px 18px;border-radius:20px}
+      .panel-head{align-items:flex-start}
+      .panel-title{font-size:28px}
+      .panel-meta{width:100%}
+      .filter-input{width:100%}
+      .section-nav{overflow-x:auto;flex-wrap:nowrap}
+      .section-btn{white-space:nowrap}
+      .panel-summary{grid-template-columns:1fr!important;gap:12px}
+      .panel-summary > div{min-height:0}
+      .table-container{border-radius:18px;background:#fff;border:1px solid rgba(0,71,60,.09);box-shadow:0 18px 45px rgba(0,71,60,.055)}
+      tbody tr{padding:18px}
+    }
+
+    /* Match the live runebond.com render: blue primary, black headings, lavender light */
+    :root{
+      --bg:#f5f5ff;
+      --bg-deep:#e9ecff;
+      --surface:#ffffff;
+      --surface-2:#f5f5ff;
+      --surface-3:#eef2ff;
+      --line:rgba(11,12,22,.08);
+      --line-2:rgba(11,12,22,.12);
+      --line-strong:rgba(13,75,255,.28);
+      --text:#0b0c16;
+      --text-2:#434366;
+      --text-3:#74748b;
+      --text-mute:#a9a9bc;
+      --accent:#0b4cff;
+      --accent-2:#2563eb;
+      --accent-soft:rgba(11,76,255,.10);
+      --accent-line:rgba(11,76,255,.30);
+      --pos:#00b30f;
+      --pos-soft:rgba(0,179,15,.11);
+    }
+    body{
+      background:
+        radial-gradient(circle at 5% 10%,rgba(11,76,255,.08),transparent 25%),
+        radial-gradient(circle at 86% 8%,rgba(11,76,255,.10),transparent 26%),
+        linear-gradient(180deg,#f5f5ff 0%,#f7f7ff 55%,#ffffff 100%);
+    }
+    body::before{background-image:none}
+    body::after{opacity:.05;filter:blur(22px)}
+    .topbar{
+      background:rgba(245,245,255,.82);
+      box-shadow:none;
+    }
+    .brand-dashboard-label,.icon-btn{
+      background:var(--accent);
+      color:#fff;
+      box-shadow:0 14px 32px rgba(11,76,255,.20);
+    }
+    .topbar-meta{box-shadow:0 18px 44px rgba(11,12,22,.055)}
+    .topbar-meta .panel-status{color:var(--pos)}
+    .addr-mono:hover,.cell-sub a:hover,.node-addr a:hover{color:var(--accent)}
+    .icon-btn:hover{background:#0b0c16;color:#fff}
+    .hero::before{background:var(--accent)}
+    .hero::after{opacity:.55;filter:none}
+    .eyebrow{color:var(--accent)}
+    .display-lead{color:var(--text)}
+    .display-num{color:var(--accent)}
+    .display-num .pct-mark{color:var(--accent)}
+    .display-trail{color:var(--text-2)}
+    .display-trail .accent-text{background:#0b0c16;color:#fff}
+    .est-badge{background:#eef2ff;color:var(--accent)}
+    .hero-spark{
+      background:rgba(255,255,255,.88);
+      box-shadow:0 38px 96px rgba(11,12,22,.10);
+    }
+    .hero-spark::before{color:var(--text)}
+    .hero-spark::after{color:var(--text-2)}
+    .spark-label{color:var(--accent)}
+    .spark-stage{background:#fbfbff;border-color:rgba(11,12,22,.07)}
+    .spark-cursor{stroke:var(--accent)}
+    .spark-dot{fill:var(--accent)}
+    .spark-tooltip .tt-val{color:var(--accent)}
+    .formula .val.accent{color:var(--accent)}
+    .formula .op{color:rgba(11,12,22,.24)}
+    .vital,.panel-summary > div,.table-container,.formula,.hero-spark{
+      border-color:rgba(11,12,22,.075);
+    }
+    .vital,.panel-summary > div,.table-container{
+      box-shadow:0 24px 70px rgba(11,12,22,.055);
+    }
+    .vital:hover,.panel-summary > div:hover{background:#f8faff}
+    .vital-label,.panel-summary .key,.driver-label{color:var(--accent)}
+    .vital-value,.panel-summary .val,.driver-value{color:var(--text)}
+    .vital-value.accent{color:var(--accent)}
+    .howcalc{
+      background:#fff;
+      border:1px solid rgba(11,12,22,.075);
+      box-shadow:0 24px 70px rgba(11,12,22,.055);
+      color:var(--text);
+    }
+    .howcalc-heading{color:var(--text)}
+    .howcalc-heading::before{background:var(--accent)}
+    .driver{
+      background:#f5f5ff;
+      border-color:rgba(11,12,22,.07);
+    }
+    .driver-label{color:var(--accent)}
+    .driver-value,.driver-value.accent{color:var(--text)}
+    .driver-note{color:var(--text-2)}
+    .section-nav{border-color:rgba(11,12,22,.075);box-shadow:0 20px 55px rgba(11,12,22,.045)}
+    .section-btn.active{
+      background:var(--accent);
+      color:#fff;
+      box-shadow:0 14px 30px rgba(11,76,255,.18);
+    }
+    .section-btn.active .count{color:#dce6ff}
+    .filter-input{border-color:rgba(11,12,22,.09);box-shadow:0 12px 30px rgba(11,12,22,.035)}
+    .filter-input:focus{border-color:rgba(11,76,255,.38);box-shadow:0 0 0 4px rgba(11,76,255,.08)}
+    thead th{background:#f5f5ff;color:var(--text)}
+    tbody tr:hover td{background:#f8faff}
+    .badge.active{color:var(--pos);border-color:rgba(0,179,15,.25);background:var(--pos-soft)}
+    .share-bar .fill{background:linear-gradient(90deg,var(--accent),#4f7dff)}
+    .growth-pos,.panel-summary .val.pos{color:var(--pos)}
+    .loading{
+      background:linear-gradient(90deg,var(--text-mute),var(--accent),var(--text-mute));
+      background-size:220% 100%;
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
   </style>
 </head>
 <body>
@@ -711,7 +1240,6 @@
         <div class="topbar-spacer"></div>
         <div class="topbar-meta">
           <span class="stale-flag" id="stale-chip" hidden>Stale</span>
-          <span class="panel-status" id="usd-status" data-tone="loading" style="border:0;background:transparent;padding:0;letter-spacing:1.2px">Syncing</span>
           <a class="addr-mono" href="https://thorchain.net/address/thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l" target="_blank" rel="noopener" title="thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l">thor1dk9…l8x2l</a>
           <button class="icon-btn" id="refresh-button" onclick="fetchAll()" type="button" aria-label="Refresh data" title="Refresh data">↻</button>
         </div>
@@ -1172,10 +1700,12 @@
 
     const localHost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
     const useLocalProxy = localHost && (location.port === '8787' || new URLSearchParams(location.search).has('proxy'));
-    const MIDGARD_PUBLIC_BASES = ['https://midgard.thorchain.network/v2', 'https://gateway.liquify.com/chain/thorchain_midgard/v2'];
+    const MIDGARD_GATEWAY_BASE = 'https://gateway.liquify.com/chain/thorchain_midgard/v2';
+    const MIDGARD_OFFICIAL_BASE = 'https://midgard.thorchain.network/v2';
+    const MIDGARD_PUBLIC_BASES = [MIDGARD_GATEWAY_BASE, MIDGARD_OFFICIAL_BASE];
     const THORNODE_PUBLIC_BASES = ['https://thornode.thorchain.network', 'https://gateway.liquify.com/chain/thorchain_api'];
     const COINGECKO_PUBLIC_BASES = ['https://api.coingecko.com/api/v3'];
-    const MIDGARD_BASES = useLocalProxy ? ['/api/midgard', ...MIDGARD_PUBLIC_BASES] : MIDGARD_PUBLIC_BASES;
+    const MIDGARD_BASES = useLocalProxy ? [MIDGARD_GATEWAY_BASE, '/api/midgard', MIDGARD_OFFICIAL_BASE] : MIDGARD_PUBLIC_BASES;
     const THORNODE_BASES = useLocalProxy ? ['/api/thornode', ...THORNODE_PUBLIC_BASES] : THORNODE_PUBLIC_BASES;
     const COINGECKO_BASES = useLocalProxy ? ['/api/coingecko', ...COINGECKO_PUBLIC_BASES] : COINGECKO_PUBLIC_BASES;
 
@@ -1273,6 +1803,11 @@
     }
 
     function updateYieldStatus() {
+      if (!hasCapitalInputsReady()) {
+        setStatusPill('yield-status', 'loading', 'Syncing');
+        setText('yield-status-detail', 'Waiting for bonded and liquid LP capital before showing APY.');
+        return;
+      }
       if (redemptionStatus === 'ready') {
         setStatusPill('yield-status', 'live', 'Live');
         setText('yield-status-detail', 'Bonding and 30d fee inputs are both confirmed.');
@@ -1322,6 +1857,29 @@
 
     function runebondTake(value) {
       return value > 0 ? value * (1 - INVESTOR_SHARE) : 0;
+    }
+
+    function hasCapitalInputsReady() {
+      return bondsLoaded && balanceLoaded && (lpBondedE8 + lpBalanceE8) > 0;
+    }
+
+    function holdYieldUntilCapitalReady() {
+      setLoadingMetric('total-capital');
+      setText('total-capital-usd', '');
+      setLoadingMetric('lp-effective-apy');
+      setLoadingMetric('investors-apy');
+      setLoadingMetric('runebond-apy');
+      setText('split-bonding', 'Loading…');
+      setText('split-bonding-note', 'Waiting for bonded and liquid LP capital before calculating yield.');
+      setText('split-fees', 'Loading…');
+      setText('split-fees-note', '30-day fees are held until total LP capital is confirmed.');
+      setText('split-gross', 'Loading…');
+      setText('split-gross-note', 'Waiting for complete LP capital inputs.');
+      setText('split-investor', 'Loading…');
+      setText('split-investor-note', 'Investor APY appears only after capital and fee inputs are aligned.');
+      setText('apy-note', 'Loading complete LP capital before showing APY');
+      setText('proj-capital', '—');
+      document.title = 'Runebond LP Dashboard';
     }
 
     function formatPercent(value, digits = 2) {
@@ -1589,9 +2147,9 @@
         runePrice = null;
         runePriceSource = 'warning';
         runePriceTimestamp = 0;
-        usdUsedFallback = false;
+        usdUsedFallback = true;
         updateUsdStatus();
-        throw error;
+        console.warn('fetchRunePrice unavailable; continuing without USD helper:', error.message);
       }
     }
 
@@ -1599,6 +2157,8 @@
     let lpBondedE8 = 0;
     let lpBalanceE8 = 0;
     let bondingAPY = 0;
+    let bondsLoaded = false;
+    let balanceLoaded = false;
     let feeIncome30dE8 = 0;
     let redemptionVolume30dE8 = 0;
     let payoutVolume30dE8 = 0;
@@ -1720,6 +2280,7 @@
       const d = await fetchMidgard(`/bonds/${LP_ADDRESS}`);
 
       lpBondedE8 = Number(d.totalBonded || 0);
+      bondsLoaded = true;
       setKPIRune('total-bonded', lpBondedE8);
 
       const nodes = d.nodes || [];
@@ -1740,6 +2301,7 @@
       const d = await fetchThornode(`/cosmos/bank/v1beta1/balances/${LP_ADDRESS}`);
       const rune = d.balances?.find(b => b.denom === 'rune');
       lpBalanceE8 = Number(rune ? rune.amount : '0');
+      balanceLoaded = true;
       setKPIRune('rune-balance', lpBalanceE8);
     }
 
@@ -1916,7 +2478,10 @@
     function calculateLPMetrics() {
       const totalCapitalE8 = lpBondedE8 + lpBalanceE8;
       updateYieldStatus();
-      if (totalCapitalE8 === 0) return;
+      if (!hasCapitalInputsReady()) {
+        holdYieldUntilCapitalReady();
+        return;
+      }
 
       const bondedRune = lpBondedE8 / 1e8;
       const totalRune = totalCapitalE8 / 1e8;
@@ -2061,6 +2626,11 @@
 
       const refreshButton = document.getElementById('refresh-button');
       let corePhaseComplete = false;
+      if (!hasCompletedInitialHydration) {
+        bondsLoaded = false;
+        balanceLoaded = false;
+        holdYieldUntilCapitalReady();
+      }
       if (refreshButton) {
         refreshButton.disabled = true;
         refreshButton.textContent = '…';
