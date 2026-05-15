@@ -1281,6 +1281,9 @@
       line-height:1.65;
       font-weight:500;
     }
+    .display-lead{
+      max-width:760px;
+    }
     .hero-spark{
       display:flex;
       flex-direction:column;
@@ -1559,7 +1562,12 @@
         top:250px;
         opacity:.26;
       }
-      .display-lead{font-size:32px}
+      .display-lead{font-size:30px}
+      .display-lead{
+        max-width:330px;
+        line-height:1.08;
+        overflow-wrap:normal;
+      }
       .display-num{font-size:68px}
       .apy-loading-line{height:62px;width:min(310px,78vw);border-radius:18px}
       .apy-loading-text{font-size:12px}
@@ -1667,10 +1675,10 @@
         <span class="sep"></span>
       </div>
 
-      <div class="display-lead">Investors earn</div>
+      <div class="display-lead">Investor APY after split</div>
       <div class="display-num" id="investors-apy"><span class="apy-loading"><span class="apy-loading-line"></span><span class="apy-loading-text">Syncing live APY…</span></span></div>
-      <div class="display-trail">per year, after the <span class="accent-text">50/50 split</span> on positive yield.</div>
-      <p class="hero-summary">Based on the last 30 days of live THORChain data. The LP earns from node bonding and retained fees when users exit bRUNE.</p>
+      <div class="display-trail"><span class="accent-text">Shown APY = investor half</span> of the full LP yield.</div>
+      <p class="hero-summary">Full LP APY is calculated from bonding plus bRUNE exit fees, then split 50% to investors and 50% to Runebond.</p>
       <span class="est-badge" title="Derived from 30-day bonding earnings and inferred 5% exit fees, not forward guidance.">30 day · estimate</span>
 
       <div class="hero-spark">
@@ -1685,7 +1693,7 @@
             <strong id="hero-fee-yield">—</strong>
           </div>
           <div>
-            <span>Investor share</span>
+            <span>Investors get</span>
             <strong>50%</strong>
           </div>
         </div>
@@ -1730,13 +1738,13 @@
       <div>
         <div class="simple-kicker">APY explained simply</div>
         <h2>Where this APY comes from</h2>
-        <p>Runebond LP has two income sources: THORChain node bonding yield and the 5% retained fee when someone exits bRUNE back to RUNE.</p>
+        <p>First we calculate the full LP yield from bonding and bRUNE exit fees. Then investors receive half of that positive yield.</p>
       </div>
       <div class="simple-flow">
         <div><strong>1</strong><span>RUNE is parked in node bonds and earns network yield.</span></div>
-        <div><strong>2</strong><span>bRUNE exits generate a retained LP fee.</span></div>
-        <div><strong>3</strong><span>Those two sources create gross LP yield.</span></div>
-        <div><strong>4</strong><span>Investors receive 50% of positive LP yield.</span></div>
+        <div><strong>2</strong><span>bRUNE exits generate a retained 5% LP fee.</span></div>
+        <div><strong>3</strong><span>Those two sources create the full LP yield.</span></div>
+        <div><strong>4</strong><span>The headline shows the investor half after the split.</span></div>
       </div>
     </section>
 
