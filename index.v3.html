@@ -1546,9 +1546,8 @@
     }
     .apy-build-head{
       display:grid;
-      grid-template-columns:minmax(0,1fr) auto;
-      gap:22px;
-      align-items:end;
+      grid-template-columns:minmax(0,1fr);
+      align-items:start;
       margin-bottom:22px;
     }
     .apy-build-kicker{
@@ -1571,31 +1570,6 @@
       color:var(--text-2);
       font-size:15px;
       line-height:1.68;
-    }
-    .apy-build-badge{
-      min-width:184px;
-      padding:16px 18px;
-      border:1px solid rgba(11,76,255,.14);
-      border-radius:20px;
-      background:rgba(255,255,255,.78);
-      box-shadow:0 20px 50px rgba(11,76,255,.07);
-    }
-    .apy-build-badge span{
-      display:block;
-      color:var(--text-3);
-      font-size:10px;
-      font-weight:900;
-      letter-spacing:.045em;
-      text-transform:uppercase;
-      margin-bottom:7px;
-    }
-    .apy-build-badge strong{
-      display:block;
-      color:var(--accent);
-      font-size:22px;
-      font-weight:900;
-      line-height:1;
-      letter-spacing:-.045em;
     }
     .apy-build-metrics{
       display:grid;
@@ -1881,9 +1855,6 @@
       .apy-build-lower{
         grid-template-columns:1fr;
       }
-      .apy-build-badge{
-        max-width:260px;
-      }
       .apy-build-metrics{
         grid-template-columns:repeat(2,minmax(0,1fr));
       }
@@ -2000,7 +1971,6 @@
       }
       .apy-build-head h2{font-size:30px}
       .apy-build-head p{font-size:14px}
-      .apy-build-badge{max-width:none}
       .apy-card-copy,
       .apy-card-note,
       .apy-flow-copy{
@@ -2861,10 +2831,6 @@
           <div class="apy-build-kicker">Live APY inputs</div>
           <h2>How this APY is built</h2>
           <p>Full LP yield comes from bonded RUNE plus retained 5% bRUNE exit fees. Investors receive 50% of positive LP yield, so the headline already shows the investor-side APY.</p>
-        </div>
-        <div class="apy-build-badge" aria-label="Investor APY rule">
-          <span>Headline APY</span>
-          <strong>After split</strong>
         </div>
       </div>
 
