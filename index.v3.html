@@ -1551,6 +1551,71 @@
       line-height:1.65;
       font-weight:500;
     }
+    .hero-split-strip{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+      align-items:stretch;
+      gap:10px;
+      width:100%;
+      max-width:530px;
+      margin-top:24px;
+      padding:10px;
+      border:1px solid rgba(11,12,22,.075);
+      border-radius:22px;
+      background:rgba(245,245,255,.78);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.82);
+    }
+    .hero-split-strip div{
+      min-width:0;
+      padding:13px 14px;
+      border:1px solid rgba(11,12,22,.065);
+      border-radius:16px;
+      background:#fff;
+      box-shadow:0 12px 28px rgba(11,12,22,.035);
+    }
+    .hero-split-strip div.is-investor{
+      border-color:rgba(11,76,255,.16);
+      background:linear-gradient(180deg,#eef3ff,#fff);
+    }
+    .hero-split-strip span{
+      display:block;
+      color:var(--text-3);
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.035em;
+      line-height:1.1;
+      text-transform:uppercase;
+    }
+    .hero-split-strip strong{
+      display:block;
+      margin-top:7px;
+      color:var(--text);
+      font-size:24px;
+      line-height:1;
+      font-weight:900;
+      letter-spacing:-.055em;
+      font-variant-numeric:tabular-nums;
+    }
+    .hero-split-strip .is-investor strong{
+      color:var(--accent);
+    }
+    .hero-split-arrow{
+      align-self:center;
+      display:inline-flex!important;
+      align-items:center;
+      justify-content:center;
+      width:30px;
+      height:30px;
+      border-radius:999px;
+      background:#fff;
+      color:var(--accent)!important;
+      box-shadow:0 12px 24px rgba(11,76,255,.08);
+      font-size:14px!important;
+      letter-spacing:0!important;
+      text-transform:none!important;
+    }
     .display-lead{
       max-width:760px;
     }
@@ -1563,6 +1628,8 @@
       order:5;
       margin:0;
       max-width:430px;
+      font-size:12px;
+      line-height:1.5;
     }
     .spark-label{margin-bottom:0}
     .spark-metrics{
@@ -1597,21 +1664,30 @@
     }
     .spark-notes{
       display:grid;
-      gap:6px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:8px;
       color:var(--text-2);
-      font-size:12.5px;
-      line-height:1.45;
+      font-size:11.5px;
+      line-height:1.3;
     }
     .spark-notes span{
       display:flex;
-      gap:8px;
-      align-items:flex-start;
+      align-items:center;
+      gap:7px;
+      min-width:0;
+      padding:10px 11px;
+      border:1px solid rgba(11,12,22,.065);
+      border-radius:999px;
+      background:#f8faff;
+      font-weight:800;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
     .spark-notes span::before{
       content:'';
       width:6px;
       height:6px;
-      margin-top:.55em;
       flex:0 0 auto;
       border-radius:999px;
       background:var(--accent);
@@ -1755,15 +1831,15 @@
     }
     .apy-build-panel{
       position:relative;
-      margin:-12px 0 46px;
-      padding:34px;
+      margin:0 0 46px;
+      padding:30px;
       overflow:hidden;
       border:1px solid rgba(11,12,22,.075);
       border-radius:34px;
       background:
-        radial-gradient(circle at 92% 4%,rgba(11,76,255,.18),rgba(11,76,255,0) 32%),
-        linear-gradient(135deg,#fff 0%,#f9fbff 52%,#eef4ff 100%);
-      box-shadow:0 34px 96px rgba(11,12,22,.08);
+        radial-gradient(circle at 92% 0%,rgba(11,76,255,.10),rgba(11,76,255,0) 30%),
+        linear-gradient(180deg,rgba(255,255,255,.92),rgba(248,250,255,.74));
+      box-shadow:0 24px 70px rgba(11,12,22,.055);
       isolation:isolate;
     }
     .apy-build-panel::before{
@@ -1774,7 +1850,7 @@
       width:430px;
       height:430px;
       border-radius:999px;
-      background:radial-gradient(circle,rgba(11,76,255,.20),rgba(11,76,255,0) 66%);
+      background:radial-gradient(circle,rgba(11,76,255,.12),rgba(11,76,255,0) 66%);
       z-index:-1;
     }
     .apy-build-panel::after{
@@ -1795,7 +1871,7 @@
     }
     .apy-build-head h2{
       color:var(--text);
-      font-size:clamp(34px,3vw,52px);
+      font-size:clamp(30px,2.6vw,44px);
       line-height:.98;
       letter-spacing:-.06em;
       margin:0 0 12px;
@@ -2150,6 +2226,15 @@
         font-size:13px;
         line-height:1.55;
       }
+      .hero-split-strip{
+        grid-template-columns:1fr;
+        max-width:100%;
+        margin-top:16px;
+      }
+      .hero-split-arrow{
+        justify-self:center;
+        transform:rotate(90deg);
+      }
       .hero-copy{
         width:100%;
         padding:32px 20px 24px;
@@ -2188,6 +2273,13 @@
       }
       .spark-metrics{
         grid-template-columns:1fr;
+      }
+      .spark-notes{
+        grid-template-columns:1fr;
+      }
+      .spark-notes span{
+        border-radius:14px;
+        white-space:normal;
       }
       .spark-metrics div{
         display:grid;
@@ -2818,6 +2910,15 @@
     .data-workbench table[data-table="exits"] tbody tr:hover td.primary-cell{
       background:#f3f6ff;
     }
+    .data-workbench tbody tr:hover .address-pill{
+      color:var(--accent);
+    }
+    .data-workbench tbody tr:hover .copy-address-action,
+    .data-workbench tbody tr:hover .tx-link-pill{
+      border-color:rgba(11,76,255,.22);
+      background:#fff;
+      box-shadow:0 10px 22px rgba(11,76,255,.07);
+    }
     .data-workbench tbody tr:hover td:first-child{
       box-shadow:inset 3px 0 0 rgba(11,76,255,.25);
     }
@@ -3097,6 +3198,17 @@
         <div class="display-lead">Investor APY after split</div>
         <div class="display-num" id="investors-apy"><span class="apy-loading"><span class="apy-loading-line"></span><span class="apy-loading-text">Syncing live APY…</span></span></div>
         <p class="hero-summary">Full LP APY is calculated from bonding plus bRUNE exit fees, then split 50% to investors and 50% to RUNEBOND.</p>
+        <div class="hero-split-strip" aria-label="Full LP APY to investor APY split">
+          <div>
+            <span>Full LP APY</span>
+            <strong id="hero-full-lp-apy">—</strong>
+          </div>
+          <span class="hero-split-arrow" aria-hidden="true">→</span>
+          <div class="is-investor">
+            <span>Investor receives</span>
+            <strong id="hero-investor-split-apy">—</strong>
+          </div>
+        </div>
         <span class="est-badge" title="Derived from 30-day bonding earnings and inferred 5% exit fees, not forward guidance.">30 day · estimate</span>
       </div>
 
@@ -4066,6 +4178,8 @@
       setText('split-investor', 'Loading…');
       setText('split-investor-note', 'Investor APY appears only after capital and fee inputs are aligned.');
       setText('hero-chart-yield', 'Loading…');
+      setText('hero-full-lp-apy', 'Loading…');
+      setText('hero-investor-split-apy', 'Loading…');
       setText('apy-note', 'Loading complete LP capital before showing APY');
       setText('proj-capital', '—');
       document.title = 'RUNEBOND LP Dashboard';
@@ -4790,14 +4904,14 @@
         setText('bonding-yield-pct', formatPercent(bondingYieldOnTotal));
         setText('bonding-yield-rune', `~${bondingEarningsAnnual.toFixed(0)} ${RUNE_UNIT_TOKEN}/yr from ${bondedRune.toFixed(0)} ${RUNE_UNIT_TOKEN} bonded in nodes`);
         setText('hero-bonding-yield', formatPercent(bondingYieldOnTotal));
-        setText('hero-bonding-note', `LP bonding is a gross input; the chart line uses the investor half after the 50 / 50 split.`);
+        setText('hero-bonding-note', 'Bonding input · investor line shows 50% share');
         setText('split-bonding', formatPercent(bondingYieldOnTotal));
         setText('split-bonding-note', `${bondedPct}% of LP capital is bonded in node allocations.`);
       } else {
         setText('bonding-yield-pct', '—');
         setText('bonding-yield-rune', 'Network bonding APY unavailable');
         setText('hero-bonding-yield', '—');
-        setText('hero-bonding-note', 'Network bonding APY unavailable right now.');
+        setText('hero-bonding-note', 'Bonding input unavailable');
         setText('split-bonding', '—');
         setText('split-bonding-note', 'Network bonding APY unavailable right now.');
       }
@@ -4817,7 +4931,7 @@
         setText('hero-fee-yield', formatPercent(feeYieldOnTotal));
         setText(
           'hero-fee-note',
-          `${redemptionCount30d} payouts add retained 5% fees as a gross input; the chart line shows the investor half${usingCachedFeeFeed ? ' · refreshing live' : ''}`
+          `${redemptionCount30d} exits · retained 5% fee input${usingCachedFeeFeed ? ' · refreshing' : ''}`
         );
         setText('split-fees', formatPercent(feeYieldOnTotal));
         setText(
@@ -4843,7 +4957,7 @@
         setText('redemption-count', 'Could not load recent claims');
         setText('apy-note', bondingYieldOnTotal !== null ? 'Bonding-only fallback until fee history returns' : 'Fee history unavailable');
         setText('hero-fee-yield', '—');
-        setText('hero-fee-note', 'Recent bRUNE exit history could not be loaded.');
+        setText('hero-fee-note', 'Exit fee input unavailable');
         setText('split-fees', '—');
         setText('split-fees-note', 'Recent payout history could not be loaded.');
       } else {
@@ -4853,7 +4967,7 @@
         setText('redemption-count', 'Fetching recent claims…');
         setText('apy-note', bondingYieldOnTotal !== null ? 'Bonding loaded, fee history still syncing' : 'Loading live APY inputs');
         setText('hero-fee-yield', 'Loading…');
-        setText('hero-fee-note', 'Fetching last 30d bRUNE exits and RUNE payouts…');
+        setText('hero-fee-note', 'Syncing 30d exits…');
         setText('split-fees', 'Loading…');
         setText('split-fees-note', 'Fetching recent exits and payout history…');
       }
@@ -4868,6 +4982,8 @@
         setText('lp-effective-apy', lpEffectiveAPY > 0 ? formatPercent(lpEffectiveAPY) : '—');
         setText('investors-apy', investorsAPY > 0 ? formatPercent(investorsAPY) : '—');
         setText('hero-chart-yield', investorsAPY > 0 ? formatPercent(investorsAPY) : '—');
+        setText('hero-full-lp-apy', lpEffectiveAPY > 0 ? formatPercent(lpEffectiveAPY) : '—');
+        setText('hero-investor-split-apy', investorsAPY > 0 ? formatPercent(investorsAPY) : '—');
         setText('runebond-apy', runebondAPY > 0 ? formatPercent(runebondAPY) : '—');
         setText('split-gross', lpEffectiveAPY > 0 ? formatPercent(lpEffectiveAPY) : '—');
         setText('split-gross-note', 'Total LP yield before the 50 / 50 RUNEBOND split.');
@@ -4877,6 +4993,8 @@
         setText('lp-effective-apy', bondingYieldOnTotal !== null ? formatPercent(bondingYieldOnTotal) : '—');
         setText('investors-apy', bondingYieldOnTotal !== null ? formatPercent(investorTake(bondingYieldOnTotal)) : '—');
         setText('hero-chart-yield', bondingYieldOnTotal !== null ? formatPercent(investorTake(bondingYieldOnTotal)) : '—');
+        setText('hero-full-lp-apy', bondingYieldOnTotal !== null ? formatPercent(bondingYieldOnTotal) : '—');
+        setText('hero-investor-split-apy', bondingYieldOnTotal !== null ? formatPercent(investorTake(bondingYieldOnTotal)) : '—');
         setText('runebond-apy', bondingYieldOnTotal !== null ? formatPercent(runebondTake(bondingYieldOnTotal)) : '—');
         setText('split-gross', bondingYieldOnTotal !== null ? formatPercent(bondingYieldOnTotal) : '—');
         setText('split-gross-note', 'Temporary bonding-only fallback while fee history is unavailable.');
@@ -4887,6 +5005,8 @@
         setHeroApyLoading('Syncing 30d exit fees…');
         setLoadingMetric('runebond-apy');
         setText('hero-chart-yield', 'Loading…');
+        setText('hero-full-lp-apy', 'Loading…');
+        setText('hero-investor-split-apy', 'Loading…');
         setText('split-gross', 'Loading…');
         setText('split-gross-note', 'Waiting for fee history to finish syncing.');
         setText('split-investor', 'Loading…');
@@ -5331,11 +5451,11 @@
       setText('bonding-yield-pct', `${bondingPart.toFixed(2)}%`);
       setText('bonding-yield-rune', `~272,860 ${RUNE_UNIT_TOKEN}/yr from 1,920,000 ${RUNE_UNIT_TOKEN} bonded at 14.50%`);
       setText('hero-bonding-yield', `${bondingPart.toFixed(2)}%`);
-      setText('hero-bonding-note', 'LP bonding is a gross input; the chart line uses the investor half after the 50 / 50 split.');
+      setText('hero-bonding-note', 'Bonding input · investor line shows 50% share');
       setText('fee-yield-pct', `${feesPart.toFixed(2)}%`);
       setText('fee-yield-rune', `142 payouts · 165K ${RUNE_UNIT_TOKEN} gross volume in 30d`);
       setText('hero-fee-yield', `${feesPart.toFixed(2)}%`);
-      setText('hero-fee-note', '142 payouts add retained 5% fees as a gross input; the chart line shows the investor half.');
+      setText('hero-fee-note', '142 exits · retained 5% fee input');
       setText('redemption-volume', formatRuneShort(16_500_000_000_000));
       setText('redemption-count', '142 payouts · gross volume inferred from net sends');
 
@@ -5351,6 +5471,8 @@
       setText('lp-effective-apy', `${grossLPapy.toFixed(2)}%`);
       setText('investors-apy', `${investorAPY.toFixed(2)}%`);
       setText('hero-chart-yield', `${investorAPY.toFixed(2)}%`);
+      setText('hero-full-lp-apy', `${grossLPapy.toFixed(2)}%`);
+      setText('hero-investor-split-apy', `${investorAPY.toFixed(2)}%`);
       setText('runebond-apy', `${investorAPY.toFixed(2)}%`);
       setText('apy-note', 'Gross LP yield from bonding + payout fees before the 50/50 split');
       setText('proj-capital', formatRune(totalE8));

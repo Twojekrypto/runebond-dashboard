@@ -123,6 +123,10 @@ function collectDomSnapshot(window) {
     heroChartYield: text('hero-chart-yield'),
     hero: {
       displayTrail: !!doc.querySelector('.hero .display-trail'),
+      splitStrip: !!doc.querySelector('.hero-split-strip'),
+      splitFull: text('hero-full-lp-apy'),
+      splitInvestor: text('hero-investor-split-apy'),
+      noteCount: doc.querySelectorAll('.spark-notes span').length,
       text: doc.querySelector('.hero')?.textContent?.replace(/\s+/g, ' ').trim() || ''
     },
     statuses: {
@@ -259,6 +263,14 @@ function validateSnapshot(snapshot) {
   checks.push({
     ok: approxEqual(investorsApy, heroChartYield),
     message: `yield monitor chart tile shows investor APY after split (${snapshot.heroChartYield})`
+  });
+
+  checks.push({
+    ok: snapshot.hero.splitStrip &&
+      approxEqual(lpApy, parsePercent(snapshot.hero.splitFull)) &&
+      approxEqual(investorsApy, parsePercent(snapshot.hero.splitInvestor)) &&
+      snapshot.hero.noteCount === 2,
+    message: `hero explains Full LP -> Investor split (${snapshot.hero.splitFull} -> ${snapshot.hero.splitInvestor}) with compact yield chips`
   });
 
   checks.push({
