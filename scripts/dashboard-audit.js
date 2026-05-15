@@ -152,7 +152,8 @@ function collectDomSnapshot(window) {
       oldVitals: !!doc.querySelector('section.vitals'),
       oldHowcalc: !!doc.querySelector('section.howcalc'),
       headlineBadge: !!doc.querySelector('.apy-build-badge'),
-      flowOperators: doc.querySelectorAll('.apy-flow-operator').length,
+      flowSteps: doc.querySelectorAll('.apy-flow-step').length,
+      flowConnectors: doc.querySelectorAll('.apy-flow-step[data-op]').length,
       investorStep: !!doc.querySelector('.apy-flow-step.is-investor'),
       text: doc.querySelector('.apy-build-panel')?.textContent?.replace(/\s+/g, ' ').trim() || ''
     },
@@ -231,16 +232,18 @@ function validateSnapshot(snapshot) {
       !snapshot.apyBuildPanel.oldSimpleExplainer &&
       !snapshot.apyBuildPanel.oldVitals &&
       !snapshot.apyBuildPanel.oldHowcalc &&
-      /Live APY inputs/i.test(snapshot.apyBuildPanel.text) &&
+      /Two live inputs/i.test(snapshot.apyBuildPanel.text) &&
+      /APY logic/i.test(snapshot.apyBuildPanel.text) &&
       /Gross LP yield/i.test(snapshot.apyBuildPanel.text) &&
       /Bonding yield/i.test(snapshot.apyBuildPanel.text) &&
-      /5% exit fee yield/i.test(snapshot.apyBuildPanel.text) &&
+      /5% exit fees/i.test(snapshot.apyBuildPanel.text) &&
       /Investor APY/i.test(snapshot.apyBuildPanel.text) &&
       !snapshot.apyBuildPanel.headlineBadge &&
-      snapshot.apyBuildPanel.flowOperators === 3 &&
+      snapshot.apyBuildPanel.flowSteps === 4 &&
+      snapshot.apyBuildPanel.flowConnectors === 3 &&
       snapshot.apyBuildPanel.investorStep &&
-      /Live data behind the APY/i.test(snapshot.apyBuildPanel.text),
-    message: 'APY explanation is a logical bonding + fee -> gross LP -> investor APY flow without the headline badge'
+      /Live inputs/i.test(snapshot.apyBuildPanel.text),
+    message: 'APY explanation is a premium bonding + fee -> gross LP -> investor APY flow without the headline badge'
   });
 
   checks.push({
