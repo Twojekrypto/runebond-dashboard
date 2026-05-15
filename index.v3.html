@@ -303,6 +303,24 @@
       background:var(--accent-soft);
       color:var(--accent);
     }
+    .rune-logo-unit{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:.86em;
+      height:.86em;
+      margin-left:.08em;
+      vertical-align:-.1em;
+      line-height:1;
+    }
+    .rune-logo-unit img{
+      display:block;
+      width:100%;
+      height:100%;
+      border-radius:999px;
+      object-fit:contain;
+      box-shadow:0 0 0 1px rgba(11,12,22,.08),0 3px 8px rgba(11,12,22,.10);
+    }
     .deposited,.current-val,.bond-amount{font-family:var(--mono);font-size:12.5px;color:var(--text);font-variant-numeric:tabular-nums;font-weight:500}
     .deposited{color:var(--text-2);font-weight:400}
     .bond-zero{font-family:var(--mono);font-size:12.5px;color:var(--text-3)}
@@ -1617,6 +1635,16 @@
       font-variant-numeric:tabular-nums;
     }
     .apy-metric.is-primary .apy-metric-value{color:#fff}
+    .apy-metric-value .rune-logo-unit{
+      width:.7em;
+      height:.7em;
+      margin-left:.12em;
+      vertical-align:-.045em;
+    }
+    .apy-metric.is-primary .rune-logo-unit img{
+      background:#fff;
+      box-shadow:0 0 0 1px rgba(255,255,255,.55),0 10px 22px rgba(0,0,0,.16);
+    }
     .apy-metric-sub{
       margin-top:9px;
       color:var(--text-2);
@@ -3470,10 +3498,59 @@
     const providerSort = { key: 'totalE8', direction: 'desc' };
     const nodeSort = { key: 'bond', direction: 'desc' };
     const swapSort = { key: 'dateMs', direction: 'desc' };
+    const RUNE_LOGO_SRC = 'assets/thorchain-mark.png';
 
     function setText(id, text) {
       const el = document.getElementById(id);
-      if (el) el.textContent = text;
+      if (!el) return;
+      el.textContent = text;
+      hydrateRuneUnits(el);
+    }
+
+    function createRuneLogoUnit() {
+      const unit = document.createElement('span');
+      unit.className = 'rune-logo-unit';
+      unit.setAttribute('role', 'img');
+      unit.setAttribute('aria-label', 'RUNE');
+      unit.setAttribute('title', 'RUNE');
+
+      const img = document.createElement('img');
+      img.src = RUNE_LOGO_SRC;
+      img.alt = '';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+
+      unit.appendChild(img);
+      return unit;
+    }
+
+    function hydrateRuneUnits(root) {
+      if (!root || !root.ownerDocument) return;
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          if (!node.nodeValue || !node.nodeValue.includes('ᚱ')) return NodeFilter.FILTER_REJECT;
+          const parent = node.parentElement;
+          if (!parent || parent.closest('script,style,textarea,template,.rune-logo-unit')) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach((node) => {
+        const parts = node.nodeValue.split('ᚱ');
+        const fragment = document.createDocumentFragment();
+        parts.forEach((part, index) => {
+          if (part) fragment.appendChild(document.createTextNode(part));
+          if (index < parts.length - 1) fragment.appendChild(createRuneLogoUnit());
+        });
+        node.parentNode.replaceChild(fragment, node);
+      });
+    }
+
+    function formatRuneTitle(amountE8) {
+      return formatRune(amountE8).replace(/ᚱ/g, 'RUNE');
     }
 
     function setLoadingMetric(id, message = 'Loading…') {
@@ -3677,8 +3754,8 @@
     function setKPIRune(id, amountE8) {
       const el = document.getElementById(id);
       if (!el) return;
-      el.textContent = formatRuneShort(amountE8);
-      el.setAttribute('title', formatRune(amountE8));
+      setText(id, formatRuneShort(amountE8));
+      el.setAttribute('title', formatRuneTitle(amountE8));
     }
 
     function formatUSD(amountE8) {
@@ -3838,6 +3915,7 @@
             <div class="cell-sub">LP retained ~5% on this exit</div>
           </td>
         </tr>`).join('');
+      hydrateRuneUnits(tbody);
     }
 
     function getOrderedBases(config) {
@@ -4036,6 +4114,7 @@
           <td data-label="Status"><span class="badge ${statusClass}">${n.status}</span></td>
         </tr>`;
       }).join('');
+      hydrateRuneUnits(tbody);
     }
 
     async function fetchAPY() {
@@ -4672,6 +4751,7 @@
           <td class="current-val" data-label="Investor value">${formatRune(Math.round(p.currentValueE8))}</td>
         </tr>`;
       }).join('');
+      hydrateRuneUnits(tbody);
     }
 
     function updateStaleChip() {
@@ -4757,6 +4837,7 @@
         spans[0].textContent = fmtVal(niceMax);
         spans[1].textContent = fmtVal(midV);
         spans[2].textContent = fmtVal(niceMin);
+        hydrateRuneUnits(yAxis);
       }
       // X-axis labels: first and last date
       if (xAxis && dates.length === values.length) {

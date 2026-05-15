@@ -55,6 +55,23 @@ function parseRune(text) {
   return match ? Number(match[0]) : null;
 }
 
+function countVisibleRuneGlyphs(doc) {
+  const nodeFilter = doc.defaultView.NodeFilter;
+  const walker = doc.createTreeWalker(doc.body, nodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      if (!node.nodeValue || !node.nodeValue.includes('ᚱ')) return nodeFilter.FILTER_REJECT;
+      const parent = node.parentElement;
+      if (!parent || parent.closest('script,style,textarea,template')) return nodeFilter.FILTER_REJECT;
+      return nodeFilter.FILTER_ACCEPT;
+    }
+  });
+  let count = 0;
+  while (walker.nextNode()) {
+    count += (walker.currentNode.nodeValue.match(/ᚱ/g) || []).length;
+  }
+  return count;
+}
+
 function approxEqual(a, b, tolerance = 0.03) {
   return a !== null && b !== null && Math.abs(a - b) <= tolerance;
 }
@@ -123,6 +140,10 @@ function collectDomSnapshot(window) {
       flowOperators: doc.querySelectorAll('.apy-flow-operator').length,
       investorStep: !!doc.querySelector('.apy-flow-step.is-investor'),
       text: doc.querySelector('.apy-build-panel')?.textContent?.replace(/\s+/g, ' ').trim() || ''
+    },
+    runeUnit: {
+      visibleGlyphs: countVisibleRuneGlyphs(doc),
+      logoCount: doc.querySelectorAll('.rune-logo-unit img[src$="thorchain-mark.png"]').length
     },
     dataWorkbench: {
       hintText: doc.querySelector('.data-hint')?.textContent?.trim() || '',
@@ -205,6 +226,11 @@ function validateSnapshot(snapshot) {
   checks.push({
     ok: approxEqual(investorsApy, lpApy / 2) && approxEqual(runebondApy, investorsApy),
     message: `50 / 50 split holds (${snapshot.lpApy} -> ${snapshot.investorsApy} / ${snapshot.runebondApy})`
+  });
+
+  checks.push({
+    ok: snapshot.runeUnit.visibleGlyphs === 0 && snapshot.runeUnit.logoCount >= 20,
+    message: `RUNE amounts use logo units instead of raw ᚱ glyphs (${snapshot.runeUnit.logoCount} logos)`
   });
 
   checks.push({
