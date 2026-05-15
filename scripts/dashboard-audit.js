@@ -159,7 +159,7 @@ function collectDomSnapshot(window) {
     },
     links: {
       firstSwap: doc.querySelector('#swaps-tbody a')?.getAttribute('href') || '',
-      firstSwapTx: doc.querySelector('#swaps-tbody .cell-sub a')?.getAttribute('href') || '',
+      firstSwapTx: doc.querySelector('#swaps-tbody .tx-link-pill')?.getAttribute('href') || '',
       firstNode: doc.querySelector('#nodes-tbody a[href^="https://thorchain.net/node/"]')?.getAttribute('href') || '',
       firstNodeRunebond: doc.querySelector('#nodes-tbody a[href^="https://app.runebond.com/nodes/"]')?.getAttribute('href') || '',
       firstProvider: doc.querySelector('#providers-tbody a')?.getAttribute('href') || ''
@@ -207,7 +207,11 @@ function collectDomSnapshot(window) {
       bondColumnCount: doc.querySelectorAll('table[data-table="bonds"] thead th').length,
       nodeBrandLogoCount: doc.querySelectorAll('#nodes-tbody .node-brand-logo').length,
       firstRunebondLogo: doc.querySelector('#nodes-tbody .node-link-runebond img')?.getAttribute('src') || '',
-      firstThorchainLogo: doc.querySelector('#nodes-tbody .node-link-thorchain img')?.getAttribute('src') || ''
+      firstThorchainLogo: doc.querySelector('#nodes-tbody .node-link-thorchain img')?.getAttribute('src') || '',
+      addressPills: doc.querySelectorAll('.data-workbench .address-pill').length,
+      copyAddressButtons: doc.querySelectorAll('.data-workbench .copy-address-action').length,
+      firstCopyValue: doc.querySelector('.data-workbench .copy-address-action')?.getAttribute('data-copy') || '',
+      txLinkPills: doc.querySelectorAll('#swaps-tbody .tx-link-pill .external-link-icon').length
     }
   };
 }
@@ -387,6 +391,16 @@ function validateSnapshot(snapshot) {
     message: hasSourceWarnings
       ? 'provider explorer link valid; other explorer link checks skipped because upstream sources warned'
       : 'table links point to THORChain node scanner and RUNEBOND node page'
+  });
+
+  checks.push({
+    ok: snapshot.dataWorkbench.addressPills >= 3 &&
+      snapshot.dataWorkbench.copyAddressButtons === snapshot.dataWorkbench.addressPills &&
+      /^thor1/i.test(snapshot.dataWorkbench.firstCopyValue) &&
+      (hasSourceWarnings || snapshot.dataWorkbench.txLinkPills > 0),
+    message: hasSourceWarnings
+      ? 'premium address rows keep copy controls; tx icon checks skipped because upstream sources warned'
+      : 'premium address rows include copy buttons and Recent exits use external tx icon links'
   });
 
   return checks;

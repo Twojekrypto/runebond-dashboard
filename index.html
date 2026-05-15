@@ -303,6 +303,182 @@
       background:var(--accent-soft);
       color:var(--accent);
     }
+    .node-addr.address-stack{
+      display:grid;
+      gap:7px;
+      min-width:0;
+      overflow:visible;
+      color:var(--text);
+      font-family:var(--sans);
+      font-size:inherit;
+      white-space:normal;
+    }
+    .address-line{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+    }
+    .address-pill{
+      display:inline-flex;
+      align-items:center;
+      min-width:0;
+      max-width:100%;
+      color:var(--text);
+      font-family:var(--mono);
+      font-size:12.5px;
+      font-weight:900;
+      line-height:1.15;
+      letter-spacing:-.018em;
+      white-space:nowrap;
+      transition:color .16s ease,transform .16s ease;
+    }
+    .address-pill:hover{
+      color:var(--accent);
+      transform:translateY(-1px);
+    }
+    .addr-text{
+      display:inline-flex;
+      align-items:center;
+      min-width:0;
+      max-width:100%;
+    }
+    .addr-prefix,
+    .addr-suffix{
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .addr-dots{
+      flex:0 0 auto;
+      padding:0 3px;
+      color:var(--text-3);
+      letter-spacing:0;
+    }
+    .copy-address-action{
+      position:relative;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+      width:28px;
+      height:28px;
+      border:1px solid rgba(11,12,22,.09);
+      border-radius:10px;
+      background:rgba(255,255,255,.72);
+      color:var(--text-2);
+      cursor:pointer;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+      transition:background .16s ease,border-color .16s ease,color .16s ease,transform .16s ease,box-shadow .16s ease;
+    }
+    .copy-address-action:hover{
+      transform:translateY(-1px);
+      border-color:rgba(11,76,255,.22);
+      background:#fff;
+      color:var(--accent);
+      box-shadow:0 10px 22px rgba(11,76,255,.08);
+    }
+    .copy-address-action.is-copied{
+      border-color:rgba(0,179,15,.30);
+      background:rgba(0,179,15,.08);
+      color:var(--pos);
+    }
+    .copy-address-action.is-error{
+      border-color:rgba(196,38,38,.28);
+      background:rgba(196,38,38,.06);
+      color:var(--neg);
+    }
+    .copy-icon{
+      position:relative;
+      width:14px;
+      height:14px;
+      color:inherit;
+    }
+    .copy-icon::before,
+    .copy-icon::after{
+      content:"";
+      position:absolute;
+      width:8px;
+      height:10px;
+      border:1.6px solid currentColor;
+      border-radius:3px;
+      background:transparent;
+    }
+    .copy-icon::before{
+      left:4px;
+      top:1px;
+    }
+    .copy-icon::after{
+      left:1px;
+      top:4px;
+      background:rgba(255,255,255,.50);
+    }
+    .tx-link-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      min-height:28px;
+      max-width:100%;
+      padding:0 10px;
+      border:1px solid rgba(11,76,255,.13);
+      border-radius:999px;
+      background:rgba(11,76,255,.045);
+      color:var(--accent)!important;
+      font-family:var(--sans);
+      font-size:10.75px;
+      font-weight:900;
+      letter-spacing:-.01em;
+      text-decoration:none;
+      transition:background .16s ease,border-color .16s ease,transform .16s ease,box-shadow .16s ease;
+    }
+    .tx-link-pill:hover{
+      transform:translateY(-1px);
+      border-color:rgba(11,76,255,.24)!important;
+      background:#fff;
+      box-shadow:0 10px 22px rgba(11,76,255,.08);
+    }
+    .tx-hash{
+      max-width:118px;
+      overflow:hidden;
+      color:var(--text-2);
+      font-family:var(--mono);
+      font-size:10px;
+      font-weight:800;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .external-link-icon{
+      position:relative;
+      display:inline-flex;
+      flex:0 0 auto;
+      width:14px;
+      height:14px;
+      color:inherit;
+    }
+    .external-link-icon::before{
+      content:"";
+      position:absolute;
+      left:1px;
+      bottom:1px;
+      width:10px;
+      height:10px;
+      border:1.6px solid currentColor;
+      border-radius:3px;
+      opacity:.92;
+    }
+    .external-link-icon::after{
+      content:"";
+      position:absolute;
+      right:0;
+      top:0;
+      width:6px;
+      height:6px;
+      border-top:1.7px solid currentColor;
+      border-right:1.7px solid currentColor;
+      box-shadow:2px -2px 0 -1px currentColor;
+    }
+    .address-meta{
+      margin-top:0;
+    }
     .rune-logo-unit{
       display:inline-flex;
       align-items:center;
@@ -448,7 +624,7 @@
       min-width:0;
       border-radius:10px;
     }
-    .brand-logo:focus-visible,.addr-mono:focus-visible,.cell-sub a:focus-visible,.th-sort:focus-visible,.section-btn:focus-visible,.icon-btn:focus-visible,.column-filter-trigger:focus-visible,.column-filter-clear:focus-visible{
+    .brand-logo:focus-visible,.addr-mono:focus-visible,.address-pill:focus-visible,.copy-address-action:focus-visible,.tx-link-pill:focus-visible,.cell-sub a:focus-visible,.th-sort:focus-visible,.section-btn:focus-visible,.icon-btn:focus-visible,.column-filter-trigger:focus-visible,.column-filter-clear:focus-visible{
       outline:2px solid rgba(96,165,250,.52);
       outline-offset:4px;
     }
@@ -658,7 +834,7 @@
       white-space:nowrap;
     }
     .brand-logo-mark,.brand-word{display:none}
-    .brand-logo:focus-visible,.addr-mono:focus-visible,.cell-sub a:focus-visible,.th-sort:focus-visible,.section-btn:focus-visible,.icon-btn:focus-visible,.column-filter-trigger:focus-visible,.column-filter-clear:focus-visible{
+    .brand-logo:focus-visible,.addr-mono:focus-visible,.address-pill:focus-visible,.copy-address-action:focus-visible,.tx-link-pill:focus-visible,.cell-sub a:focus-visible,.th-sort:focus-visible,.section-btn:focus-visible,.icon-btn:focus-visible,.column-filter-trigger:focus-visible,.column-filter-clear:focus-visible{
       outline:2px solid rgba(0,179,15,.45);
       outline-offset:4px;
     }
@@ -2544,11 +2720,18 @@
       border-bottom:1px solid rgba(11,12,22,.075);
       z-index:4;
     }
+    .data-workbench tbody tr{
+      background:#fff;
+      transition:background .16s ease;
+    }
+    .data-workbench tbody tr:nth-child(even){background:#fbfcff}
+    .data-workbench tbody tr:hover{background:#f3f6ff}
     .data-workbench tbody td{
       padding:18px;
       border-bottom:1px solid rgba(11,12,22,.065);
       background:#fff;
       font-size:13.5px;
+      transition:background .16s ease,box-shadow .16s ease;
     }
     .data-workbench tbody tr:nth-child(even) td{background:#fbfcff}
     .data-workbench tbody tr:hover td{background:#f3f6ff}
@@ -2575,6 +2758,14 @@
       background:inherit;
     }
     .data-workbench table[data-table="exits"] td.primary-cell{left:154px}
+    .data-workbench tbody tr:hover .sticky-col,
+    .data-workbench table[data-table="exits"] tbody tr:hover td:first-child,
+    .data-workbench table[data-table="exits"] tbody tr:hover td.primary-cell{
+      background:#f3f6ff;
+    }
+    .data-workbench tbody tr:hover td:first-child{
+      box-shadow:inset 3px 0 0 rgba(11,76,255,.25);
+    }
     .data-workbench .th-sort{
       min-height:30px;
       padding:0 8px;
@@ -2607,6 +2798,25 @@
     .data-workbench .cell-sub{
       color:var(--text-2);
       font-size:11.5px;
+    }
+    .data-workbench .node-addr.address-stack{
+      font-size:13px;
+      font-weight:800;
+    }
+    .data-workbench .address-line{
+      max-width:100%;
+    }
+    .data-workbench .address-pill{
+      max-width:calc(100% - 36px);
+    }
+    .data-workbench .address-meta{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .data-workbench .tx-link-pill{
+      border-bottom:1px solid rgba(11,76,255,.13);
     }
     @media(max-width:1180px){
       .data-workbench .section-nav{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -2773,6 +2983,22 @@
         line-height:1.15;
         letter-spacing:.02em;
         white-space:normal;
+      }
+      .data-workbench .address-line{
+        align-items:flex-start;
+      }
+      .data-workbench .address-pill{
+        max-width:calc(100% - 38px);
+        font-size:12px;
+      }
+      .data-workbench .address-meta{
+        gap:7px;
+      }
+      .data-workbench .tx-link-pill{
+        max-width:100%;
+      }
+      .data-workbench .tx-hash{
+        max-width:92px;
       }
       .data-workbench .share-bar{margin-left:0;width:100%}
     }
@@ -3431,13 +3657,65 @@
         });
       });
 
+      async function writeClipboardValue(value) {
+        const text = String(value || '').trim();
+        if (!text) throw new Error('Nothing to copy');
+        if (navigator.clipboard && window.isSecureContext) {
+          try {
+            await navigator.clipboard.writeText(text);
+            return;
+          } catch (error) {
+            // Local previews and embedded browsers can reject Clipboard API even on a user click.
+          }
+        }
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        const copied = document.execCommand('copy');
+        textarea.remove();
+        if (!copied) throw new Error('Copy command failed');
+      }
+
+      function flashCopyState(button, ok) {
+        button.classList.toggle('is-copied', ok);
+        button.classList.toggle('is-error', !ok);
+        const originalLabel = button.dataset.originalLabel || button.getAttribute('aria-label') || 'Copy address';
+        button.dataset.originalLabel = originalLabel;
+        button.setAttribute('aria-label', ok ? 'Copied address' : 'Copy failed');
+        button.title = ok ? 'Copied' : 'Copy failed';
+        window.clearTimeout(button._copyTimer);
+        button._copyTimer = window.setTimeout(() => {
+          button.classList.remove('is-copied', 'is-error');
+          button.setAttribute('aria-label', originalLabel);
+          button.title = originalLabel;
+        }, 1300);
+      }
+
+      document.addEventListener('click', async e => {
+        const button = e.target.closest('.copy-address-action');
+        if (!button) return;
+        e.preventDefault();
+        e.stopPropagation();
+        try {
+          await writeClipboardValue(button.dataset.copy);
+          flashCopyState(button, true);
+        } catch (error) {
+          flashCopyState(button, false);
+        }
+      });
+
       const copyAddressButton = document.getElementById('copy-address-button');
       const lpAddressLink = document.querySelector('.topbar-meta .addr-mono');
       if (copyAddressButton && lpAddressLink) {
         copyAddressButton.addEventListener('click', async () => {
           const address = lpAddressLink.getAttribute('title') || lpAddressLink.textContent.trim();
           try {
-            await navigator.clipboard.writeText(address);
+            await writeClipboardValue(address);
             copyAddressButton.textContent = 'Copied';
           } catch (error) {
             copyAddressButton.textContent = 'Copy failed';
@@ -3815,8 +4093,70 @@
         .slice(-limit);
     }
 
-    function truncAddr(addr) {
-      return addr.slice(0, 10) + '…' + addr.slice(-6);
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[char]));
+    }
+
+    function compactAddressParts(value, head = 9, tail = 7) {
+      const address = String(value || '').trim();
+      if (!address) return { prefix: '—', suffix: '', full: '' };
+      if (address.length <= head + tail + 1) return { prefix: address, suffix: '', full: address };
+      return {
+        prefix: address.slice(0, head),
+        suffix: address.slice(-tail),
+        full: address
+      };
+    }
+
+    function compactHash(value) {
+      const hash = String(value || '').trim();
+      if (!hash) return '';
+      if (hash.length <= 18) return hash;
+      return `${hash.slice(0, 8)}…${hash.slice(-8)}`;
+    }
+
+    function renderCopyAddressButton(value, label = 'Copy address') {
+      const safeValue = escapeHtml(value);
+      const safeLabel = escapeHtml(label);
+      return `<button class="copy-address-action" type="button" data-copy="${safeValue}" aria-label="${safeLabel}" title="${safeLabel}">
+        <span class="copy-icon" aria-hidden="true"></span>
+      </button>`;
+    }
+
+    function renderAddressBlock({ address, href, label = 'Open address', metaHtml = '', metaClass = 'cell-sub address-meta', className = '' }) {
+      const parts = compactAddressParts(address);
+      const safeAddress = escapeHtml(parts.full);
+      const safeHref = escapeHtml(href || '#');
+      const safeLabel = escapeHtml(label);
+      const safeClass = className ? ` ${escapeHtml(className)}` : '';
+      const suffix = parts.suffix ? `<span class="addr-dots">…</span><span class="addr-suffix">${escapeHtml(parts.suffix)}</span>` : '';
+      const meta = metaHtml ? `<div class="${escapeHtml(metaClass)}">${metaHtml}</div>` : '';
+      return `<div class="node-addr address-stack${safeClass}">
+        <div class="address-line">
+          <a class="address-pill" href="${safeHref}" target="_blank" rel="noopener" title="${safeAddress}" aria-label="${safeLabel}">
+            <span class="addr-text"><span class="addr-prefix">${escapeHtml(parts.prefix)}</span>${suffix}</span>
+            <span class="sr">${safeAddress}</span>
+          </a>
+          ${renderCopyAddressButton(parts.full, `Copy ${parts.full}`)}
+        </div>
+        ${meta}
+      </div>`;
+    }
+
+    function renderTxLink(txId) {
+      const safeTx = escapeHtml(txId);
+      if (!safeTx) return 'Recipient wallet';
+      return `<a class="tx-link-pill" href="https://runescan.io/tx/${safeTx}" target="_blank" rel="noopener" title="Open transaction ${safeTx}">
+        <span class="external-link-icon" aria-hidden="true"></span>
+        <span>Open tx</span>
+        <span class="tx-hash">${escapeHtml(compactHash(txId))}</span>
+      </a>`;
     }
 
     function isStringSort(key) {
@@ -3906,10 +4246,13 @@
             <div class="cell-sub">Observed LP payout</div>
           </td>
           <td class="sticky-col primary-cell" data-label="Recipient">
-            <div class="node-addr"><a href="https://thorchain.net/address/${swap.recipient}" target="_blank" rel="noopener">${truncAddr(swap.recipient)}</a></div>
-            <div class="cell-sub">${swap.txId
-              ? `<a href="https://runescan.io/tx/${swap.txId}" target="_blank" rel="noopener">Tx ${truncAddr(swap.txId)}</a>`
-              : 'Recipient wallet'}</div>
+            ${renderAddressBlock({
+              address: swap.recipient,
+              href: `https://thorchain.net/address/${encodeURIComponent(swap.recipient)}`,
+              label: 'Open recipient wallet in THORChain scanner',
+              metaHtml: renderTxLink(swap.txId),
+              className: 'exit-address-block'
+            })}
           </td>
           <td class="deposited" data-label="Net RUNE out">${formatRune(swap.netPayoutE8)}</td>
           <td data-label="Gross exit">
@@ -4105,16 +4448,21 @@
         const statusClass = n.status === 'Active' ? 'active' : 'standby';
         return `<tr>
           <td class="node-addr sticky-col primary-cell" data-label="Node address">
-            <a href="https://thorchain.net/node/${n.address}" target="_blank" rel="noopener" title="Open this validator in THORChain scanner">${truncAddr(n.address)}</a>
-            <div class="node-link-row" aria-label="Node external links">
-              <a class="node-link-pill node-link-runebond" href="https://app.runebond.com/nodes/${n.address}" target="_blank" rel="noopener" title="Open this validator in RUNEBOND">
+            ${renderAddressBlock({
+              address: n.address,
+              href: `https://thorchain.net/node/${encodeURIComponent(n.address)}`,
+              label: 'Open this validator in THORChain scanner',
+              metaClass: 'node-link-row',
+              metaHtml: `
+              <a class="node-link-pill node-link-runebond" href="https://app.runebond.com/nodes/${encodeURIComponent(n.address)}" target="_blank" rel="noopener" title="Open this validator in RUNEBOND">
                 <img class="node-brand-logo is-runebond" src="assets/runebond-logo-horizontal.svg" alt="RUNEBOND" loading="lazy">
               </a>
-              <a class="node-link-pill node-link-thorchain" href="https://thorchain.net/node/${n.address}" target="_blank" rel="noopener" title="Open this validator in THORChain scanner">
+              <a class="node-link-pill node-link-thorchain" href="https://thorchain.net/node/${encodeURIComponent(n.address)}" target="_blank" rel="noopener" title="Open this validator in THORChain scanner">
                 <img class="node-brand-logo is-thorchain" src="assets/thorchain-mark.png" alt="" loading="lazy">
                 <span class="node-brand-text">THORChain</span>
-              </a>
-            </div>
+              </a>`,
+              className: 'node-address-block'
+            })}
           </td>
           <td class="${bond > 0 ? 'bond-amount' : 'bond-zero'}" data-label="Bond">${bond > 0 ? formatRune(n.bond) : `0 ${RUNE_UNIT_TOKEN}`}</td>
           <td data-label="Status"><span class="badge ${statusClass}">${n.status}</span></td>
@@ -4738,8 +5086,13 @@
 
         return `<tr>
           <td class="sticky-col primary-cell" data-label="Address">
-            <div class="node-addr"><a href="https://thorchain.net/address/${p.addr}" target="_blank" rel="noopener">${truncAddr(p.addr)}</a></div>
-            <div class="cell-sub">Since ${dateStr} · ${p.txCount} tx${p.txCount > 1 ? 's' : ''}</div>
+            ${renderAddressBlock({
+              address: p.addr,
+              href: `https://thorchain.net/address/${encodeURIComponent(p.addr)}`,
+              label: 'Open investor wallet in THORChain scanner',
+              metaHtml: `Since ${escapeHtml(dateStr)} · ${p.txCount} tx${p.txCount > 1 ? 's' : ''}`,
+              className: 'investor-address-block'
+            })}
           </td>
           <td class="deposited" data-label="Deposited">${formatRune(p.totalE8)}</td>
           <td data-label="Pool share">
