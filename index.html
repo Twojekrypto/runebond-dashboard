@@ -886,7 +886,7 @@
       margin-bottom:4px;
     }
     .hero-spark::after{
-      content:'Line shows investor APY after the split: live bonding yield plus accumulated 5% exit fees.';
+      content:'Gross LP inputs are shown above; the line and headline already show investor APY after the 50 / 50 split.';
       display:block;
       color:var(--text-3);
       font-size:13px;
@@ -2352,19 +2352,19 @@
       <span class="est-badge" title="Derived from 30-day bonding earnings and inferred 5% exit fees, not forward guidance.">30 day · estimate</span>
 
       <div class="hero-spark">
-        <div class="spark-label">30-day investor APY build-up</div>
+        <div class="spark-label">30-day investor APY after split</div>
         <div class="spark-metrics" aria-label="Yield components">
           <div>
-            <span>Bonding</span>
+            <span>LP bonding</span>
             <strong id="hero-bonding-yield">—</strong>
           </div>
           <div>
-            <span>Exit fees</span>
+            <span>LP exit fees</span>
             <strong id="hero-fee-yield">—</strong>
           </div>
           <div>
-            <span>Investors get</span>
-            <strong>50%</strong>
+            <span>Chart shows</span>
+            <strong id="hero-chart-yield">—</strong>
           </div>
         </div>
         <div class="spark-stage">
@@ -3123,6 +3123,7 @@
       setText('split-gross-note', 'Waiting for complete LP capital inputs.');
       setText('split-investor', 'Loading…');
       setText('split-investor-note', 'Investor APY appears only after capital and fee inputs are aligned.');
+      setText('hero-chart-yield', 'Loading…');
       setText('apy-note', 'Loading complete LP capital before showing APY');
       setText('proj-capital', '—');
       document.title = 'RUNEBOND LP Dashboard';
@@ -3771,7 +3772,7 @@
         setText('bonding-yield-pct', formatPercent(bondingYieldOnTotal));
         setText('bonding-yield-rune', `~${bondingEarningsAnnual.toFixed(0)} ᚱ/yr from ${bondedRune.toFixed(0)} ᚱ bonded in nodes`);
         setText('hero-bonding-yield', formatPercent(bondingYieldOnTotal));
-        setText('hero-bonding-note', `Chart starts with the investor half of bonding yield, weighted by how much LP capital is parked in nodes.`);
+        setText('hero-bonding-note', `LP bonding is a gross input; the chart line uses the investor half after the 50 / 50 split.`);
         setText('split-bonding', formatPercent(bondingYieldOnTotal));
         setText('split-bonding-note', `${bondedPct}% of LP capital is bonded in node allocations.`);
       } else {
@@ -3798,7 +3799,7 @@
         setText('hero-fee-yield', formatPercent(feeYieldOnTotal));
         setText(
           'hero-fee-note',
-          `${redemptionCount30d} payouts add the retained 5% fee into the investor APY build-up${usingCachedFeeFeed ? ' · refreshing live' : ''}`
+          `${redemptionCount30d} payouts add retained 5% fees as a gross input; the chart line shows the investor half${usingCachedFeeFeed ? ' · refreshing live' : ''}`
         );
         setText('split-fees', formatPercent(feeYieldOnTotal));
         setText(
@@ -3848,6 +3849,7 @@
       if (redemptionsLoaded) {
         setText('lp-effective-apy', lpEffectiveAPY > 0 ? formatPercent(lpEffectiveAPY) : '—');
         setText('investors-apy', investorsAPY > 0 ? formatPercent(investorsAPY) : '—');
+        setText('hero-chart-yield', investorsAPY > 0 ? formatPercent(investorsAPY) : '—');
         setText('runebond-apy', runebondAPY > 0 ? formatPercent(runebondAPY) : '—');
         setText('split-gross', lpEffectiveAPY > 0 ? formatPercent(lpEffectiveAPY) : '—');
         setText('split-gross-note', 'Total LP yield before the 50 / 50 RUNEBOND split.');
@@ -3856,6 +3858,7 @@
       } else if (redemptionStatus === 'error') {
         setText('lp-effective-apy', bondingYieldOnTotal !== null ? formatPercent(bondingYieldOnTotal) : '—');
         setText('investors-apy', bondingYieldOnTotal !== null ? formatPercent(investorTake(bondingYieldOnTotal)) : '—');
+        setText('hero-chart-yield', bondingYieldOnTotal !== null ? formatPercent(investorTake(bondingYieldOnTotal)) : '—');
         setText('runebond-apy', bondingYieldOnTotal !== null ? formatPercent(runebondTake(bondingYieldOnTotal)) : '—');
         setText('split-gross', bondingYieldOnTotal !== null ? formatPercent(bondingYieldOnTotal) : '—');
         setText('split-gross-note', 'Temporary bonding-only fallback while fee history is unavailable.');
@@ -3865,6 +3868,7 @@
         setLoadingMetric('lp-effective-apy');
         setHeroApyLoading('Syncing 30d exit fees…');
         setLoadingMetric('runebond-apy');
+        setText('hero-chart-yield', 'Loading…');
         setText('split-gross', 'Loading…');
         setText('split-gross-note', 'Waiting for fee history to finish syncing.');
         setText('split-investor', 'Loading…');
@@ -4302,11 +4306,11 @@
       setText('bonding-yield-pct', `${bondingPart.toFixed(2)}%`);
       setText('bonding-yield-rune', `~272,860 ᚱ/yr from 1,920,000 ᚱ bonded at 14.50%`);
       setText('hero-bonding-yield', `${bondingPart.toFixed(2)}%`);
-      setText('hero-bonding-note', 'Chart starts with the investor half of bonding yield, weighted by LP bonded capital.');
+      setText('hero-bonding-note', 'LP bonding is a gross input; the chart line uses the investor half after the 50 / 50 split.');
       setText('fee-yield-pct', `${feesPart.toFixed(2)}%`);
       setText('fee-yield-rune', '142 payouts · 165K ᚱ gross volume in 30d');
       setText('hero-fee-yield', `${feesPart.toFixed(2)}%`);
-      setText('hero-fee-note', '142 payouts add the retained 5% fee into the investor APY build-up.');
+      setText('hero-fee-note', '142 payouts add retained 5% fees as a gross input; the chart line shows the investor half.');
       setText('redemption-volume', formatRuneShort(16_500_000_000_000));
       setText('redemption-count', '142 payouts · gross volume inferred from net sends');
 
@@ -4321,6 +4325,7 @@
 
       setText('lp-effective-apy', `${grossLPapy.toFixed(2)}%`);
       setText('investors-apy', `${investorAPY.toFixed(2)}%`);
+      setText('hero-chart-yield', `${investorAPY.toFixed(2)}%`);
       setText('runebond-apy', `${investorAPY.toFixed(2)}%`);
       setText('apy-note', 'Gross LP yield from bonding + payout fees before the 50/50 split');
       setText('proj-capital', formatRune(totalE8));

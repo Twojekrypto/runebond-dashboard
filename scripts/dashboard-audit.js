@@ -74,6 +74,7 @@ function collectDomSnapshot(window) {
     splitBonding: text('split-bonding'),
     splitFees: text('split-fees'),
     feeYield: text('fee-yield-pct'),
+    heroChartYield: text('hero-chart-yield'),
     statuses: {
       providers: text('providers-sync-status')
     },
@@ -124,6 +125,7 @@ function validateSnapshot(snapshot) {
   const investorsApy = parsePercent(snapshot.investorsApy);
   const lpApy = parsePercent(snapshot.lpApy);
   const runebondApy = parsePercent(snapshot.runebondApy);
+  const heroChartYield = parsePercent(snapshot.heroChartYield);
   const splitGross = parsePercent(snapshot.splitGross);
   const splitInvestor = parsePercent(snapshot.splitInvestor);
   const chartLast = parsePercent(snapshot.chart.last);
@@ -156,13 +158,19 @@ function validateSnapshot(snapshot) {
   });
 
   checks.push({
+    ok: approxEqual(investorsApy, heroChartYield),
+    message: `yield monitor chart tile shows investor APY after split (${snapshot.heroChartYield})`
+  });
+
+  checks.push({
     ok: approxEqual(investorsApy, lpApy / 2) && approxEqual(runebondApy, investorsApy),
     message: `50 / 50 split holds (${snapshot.lpApy} -> ${snapshot.investorsApy} / ${snapshot.runebondApy})`
   });
 
   checks.push({
     ok: hasSourceWarnings || (
-      /investor apy build-up/i.test(snapshot.chart.label) &&
+      /investor apy/i.test(snapshot.chart.label) &&
+      /after split/i.test(snapshot.chart.label) &&
       snapshot.chart.points >= 2 &&
       snapshot.chart.unit === '%' &&
       chartMin !== null &&
