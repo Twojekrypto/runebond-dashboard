@@ -305,10 +305,17 @@ function validateColumnFilters(window) {
     }
 
     const input = inputs[0];
+    const shell = input.closest('.column-filter');
+    const trigger = shell?.querySelector('.column-filter-trigger');
+    const startsCollapsed = shell && !shell.classList.contains('is-open') && !shell.classList.contains('has-value');
+    if (trigger) trigger.click();
+    const opensAfterClick = !shell || (!!trigger && shell.classList.contains('is-open') && trigger.getAttribute('aria-expanded') === 'true');
+
     input.value = 'zzzz-no-match-zzzz';
     input.dispatchEvent(new window.Event('input', { bubbles: true }));
     const emptyShown = !!tbody.querySelector('tr.filter-empty');
     const inputsSynced = inputs.every(candidate => candidate.value === input.value);
+    const staysExpandedWithValue = !shell || shell.classList.contains('has-value');
 
     input.value = '';
     input.dispatchEvent(new window.Event('input', { bubbles: true }));
@@ -317,8 +324,8 @@ function validateColumnFilters(window) {
       inputs.every(candidate => candidate.value === '');
 
     checks.push({
-      ok: emptyShown && inputsSynced && cleared,
-      message: `${label} column filter syncs desktop/mobile inputs and clears rows`
+      ok: startsCollapsed && opensAfterClick && emptyShown && inputsSynced && staysExpandedWithValue && cleared,
+      message: `${label} column filter opens on search click, syncs desktop/mobile inputs, and clears rows`
     });
   });
 

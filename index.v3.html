@@ -411,7 +411,7 @@
       min-width:0;
       border-radius:10px;
     }
-    .brand-logo:focus-visible,.addr-mono:focus-visible,.cell-sub a:focus-visible,.th-sort:focus-visible,.section-btn:focus-visible,.icon-btn:focus-visible{
+    .brand-logo:focus-visible,.addr-mono:focus-visible,.cell-sub a:focus-visible,.th-sort:focus-visible,.section-btn:focus-visible,.icon-btn:focus-visible,.column-filter-trigger:focus-visible,.column-filter-clear:focus-visible{
       outline:2px solid rgba(96,165,250,.52);
       outline-offset:4px;
     }
@@ -621,7 +621,7 @@
       white-space:nowrap;
     }
     .brand-logo-mark,.brand-word{display:none}
-    .brand-logo:focus-visible,.addr-mono:focus-visible,.cell-sub a:focus-visible,.th-sort:focus-visible,.section-btn:focus-visible,.icon-btn:focus-visible{
+    .brand-logo:focus-visible,.addr-mono:focus-visible,.cell-sub a:focus-visible,.th-sort:focus-visible,.section-btn:focus-visible,.icon-btn:focus-visible,.column-filter-trigger:focus-visible,.column-filter-clear:focus-visible{
       outline:2px solid rgba(0,179,15,.45);
       outline-offset:4px;
     }
@@ -1946,19 +1946,65 @@
       display:inline-flex;
       align-items:center;
       border-radius:999px;
-      background:#fff;
+      background:rgba(255,255,255,.74);
       border:1px solid rgba(11,76,255,.14);
-      box-shadow:0 10px 24px rgba(11,76,255,.07);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.72),0 8px 18px rgba(11,76,255,.06);
       overflow:hidden;
-      transition:width .2s ease,border-color .2s ease,box-shadow .2s ease;
+      transition:width .2s ease,flex-basis .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease;
     }
     .data-workbench .column-filter:hover,
-    .data-workbench .column-filter:focus-within,
+    .data-workbench .column-filter.is-open,
     .data-workbench .column-filter.has-value{
-      width:190px;
-      flex-basis:190px;
-      border-color:rgba(11,76,255,.32);
-      box-shadow:0 14px 30px rgba(11,76,255,.12);
+      background:#fff;
+      border-color:rgba(11,76,255,.28);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.82),0 14px 30px rgba(11,76,255,.12);
+    }
+    .data-workbench .column-filter.is-open,
+    .data-workbench .column-filter.has-value{
+      width:178px;
+      flex-basis:178px;
+    }
+    .data-workbench .column-filter-trigger,
+    .data-workbench .column-filter-clear{
+      position:absolute;
+      top:50%;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:0;
+      border-radius:999px;
+      background:transparent;
+      color:var(--accent);
+      cursor:pointer;
+      transform:translateY(-50%);
+      transition:background .16s,color .16s,opacity .16s,transform .16s;
+      z-index:2;
+    }
+    .data-workbench .column-filter-trigger{
+      left:0;
+      width:36px;
+      height:36px;
+    }
+    .data-workbench .column-filter-trigger:hover{
+      background:rgba(11,76,255,.08);
+    }
+    .data-workbench .column-filter-clear{
+      right:6px;
+      width:24px;
+      height:24px;
+      color:rgba(24,31,54,.58);
+      font-size:16px;
+      line-height:1;
+      opacity:0;
+      pointer-events:none;
+    }
+    .data-workbench .column-filter.has-value .column-filter-clear{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .data-workbench .column-filter-clear:hover{
+      background:rgba(11,76,255,.08);
+      color:var(--accent);
     }
     .data-workbench .filter-lens{
       position:absolute;
@@ -1983,6 +2029,13 @@
       transform:rotate(45deg);
       transform-origin:left center;
     }
+    .data-workbench .column-filter-trigger .filter-lens{
+      position:relative;
+      left:auto;
+      top:auto;
+      display:block;
+      transform:none;
+    }
     .data-workbench .column-filter input{
       width:100%;
       height:100%;
@@ -1992,14 +2045,15 @@
       color:var(--text);
       font-size:12px;
       font-weight:800;
-      padding:0 14px 0 36px;
+      padding:0 36px 0 38px;
       opacity:0;
+      pointer-events:none;
       transition:opacity .16s ease;
     }
-    .data-workbench .column-filter:hover input,
-    .data-workbench .column-filter:focus-within input,
+    .data-workbench .column-filter.is-open input,
     .data-workbench .column-filter.has-value input{
       opacity:1;
+      pointer-events:auto;
     }
     .data-workbench .column-filter input::placeholder,
     .data-workbench .mobile-panel-filter input::placeholder{
@@ -2549,10 +2603,11 @@
               <th class="column-filter-cell">
                 <div class="th-inline-tools">
                   <button class="th-sort" id="providers-sort-addr" onclick="setProviderSort('addr')" type="button">Address <span class="sort-indicator">−</span></button>
-                  <label class="column-filter" aria-label="Search investor address">
-                    <span class="filter-lens" aria-hidden="true"></span>
-                    <input id="filter-investors" type="search" placeholder="Search address…" autocomplete="off" />
-                  </label>
+                  <div class="column-filter" role="search" aria-label="Search investor address">
+                    <button class="column-filter-trigger" type="button" aria-label="Open investor address search" aria-controls="filter-investors" aria-expanded="false"><span class="filter-lens" aria-hidden="true"></span></button>
+                    <input id="filter-investors" type="text" inputmode="search" placeholder="Search address…" autocomplete="off" spellcheck="false" aria-label="Search investor address" />
+                    <button class="column-filter-clear" type="button" aria-label="Clear investor address search">&times;</button>
+                  </div>
                 </div>
               </th>
               <th><button class="th-sort" id="providers-sort-totalE8" onclick="setProviderSort('totalE8')" type="button">Deposited <span class="sort-indicator">↓</span></button></th>
@@ -2615,10 +2670,11 @@
               <th class="column-filter-cell">
                 <div class="th-inline-tools">
                   <button class="th-sort" id="nodes-sort-address" onclick="setNodeSort('address')" type="button">Node address <span class="sort-indicator">−</span></button>
-                  <label class="column-filter" aria-label="Search node address">
-                    <span class="filter-lens" aria-hidden="true"></span>
-                    <input id="filter-bonds" type="search" placeholder="Search node…" autocomplete="off" />
-                  </label>
+                  <div class="column-filter" role="search" aria-label="Search node address">
+                    <button class="column-filter-trigger" type="button" aria-label="Open node address search" aria-controls="filter-bonds" aria-expanded="false"><span class="filter-lens" aria-hidden="true"></span></button>
+                    <input id="filter-bonds" type="text" inputmode="search" placeholder="Search node…" autocomplete="off" spellcheck="false" aria-label="Search node address" />
+                    <button class="column-filter-clear" type="button" aria-label="Clear node address search">&times;</button>
+                  </div>
                 </div>
               </th>
               <th><button class="th-sort" id="nodes-sort-bond" onclick="setNodeSort('bond')" type="button">Bond <span class="sort-indicator">↓</span></button></th>
@@ -2678,10 +2734,11 @@
               <th class="column-filter-cell">
                 <div class="th-inline-tools">
                   <button class="th-sort" id="swaps-sort-recipient" onclick="setSwapSort('recipient')" type="button">Wallet <span class="sort-indicator">−</span></button>
-                  <label class="column-filter" aria-label="Search exit wallet">
-                    <span class="filter-lens" aria-hidden="true"></span>
-                    <input id="filter-exits" type="search" placeholder="Search wallet…" autocomplete="off" />
-                  </label>
+                  <div class="column-filter" role="search" aria-label="Search exit wallet">
+                    <button class="column-filter-trigger" type="button" aria-label="Open wallet search" aria-controls="filter-exits" aria-expanded="false"><span class="filter-lens" aria-hidden="true"></span></button>
+                    <input id="filter-exits" type="text" inputmode="search" placeholder="Search wallet…" autocomplete="off" spellcheck="false" aria-label="Search exit wallet" />
+                    <button class="column-filter-clear" type="button" aria-label="Clear wallet search">&times;</button>
+                  </div>
                 </div>
               </th>
               <th><button class="th-sort" id="swaps-sort-netPayoutE8" onclick="setSwapSort('netPayoutE8')" type="button">Net out <span class="sort-indicator">−</span></button></th>
@@ -2811,6 +2868,14 @@
       syncCount('swap-count', 'tab-count-exits', /^(\d+)/);
 
       // Filter wiring — one logical search can have desktop + mobile inputs.
+      function setColumnFilterOpen(input, open){
+        const shell = input.closest('.column-filter');
+        if (!shell) return;
+        shell.classList.toggle('is-open', open);
+        const trigger = shell.querySelector('.column-filter-trigger');
+        if (trigger) trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+
       function wireFilter(inputIds, tbodyId, colspan){
         const ids = Array.isArray(inputIds) ? inputIds : [inputIds];
         const inputs = ids.map(id => document.getElementById(id)).filter(Boolean);
@@ -2821,8 +2886,12 @@
         function syncShellState(input){
           const shell = input.closest('.column-filter, .mobile-panel-filter');
           if (!shell) return;
-          const isFocused = input.ownerDocument ? input.ownerDocument.activeElement === input : false;
-          shell.classList.toggle('has-value', isFocused || input.value.trim().length > 0);
+          const hasValue = input.value.trim().length > 0;
+          shell.classList.toggle('has-value', hasValue);
+          if (shell.classList.contains('column-filter')) {
+            const trigger = shell.querySelector('.column-filter-trigger');
+            if (trigger) trigger.setAttribute('aria-expanded', shell.classList.contains('is-open') || hasValue ? 'true' : 'false');
+          }
         }
         function apply(source){
           const activeInput = source || inputs.find(input => input.value.trim()) || inputs[0];
@@ -2859,8 +2928,50 @@
           }
         }
         inputs.forEach(input => {
-          input.addEventListener('focus', () => syncShellState(input));
-          input.addEventListener('blur', () => syncShellState(input));
+          const shell = input.closest('.column-filter');
+          const trigger = shell ? shell.querySelector('.column-filter-trigger') : null;
+          const clearButton = shell ? shell.querySelector('.column-filter-clear') : null;
+          if (trigger) {
+            trigger.addEventListener('click', e => {
+              e.preventDefault();
+              setColumnFilterOpen(input, true);
+              input.focus();
+              syncShellState(input);
+            });
+          }
+          if (clearButton) {
+            clearButton.addEventListener('click', e => {
+              e.preventDefault();
+              e.stopPropagation();
+              input.value = '';
+              input.dispatchEvent(new Event('input', { bubbles: true }));
+              setColumnFilterOpen(input, true);
+              input.focus();
+              syncShellState(input);
+            });
+          }
+          input.addEventListener('focus', () => {
+            setColumnFilterOpen(input, true);
+            syncShellState(input);
+          });
+          input.addEventListener('blur', () => {
+            window.setTimeout(() => {
+              const active = input.ownerDocument ? input.ownerDocument.activeElement : null;
+              if (!input.value.trim() && (!shell || !shell.contains(active))) setColumnFilterOpen(input, false);
+              syncShellState(input);
+            }, 0);
+          });
+          input.addEventListener('keydown', e => {
+            if (e.key !== 'Escape') return;
+            if (input.value.trim()) {
+              input.value = '';
+              input.dispatchEvent(new Event('input', { bubbles: true }));
+              return;
+            }
+            setColumnFilterOpen(input, false);
+            input.blur();
+            syncShellState(input);
+          });
           input.addEventListener('input', () => apply(input));
           syncShellState(input);
         });
@@ -2881,9 +2992,17 @@
         inputs.forEach(i => { i.value = ''; });
         const focusTarget = inputs.find(i => i.offsetParent !== null) || inputs[0];
         if (focusTarget) {
+          setColumnFilterOpen(focusTarget, true);
           focusTarget.dispatchEvent(new Event('input', { bubbles: true }));
           focusTarget.focus();
         }
+      });
+      document.addEventListener('click', e => {
+        document.querySelectorAll('.column-filter.is-open').forEach(shell => {
+          if (shell.contains(e.target)) return;
+          const input = shell.querySelector('input');
+          if (input && !input.value.trim()) setColumnFilterOpen(input, false);
+        });
       });
 
       const copyAddressButton = document.getElementById('copy-address-button');
