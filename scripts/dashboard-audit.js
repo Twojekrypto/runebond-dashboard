@@ -253,6 +253,70 @@ function validateTabs(window) {
   });
 }
 
+function validateColumnFilters(window) {
+  const doc = window.document;
+  const checks = [];
+  const filters = [
+    {
+      label: 'Investor address',
+      tab: 'investors',
+      inputIds: ['filter-investors', 'filter-investors-mobile'],
+      tbodyId: 'providers-tbody'
+    },
+    {
+      label: 'Node address',
+      tab: 'bonds',
+      inputIds: ['filter-bonds', 'filter-bonds-mobile'],
+      tbodyId: 'nodes-tbody'
+    },
+    {
+      label: 'Exit wallet',
+      tab: 'exits',
+      inputIds: ['filter-exits', 'filter-exits-mobile'],
+      tbodyId: 'swaps-tbody'
+    }
+  ];
+
+  filters.forEach(({ label, tab, inputIds, tbodyId }) => {
+    const tabButton = doc.querySelector(`.tab-btn[data-tab="${tab}"]`);
+    const inputs = inputIds.map(id => doc.getElementById(id)).filter(Boolean);
+    const tbody = doc.getElementById(tbodyId);
+    if (tabButton) tabButton.click();
+
+    const realRows = tbody
+      ? Array.from(tbody.querySelectorAll('tr')).filter(row =>
+        !row.classList.contains('table-message') && !row.classList.contains('filter-empty'))
+      : [];
+
+    if (!inputs.length || !tbody || realRows.length === 0) {
+      checks.push({
+        ok: false,
+        message: `${label} column filter could not be tested`
+      });
+      return;
+    }
+
+    const input = inputs[0];
+    input.value = 'zzzz-no-match-zzzz';
+    input.dispatchEvent(new window.Event('input', { bubbles: true }));
+    const emptyShown = !!tbody.querySelector('tr.filter-empty');
+    const inputsSynced = inputs.every(candidate => candidate.value === input.value);
+
+    input.value = '';
+    input.dispatchEvent(new window.Event('input', { bubbles: true }));
+    const cleared = !tbody.querySelector('tr.filter-empty') &&
+      realRows.every(row => row.style.display !== 'none') &&
+      inputs.every(candidate => candidate.value === '');
+
+    checks.push({
+      ok: emptyShown && inputsSynced && cleared,
+      message: `${label} column filter syncs desktop/mobile inputs and clears rows`
+    });
+  });
+
+  return checks;
+}
+
 async function waitForDashboard(window) {
   const start = Date.now();
   while (Date.now() - start < 90000) {
@@ -293,7 +357,8 @@ async function run() {
     const snapshot = await waitForDashboard(dom.window);
     const checks = [
       ...validateSnapshot(snapshot),
-      ...validateTabs(dom.window)
+      ...validateTabs(dom.window),
+      ...validateColumnFilters(dom.window)
     ];
     const failures = checks.filter((check) => !check.ok);
 

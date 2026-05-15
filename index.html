@@ -1926,6 +1926,85 @@
       box-shadow:0 12px 28px rgba(11,12,22,.035);
       font-weight:700;
     }
+    .data-workbench .mobile-panel-filter{display:none}
+    .data-workbench .column-filter-cell{min-width:260px}
+    .data-workbench .th-inline-tools{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .data-workbench .column-filter,
+    .data-workbench .mobile-panel-filter{
+      position:relative;
+      color:var(--accent);
+    }
+    .data-workbench .column-filter{
+      flex:0 0 36px;
+      width:36px;
+      height:36px;
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid rgba(11,76,255,.14);
+      box-shadow:0 10px 24px rgba(11,76,255,.07);
+      overflow:hidden;
+      transition:width .2s ease,border-color .2s ease,box-shadow .2s ease;
+    }
+    .data-workbench .column-filter:hover,
+    .data-workbench .column-filter:focus-within,
+    .data-workbench .column-filter.has-value{
+      width:190px;
+      flex-basis:190px;
+      border-color:rgba(11,76,255,.32);
+      box-shadow:0 14px 30px rgba(11,76,255,.12);
+    }
+    .data-workbench .filter-lens{
+      position:absolute;
+      left:12px;
+      top:50%;
+      width:13px;
+      height:13px;
+      border:2px solid currentColor;
+      border-radius:999px;
+      transform:translateY(-50%);
+      pointer-events:none;
+    }
+    .data-workbench .filter-lens::after{
+      content:"";
+      position:absolute;
+      right:-6px;
+      bottom:-3px;
+      width:7px;
+      height:2px;
+      border-radius:999px;
+      background:currentColor;
+      transform:rotate(45deg);
+      transform-origin:left center;
+    }
+    .data-workbench .column-filter input{
+      width:100%;
+      height:100%;
+      border:0;
+      outline:0;
+      background:transparent;
+      color:var(--text);
+      font-size:12px;
+      font-weight:800;
+      padding:0 14px 0 36px;
+      opacity:0;
+      transition:opacity .16s ease;
+    }
+    .data-workbench .column-filter:hover input,
+    .data-workbench .column-filter:focus-within input,
+    .data-workbench .column-filter.has-value input{
+      opacity:1;
+    }
+    .data-workbench .column-filter input::placeholder,
+    .data-workbench .mobile-panel-filter input::placeholder{
+      color:rgba(24,31,54,.48);
+    }
     .data-workbench .panel-summary{
       display:grid;
       grid-template-columns:repeat(4,minmax(0,1fr));
@@ -2113,6 +2192,15 @@
       .data-workbench .panel-count,
       .data-workbench .panel-status,
       .data-workbench .filter-input{width:100%;justify-content:center}
+      .data-workbench .mobile-panel-filter{display:block;width:100%}
+      .data-workbench .mobile-panel-filter .filter-input{
+        padding-left:44px;
+        text-align:left;
+        justify-content:flex-start;
+      }
+      .data-workbench .mobile-panel-filter .filter-lens{
+        left:18px;
+      }
       .data-workbench .panel-summary{grid-template-columns:1fr}
       .data-workbench .panel-summary > div{min-height:0}
       .data-workbench .table-container{
@@ -2424,7 +2512,10 @@
         <div class="panel-meta">
           <span class="panel-status" id="providers-sync-status" data-tone="loading">Syncing</span>
           <span class="panel-count" id="providers-count">—</span>
-          <input class="filter-input" id="filter-investors" type="search" placeholder="Filter wallet…" autocomplete="off" />
+          <label class="mobile-panel-filter" aria-label="Search investor address">
+            <span class="filter-lens" aria-hidden="true"></span>
+            <input class="filter-input" id="filter-investors-mobile" type="search" placeholder="Search address…" autocomplete="off" />
+          </label>
         </div>
       </header>
 
@@ -2455,7 +2546,15 @@
         <table data-table="investors">
           <thead>
             <tr>
-              <th><button class="th-sort" id="providers-sort-addr" onclick="setProviderSort('addr')" type="button">Address <span class="sort-indicator">−</span></button></th>
+              <th class="column-filter-cell">
+                <div class="th-inline-tools">
+                  <button class="th-sort" id="providers-sort-addr" onclick="setProviderSort('addr')" type="button">Address <span class="sort-indicator">−</span></button>
+                  <label class="column-filter" aria-label="Search investor address">
+                    <span class="filter-lens" aria-hidden="true"></span>
+                    <input id="filter-investors" type="search" placeholder="Search address…" autocomplete="off" />
+                  </label>
+                </div>
+              </th>
               <th><button class="th-sort" id="providers-sort-totalE8" onclick="setProviderSort('totalE8')" type="button">Deposited <span class="sort-indicator">↓</span></button></th>
               <th><button class="th-sort" id="providers-sort-share" onclick="setProviderSort('share')" type="button">Share <span class="sort-indicator">−</span></button></th>
               <th><button class="th-sort" id="providers-sort-grossEarningsE8" onclick="setProviderSort('grossEarningsE8')" type="button">Gross yield <span class="sort-indicator">−</span></button></th>
@@ -2478,7 +2577,10 @@
         </div>
         <div class="panel-meta">
           <span class="panel-count" id="node-count">—</span>
-          <input class="filter-input" id="filter-bonds" type="search" placeholder="Filter node…" autocomplete="off" />
+          <label class="mobile-panel-filter" aria-label="Search node address">
+            <span class="filter-lens" aria-hidden="true"></span>
+            <input class="filter-input" id="filter-bonds-mobile" type="search" placeholder="Search node…" autocomplete="off" />
+          </label>
         </div>
       </header>
 
@@ -2510,7 +2612,15 @@
           <thead>
             <tr>
               <th>#</th>
-              <th><button class="th-sort" id="nodes-sort-address" onclick="setNodeSort('address')" type="button">Node address <span class="sort-indicator">−</span></button></th>
+              <th class="column-filter-cell">
+                <div class="th-inline-tools">
+                  <button class="th-sort" id="nodes-sort-address" onclick="setNodeSort('address')" type="button">Node address <span class="sort-indicator">−</span></button>
+                  <label class="column-filter" aria-label="Search node address">
+                    <span class="filter-lens" aria-hidden="true"></span>
+                    <input id="filter-bonds" type="search" placeholder="Search node…" autocomplete="off" />
+                  </label>
+                </div>
+              </th>
               <th><button class="th-sort" id="nodes-sort-bond" onclick="setNodeSort('bond')" type="button">Bond <span class="sort-indicator">↓</span></button></th>
               <th><button class="th-sort" id="nodes-sort-status" onclick="setNodeSort('status')" type="button">Status <span class="sort-indicator">−</span></button></th>
             </tr>
@@ -2530,7 +2640,10 @@
         </div>
         <div class="panel-meta">
           <span class="panel-count" id="swap-count">—</span>
-          <input class="filter-input" id="filter-exits" type="search" placeholder="Filter recipient…" autocomplete="off" />
+          <label class="mobile-panel-filter" aria-label="Search exit wallet">
+            <span class="filter-lens" aria-hidden="true"></span>
+            <input class="filter-input" id="filter-exits-mobile" type="search" placeholder="Search wallet…" autocomplete="off" />
+          </label>
         </div>
       </header>
 
@@ -2562,7 +2675,15 @@
           <thead>
             <tr>
               <th><button class="th-sort" id="swaps-sort-dateMs" onclick="setSwapSort('dateMs')" type="button">Time <span class="sort-indicator">↓</span></button></th>
-              <th><button class="th-sort" id="swaps-sort-recipient" onclick="setSwapSort('recipient')" type="button">Wallet <span class="sort-indicator">−</span></button></th>
+              <th class="column-filter-cell">
+                <div class="th-inline-tools">
+                  <button class="th-sort" id="swaps-sort-recipient" onclick="setSwapSort('recipient')" type="button">Wallet <span class="sort-indicator">−</span></button>
+                  <label class="column-filter" aria-label="Search exit wallet">
+                    <span class="filter-lens" aria-hidden="true"></span>
+                    <input id="filter-exits" type="search" placeholder="Search wallet…" autocomplete="off" />
+                  </label>
+                </div>
+              </th>
               <th><button class="th-sort" id="swaps-sort-netPayoutE8" onclick="setSwapSort('netPayoutE8')" type="button">Net out <span class="sort-indicator">−</span></button></th>
               <th><button class="th-sort" id="swaps-sort-grossExitE8" onclick="setSwapSort('grossExitE8')" type="button">Gross exit <span class="sort-indicator">−</span></button></th>
               <th><button class="th-sort" id="swaps-sort-feeRetainedE8" onclick="setSwapSort('feeRetainedE8')" type="button">Fee <span class="sort-indicator">−</span></button></th>
@@ -2689,14 +2810,27 @@
       syncCount('node-count', 'tab-count-bonds', /^(\d+)/);
       syncCount('swap-count', 'tab-count-exits', /^(\d+)/);
 
-      // Filter wiring — generic substring filter that runs after JS renders rows
-      function wireFilter(inputId, tbodyId, colspan){
-        const input = document.getElementById(inputId);
+      // Filter wiring — one logical search can have desktop + mobile inputs.
+      function wireFilter(inputIds, tbodyId, colspan){
+        const ids = Array.isArray(inputIds) ? inputIds : [inputIds];
+        const inputs = ids.map(id => document.getElementById(id)).filter(Boolean);
         const tbody = document.getElementById(tbodyId);
-        if (!input || !tbody) return;
+        if (!inputs.length || !tbody) return;
+        const clearTargets = ids.join(',');
         let suppress = false;
-        function apply(){
-          const q = input.value.trim().toLowerCase();
+        function syncShellState(input){
+          const shell = input.closest('.column-filter, .mobile-panel-filter');
+          if (!shell) return;
+          const isFocused = input.ownerDocument ? input.ownerDocument.activeElement === input : false;
+          shell.classList.toggle('has-value', isFocused || input.value.trim().length > 0);
+        }
+        function apply(source){
+          const activeInput = source || inputs.find(input => input.value.trim()) || inputs[0];
+          inputs.forEach(input => {
+            if (input !== activeInput && input.value !== activeInput.value) input.value = activeInput.value;
+          });
+          inputs.forEach(syncShellState);
+          const q = activeInput.value.trim().toLowerCase();
           const realRows = Array.from(tbody.querySelectorAll('tr'))
             .filter(r => !r.classList.contains('table-message') && !r.classList.contains('filter-empty'));
           let visible = 0;
@@ -2714,7 +2848,7 @@
               const tr = document.createElement('tr');
               tr.className = 'filter-empty table-message';
               const safe = q.replace(/[<>"&']/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;','&':'&amp;',"'":'&#39;'}[c]));
-              tr.innerHTML = `<td colspan="${colspan}">No matches for "<strong>${safe}</strong>" — <a href="#" data-clear="${inputId}" style="color:var(--accent);border-bottom:1px dotted var(--accent-line)">clear filter</a></td>`;
+              tr.innerHTML = `<td colspan="${colspan}">No matches for "<strong>${safe}</strong>" — <a href="#" data-clear="${clearTargets}" style="color:var(--accent);border-bottom:1px dotted var(--accent-line)">clear filter</a></td>`;
               tbody.appendChild(tr);
               suppress = false;
             }
@@ -2724,19 +2858,32 @@
             suppress = false;
           }
         }
-        input.addEventListener('input', apply);
+        inputs.forEach(input => {
+          input.addEventListener('focus', () => syncShellState(input));
+          input.addEventListener('blur', () => syncShellState(input));
+          input.addEventListener('input', () => apply(input));
+          syncShellState(input);
+        });
         new MutationObserver(() => { if (!suppress) apply(); }).observe(tbody, { childList: true });
       }
-      wireFilter('filter-investors', 'providers-tbody', 6);
-      wireFilter('filter-bonds', 'nodes-tbody', 4);
-      wireFilter('filter-exits', 'swaps-tbody', 5);
+      wireFilter(['filter-investors', 'filter-investors-mobile'], 'providers-tbody', 6);
+      wireFilter(['filter-bonds', 'filter-bonds-mobile'], 'nodes-tbody', 4);
+      wireFilter(['filter-exits', 'filter-exits-mobile'], 'swaps-tbody', 5);
       // Clear-filter link inside empty-state rows
       document.addEventListener('click', e => {
         const a = e.target.closest('a[data-clear]');
         if (!a) return;
         e.preventDefault();
-        const i = document.getElementById(a.dataset.clear);
-        if (i) { i.value = ''; i.dispatchEvent(new Event('input', { bubbles: true })); i.focus(); }
+        const inputs = String(a.dataset.clear || '')
+          .split(',')
+          .map(id => document.getElementById(id))
+          .filter(Boolean);
+        inputs.forEach(i => { i.value = ''; });
+        const focusTarget = inputs.find(i => i.offsetParent !== null) || inputs[0];
+        if (focusTarget) {
+          focusTarget.dispatchEvent(new Event('input', { bubbles: true }));
+          focusTarget.focus();
+        }
       });
 
       const copyAddressButton = document.getElementById('copy-address-button');
