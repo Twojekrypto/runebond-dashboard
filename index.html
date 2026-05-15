@@ -231,11 +231,11 @@
     table[data-table="investors"] th:nth-child(6),
     table[data-table="investors"] td:nth-child(6){width:18%;text-align:right}
     table[data-table="bonds"] th:nth-child(1),
-    table[data-table="bonds"] td:nth-child(1){width:48px;text-align:right}
+    table[data-table="bonds"] td:nth-child(1){width:56%;text-align:left}
+    table[data-table="bonds"] th:nth-child(2),
+    table[data-table="bonds"] td:nth-child(2){width:26%;text-align:right}
     table[data-table="bonds"] th:nth-child(3),
-    table[data-table="bonds"] td:nth-child(3){width:24%;text-align:right}
-    table[data-table="bonds"] th:nth-child(4),
-    table[data-table="bonds"] td:nth-child(4){width:14%;text-align:right}
+    table[data-table="bonds"] td:nth-child(3){width:18%;text-align:right}
     table[data-table="exits"] th:nth-child(1),
     table[data-table="exits"] td:nth-child(1){width:16%}
     table[data-table="exits"] th:nth-child(2),
@@ -248,9 +248,8 @@
     table[data-table="exits"] td:nth-child(5){width:22%;text-align:right}
     tbody td[data-label] > div{text-align:inherit}
     table[data-table="investors"] td:nth-child(n+2),
-    table[data-table="bonds"] td:nth-child(1),
+    table[data-table="bonds"] td:nth-child(2),
     table[data-table="bonds"] td:nth-child(3),
-    table[data-table="bonds"] td:nth-child(4),
     table[data-table="exits"] td:nth-child(n+3){font-variant-numeric:tabular-nums}
     table[data-table="investors"] td:nth-child(3) .share-bar{margin-left:auto}
     table[data-table="exits"] td:nth-child(1),
@@ -285,7 +284,6 @@
     .deposited,.current-val,.bond-amount{font-family:var(--mono);font-size:12.5px;color:var(--text);font-variant-numeric:tabular-nums;font-weight:500}
     .deposited{color:var(--text-2);font-weight:400}
     .bond-zero{font-family:var(--mono);font-size:12.5px;color:var(--text-3)}
-    .row-num{color:var(--text-3);font-size:11px;font-variant-numeric:tabular-nums;font-family:var(--mono)}
     .badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:1.4px;padding:4px 10px;border-radius:2px;border:1px solid var(--line-2);color:var(--text-2);white-space:nowrap}
     .badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--text-3)}
     .badge.active{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
@@ -316,7 +314,6 @@
       tbody tr td{padding:0;border:0;background:transparent;display:flex;flex-direction:column;gap:3px;font-size:12.5px;min-width:0;line-height:1.4}
       tbody tr td::before{content:attr(data-label);font-size:9px;font-weight:500;letter-spacing:1.6px;text-transform:uppercase;color:var(--text-3)}
       tbody tr td.primary-cell{grid-column:1 / -1;padding-bottom:8px;margin-bottom:4px;border-bottom:1px solid var(--line)}
-      tbody tr td.row-num{display:none}
       tbody tr td[data-label*="Deposited"],
       tbody tr td[data-label*="Pool share"],
       tbody tr td[data-label*="Gross"],
@@ -2262,8 +2259,9 @@
     }
     .data-workbench .panel-head.panel-head-meta-only{
       justify-content:flex-end;
-      margin-bottom:16px;
-      padding-bottom:14px;
+      margin-bottom:10px;
+      padding-bottom:0;
+      border-bottom:0;
     }
     .data-workbench .panel-head.panel-head-meta-only .panel-meta{
       width:100%;
@@ -2507,40 +2505,22 @@
       left:0;
       z-index:3;
       background:inherit;
-      box-shadow:12px 0 22px -18px rgba(11,12,22,.35);
     }
     .data-workbench thead th:first-child{
       position:sticky;
       left:0;
       z-index:5;
-      box-shadow:12px 0 22px -18px rgba(11,12,22,.35);
     }
-    .data-workbench table[data-table="bonds"] thead th:nth-child(2){
-      position:sticky;
-      left:48px;
-      z-index:5;
-      box-shadow:12px 0 22px -18px rgba(11,12,22,.35);
-    }
-    .data-workbench table[data-table="bonds"] td.row-num{
-      position:sticky;
-      left:0;
-      z-index:3;
-      background:inherit;
-      box-shadow:12px 0 22px -18px rgba(11,12,22,.35);
-    }
-    .data-workbench table[data-table="bonds"] td.primary-cell{left:48px}
     .data-workbench table[data-table="exits"] thead th:nth-child(2){
       position:sticky;
       left:154px;
       z-index:5;
-      box-shadow:12px 0 22px -18px rgba(11,12,22,.35);
     }
     .data-workbench table[data-table="exits"] td:first-child{
       position:sticky;
       left:0;
       z-index:3;
       background:inherit;
-      box-shadow:12px 0 22px -18px rgba(11,12,22,.35);
     }
     .data-workbench table[data-table="exits"] td.primary-cell{left:154px}
     .data-workbench .th-sort{
@@ -2683,7 +2663,6 @@
         border-bottom:1px solid rgba(11,12,22,.075);
       }
       .data-workbench .sticky-col,
-      .data-workbench table[data-table="bonds"] td.row-num,
       .data-workbench table[data-table="bonds"] td.primary-cell,
       .data-workbench table[data-table="exits"] td:first-child{
         position:static;
@@ -3036,10 +3015,7 @@
 
       <!-- BONDS panel -->
       <section class="panel" id="panel-bonds" role="tabpanel" aria-labelledby="tab-bonds" hidden>
-      <header class="panel-head">
-        <div>
-          <h2 class="panel-title">LP bonded positions</h2>
-        </div>
+      <header class="panel-head panel-head-meta-only" aria-label="LP bonded positions status">
         <div class="panel-meta">
           <span class="panel-count" id="node-count">—</span>
           <label class="mobile-panel-filter" aria-label="Search node address">
@@ -3076,7 +3052,6 @@
         <table data-table="bonds">
           <thead>
             <tr>
-              <th>#</th>
               <th class="column-filter-cell">
                 <div class="th-inline-tools">
                   <div class="column-filter" role="search" aria-label="Search node address">
@@ -3092,7 +3067,7 @@
             </tr>
           </thead>
           <tbody id="nodes-tbody">
-            <tr class="table-message"><td colspan="4">Loading node data…</td></tr>
+            <tr class="table-message"><td colspan="3">Loading node data…</td></tr>
           </tbody>
         </table>
       </div>
@@ -3100,10 +3075,7 @@
 
       <!-- EXITS panel -->
       <section class="panel" id="panel-exits" role="tabpanel" aria-labelledby="tab-exits" hidden>
-      <header class="panel-head">
-        <div>
-          <h2 class="panel-title">Recent exits</h2>
-        </div>
+      <header class="panel-head panel-head-meta-only" aria-label="Recent exits status">
         <div class="panel-meta">
           <span class="panel-count" id="swap-count">—</span>
           <label class="mobile-panel-filter" aria-label="Search exit wallet">
@@ -3402,7 +3374,7 @@
         new MutationObserver(() => { if (!suppress) apply(); }).observe(tbody, { childList: true });
       }
       wireFilter(['filter-investors', 'filter-investors-mobile'], 'providers-tbody', 6);
-      wireFilter(['filter-bonds', 'filter-bonds-mobile'], 'nodes-tbody', 4);
+      wireFilter(['filter-bonds', 'filter-bonds-mobile'], 'nodes-tbody', 3);
       wireFilter(['filter-exits', 'filter-exits-mobile'], 'swaps-tbody', 5);
       // Clear-filter link inside empty-state rows
       document.addEventListener('click', e => {
@@ -4035,11 +4007,10 @@
       setText('node-summary-with-bond', `${bondedNodeCount}`);
       setText('node-summary-with-bond-note', `${nodes.length} tracked LP nodes in total`);
 
-      tbody.innerHTML = sorted.map((n, i) => {
+      tbody.innerHTML = sorted.map((n) => {
         const bond = Number(n.bond);
         const statusClass = n.status === 'Active' ? 'active' : 'standby';
         return `<tr>
-          <td class="row-num" data-label="Rank">${i + 1}</td>
           <td class="node-addr sticky-col primary-cell" data-label="Node address">
             <a href="https://thorchain.net/node/${n.address}" target="_blank" rel="noopener" title="Open this validator in THORChain scanner">${truncAddr(n.address)}</a>
             <div class="node-link-row" aria-label="Node external links">

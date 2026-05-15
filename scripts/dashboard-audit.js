@@ -125,8 +125,11 @@ function collectDomSnapshot(window) {
     },
     dataWorkbench: {
       hintText: doc.querySelector('.data-hint')?.textContent?.trim() || '',
-      investorPanelTitle: doc.querySelector('#panel-investors .panel-title')?.textContent?.trim() || '',
-      investorHeaderMetaOnly: !!doc.querySelector('#panel-investors .panel-head.panel-head-meta-only')
+      panelTitles: Array.from(doc.querySelectorAll('.data-workbench .panel-title')).map(el => el.textContent.trim()),
+      metaOnlyHeaders: doc.querySelectorAll('.data-workbench .panel-head.panel-head-meta-only').length,
+      bondRankHeader: doc.querySelector('table[data-table="bonds"] thead th')?.textContent?.trim() === '#',
+      bondRankCells: doc.querySelectorAll('#nodes-tbody .row-num').length,
+      bondColumnCount: doc.querySelectorAll('table[data-table="bonds"] thead th').length
     }
   };
 }
@@ -199,9 +202,16 @@ function validateSnapshot(snapshot) {
 
   checks.push({
     ok: !snapshot.dataWorkbench.hintText &&
-      !snapshot.dataWorkbench.investorPanelTitle &&
-      snapshot.dataWorkbench.investorHeaderMetaOnly,
-    message: 'data table area avoids duplicate hint and Investor pool heading'
+      snapshot.dataWorkbench.panelTitles.length === 0 &&
+      snapshot.dataWorkbench.metaOnlyHeaders === 3,
+    message: 'data table area avoids duplicate hint and repeated active-view headings'
+  });
+
+  checks.push({
+    ok: !snapshot.dataWorkbench.bondRankHeader &&
+      snapshot.dataWorkbench.bondRankCells === 0 &&
+      snapshot.dataWorkbench.bondColumnCount === 3,
+    message: 'LP bonded positions table has no rank numbering column'
   });
 
   checks.push({
