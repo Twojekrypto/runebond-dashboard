@@ -258,22 +258,44 @@
     .node-addr{font-family:var(--mono);font-size:12px;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .node-addr a{color:var(--text);transition:color .15s}
     .node-addr a:hover{color:var(--accent)}
-    .node-link-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:7px}
+    .node-link-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:9px}
     .node-link-pill{
       display:inline-flex;
       align-items:center;
-      gap:5px;
-      min-height:24px;
-      padding:0 9px;
+      gap:7px;
+      min-height:28px;
+      padding:0 10px;
       border:1px solid var(--line);
       border-radius:999px;
       background:rgba(255,255,255,.72);
       color:var(--text-2);
       font-family:var(--sans);
-      font-size:10px;
+      font-size:10.5px;
       font-weight:800;
       letter-spacing:.02em;
       transition:background .15s,border-color .15s,color .15s,transform .15s;
+    }
+    .node-brand-logo{
+      display:block;
+      flex:0 0 auto;
+      max-width:none;
+      object-fit:contain;
+    }
+    .node-brand-logo.is-runebond{
+      width:86px;
+      height:15px;
+    }
+    .node-brand-logo.is-thorchain{
+      width:17px;
+      height:17px;
+      border-radius:999px;
+    }
+    .node-brand-text{
+      color:inherit;
+      font-size:10.5px;
+      font-weight:900;
+      letter-spacing:-.01em;
+      line-height:1;
     }
     .node-link-pill:hover{
       transform:translateY(-1px);
@@ -2085,7 +2107,7 @@
     }
     .data-workbench-head{
       display:flex;
-      align-items:flex-end;
+      align-items:flex-start;
       justify-content:space-between;
       gap:24px;
       padding:10px 10px 16px;
@@ -2138,6 +2160,17 @@
       border-radius:999px;
       background:var(--pos);
       box-shadow:0 0 0 5px rgba(0,179,15,.10);
+    }
+    .data-workbench-head .panel-status{
+      flex:none;
+      margin-top:4px;
+      min-height:36px;
+      padding:0 13px;
+      border:1px solid rgba(11,12,22,.075);
+      border-radius:999px;
+      background:#f8faff;
+      box-shadow:0 12px 30px rgba(11,12,22,.035);
+      font-weight:900;
     }
     .data-workbench .section-nav{
       display:grid;
@@ -2266,6 +2299,9 @@
     .data-workbench .panel-head.panel-head-meta-only .panel-meta{
       width:100%;
       justify-content:flex-end;
+    }
+    #panel-investors .panel-head.panel-head-meta-only{
+      display:none;
     }
     .data-workbench .panel-title{
       font-size:clamp(28px,2.1vw,36px);
@@ -2579,6 +2615,10 @@
       .data-workbench-head h2{font-size:28px}
       .data-workbench-head p{font-size:13px}
       .data-hint{width:100%;justify-content:center}
+      .data-workbench-head .panel-status{
+        align-self:flex-end;
+        margin-top:0;
+      }
       .data-workbench .section-nav{
         display:flex;
         gap:10px;
@@ -2597,6 +2637,9 @@
         border-radius:22px;
       }
       .data-workbench .panel-title{font-size:26px}
+      #panel-investors .panel-head.panel-head-meta-only{
+        display:flex;
+      }
       .data-workbench .panel-meta{display:grid;grid-template-columns:1fr;align-items:stretch}
       .data-workbench .panel-count,
       .data-workbench .panel-status,
@@ -2923,14 +2966,14 @@
           <h2 id="data-workbench-title">LP data tables</h2>
           <p>Start with the pool snapshot, then switch the exact table directly above its columns.</p>
         </div>
+        <span class="panel-status" id="providers-sync-status" data-tone="loading">Syncing</span>
       </div>
 
       <!-- INVESTORS panel -->
       <section class="panel" id="panel-investors" role="tabpanel" aria-labelledby="tab-investors">
       <header class="panel-head panel-head-meta-only" aria-label="Investor pool status">
         <div class="panel-meta">
-          <span class="panel-status" id="providers-sync-status" data-tone="loading">Syncing</span>
-          <span class="panel-count" id="providers-count">—</span>
+          <span class="sr" id="providers-count">—</span>
           <label class="mobile-panel-filter" aria-label="Search investor address">
             <span class="filter-lens" aria-hidden="true"></span>
             <input class="filter-input" id="filter-investors-mobile" type="search" placeholder="Search address…" autocomplete="off" />
@@ -4014,8 +4057,13 @@
           <td class="node-addr sticky-col primary-cell" data-label="Node address">
             <a href="https://thorchain.net/node/${n.address}" target="_blank" rel="noopener" title="Open this validator in THORChain scanner">${truncAddr(n.address)}</a>
             <div class="node-link-row" aria-label="Node external links">
-              <a class="node-link-pill" href="https://thorchain.net/node/${n.address}" target="_blank" rel="noopener" title="Open this validator in THORChain scanner">THORChain</a>
-              <a class="node-link-pill" href="https://app.runebond.com/nodes/${n.address}" target="_blank" rel="noopener" title="Open this validator in RUNEBOND">RUNEBOND</a>
+              <a class="node-link-pill node-link-runebond" href="https://app.runebond.com/nodes/${n.address}" target="_blank" rel="noopener" title="Open this validator in RUNEBOND">
+                <img class="node-brand-logo is-runebond" src="assets/runebond-logo-horizontal.svg" alt="RUNEBOND" loading="lazy">
+              </a>
+              <a class="node-link-pill node-link-thorchain" href="https://thorchain.net/node/${n.address}" target="_blank" rel="noopener" title="Open this validator in THORChain scanner">
+                <img class="node-brand-logo is-thorchain" src="assets/thorchain-mark.png" alt="" loading="lazy">
+                <span class="node-brand-text">THORChain</span>
+              </a>
             </div>
           </td>
           <td class="${bond > 0 ? 'bond-amount' : 'bond-zero'}" data-label="Bond">${bond > 0 ? formatRune(n.bond) : '0 ᚱ'}</td>
@@ -4602,7 +4650,7 @@
     function renderDepositors(providers, totalDeposited, source = 'live') {
       providerRows = providers;
       providerDepositedTotalE8 = totalDeposited;
-      setText('providers-count', `${providers.length} investors · ${formatRune(totalDeposited)} deposited capital`);
+      setText('providers-count', `${providers.length}`);
       setProviderSyncStatus(source === 'cached' ? 'cached' : 'live', source === 'cached' ? 'Cached' : 'Live');
       updateSortButtons('providers', providerSort, ['addr', 'totalE8', 'share', 'grossEarningsE8', 'investorEarningsE8', 'currentValueE8']);
 

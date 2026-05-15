@@ -127,9 +127,14 @@ function collectDomSnapshot(window) {
       hintText: doc.querySelector('.data-hint')?.textContent?.trim() || '',
       panelTitles: Array.from(doc.querySelectorAll('.data-workbench .panel-title')).map(el => el.textContent.trim()),
       metaOnlyHeaders: doc.querySelectorAll('.data-workbench .panel-head.panel-head-meta-only').length,
+      liveStatusInHead: !!doc.querySelector('.data-workbench-head #providers-sync-status'),
+      providerCountText: doc.getElementById('providers-count')?.textContent?.trim() || '',
       bondRankHeader: doc.querySelector('table[data-table="bonds"] thead th')?.textContent?.trim() === '#',
       bondRankCells: doc.querySelectorAll('#nodes-tbody .row-num').length,
-      bondColumnCount: doc.querySelectorAll('table[data-table="bonds"] thead th').length
+      bondColumnCount: doc.querySelectorAll('table[data-table="bonds"] thead th').length,
+      nodeBrandLogoCount: doc.querySelectorAll('#nodes-tbody .node-brand-logo').length,
+      firstRunebondLogo: doc.querySelector('#nodes-tbody .node-link-runebond img')?.getAttribute('src') || '',
+      firstThorchainLogo: doc.querySelector('#nodes-tbody .node-link-thorchain img')?.getAttribute('src') || ''
     }
   };
 }
@@ -203,8 +208,10 @@ function validateSnapshot(snapshot) {
   checks.push({
     ok: !snapshot.dataWorkbench.hintText &&
       snapshot.dataWorkbench.panelTitles.length === 0 &&
-      snapshot.dataWorkbench.metaOnlyHeaders === 3,
-    message: 'data table area avoids duplicate hint and repeated active-view headings'
+      snapshot.dataWorkbench.metaOnlyHeaders === 3 &&
+      snapshot.dataWorkbench.liveStatusInHead &&
+      !/deposited capital/i.test(snapshot.dataWorkbench.providerCountText),
+    message: 'data table area avoids duplicate hint, repeated headings, and visible deposited-capital count'
   });
 
   checks.push({
@@ -212,6 +219,17 @@ function validateSnapshot(snapshot) {
       snapshot.dataWorkbench.bondRankCells === 0 &&
       snapshot.dataWorkbench.bondColumnCount === 3,
     message: 'LP bonded positions table has no rank numbering column'
+  });
+
+  checks.push({
+    ok: hasSourceWarnings || (
+      snapshot.dataWorkbench.nodeBrandLogoCount >= 2 &&
+      /runebond-logo-horizontal\.svg$/i.test(snapshot.dataWorkbench.firstRunebondLogo) &&
+      /thorchain-mark\.png$/i.test(snapshot.dataWorkbench.firstThorchainLogo)
+    ),
+    message: hasSourceWarnings
+      ? `node brand-link logo check skipped because upstream sources warned (${snapshot.lastUpdate})`
+      : 'LP bonded node rows show RUNEBOND and THORChain branded outbound links'
   });
 
   checks.push({
