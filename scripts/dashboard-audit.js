@@ -222,6 +222,35 @@ function validateSnapshot(snapshot) {
   return checks;
 }
 
+function validateTabs(window) {
+  const doc = window.document;
+  const views = [
+    ['investors', 'Investor pool'],
+    ['bonds', 'LP bonded positions'],
+    ['exits', 'Recent exits']
+  ];
+
+  return views.map(([key, label]) => {
+    const tab = doc.querySelector(`.tab-btn[data-tab="${key}"]`);
+    const panel = doc.getElementById(`panel-${key}`);
+    if (tab) tab.click();
+
+    const otherPanelVisible = views
+      .filter(([otherKey]) => otherKey !== key)
+      .some(([otherKey]) => !doc.getElementById(`panel-${otherKey}`)?.hidden);
+
+    return {
+      ok: !!tab &&
+        !!panel &&
+        tab.textContent.includes(label) &&
+        tab.getAttribute('aria-selected') === 'true' &&
+        !panel.hidden &&
+        !otherPanelVisible,
+      message: `data switcher opens ${label}`
+    };
+  });
+}
+
 async function waitForDashboard(window) {
   const start = Date.now();
   while (Date.now() - start < 90000) {
@@ -260,7 +289,10 @@ async function run() {
     });
 
     const snapshot = await waitForDashboard(dom.window);
-    const checks = validateSnapshot(snapshot);
+    const checks = [
+      ...validateSnapshot(snapshot),
+      ...validateTabs(dom.window)
+    ];
     const failures = checks.filter((check) => !check.ok);
 
     console.log(JSON.stringify({

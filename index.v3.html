@@ -1688,6 +1688,523 @@
         display:none;
       }
     }
+
+    /* Premium data workbench: visible view switcher + responsive table system */
+    .data-workbench{
+      position:relative;
+      margin:0 0 58px;
+      padding:18px;
+      border:1px solid rgba(11,12,22,.075);
+      border-radius:30px;
+      background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(248,250,255,.86));
+      box-shadow:0 32px 90px rgba(11,12,22,.075);
+      backdrop-filter:blur(16px);
+    }
+    .data-workbench-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:24px;
+      padding:10px 10px 16px;
+    }
+    .data-kicker{
+      display:block;
+      color:var(--accent);
+      font-size:11px;
+      font-weight:900;
+      line-height:1;
+      letter-spacing:.045em;
+      text-transform:uppercase;
+      margin-bottom:10px;
+    }
+    .data-workbench-head h2{
+      color:var(--text);
+      font-size:clamp(28px,2.4vw,40px);
+      line-height:1.02;
+      letter-spacing:-.06em;
+      margin:0;
+    }
+    .data-workbench-head p{
+      max-width:610px;
+      margin:10px 0 0;
+      color:var(--text-2);
+      font-size:14px;
+      line-height:1.65;
+      font-weight:600;
+    }
+    .data-hint{
+      flex:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      min-height:38px;
+      padding:0 14px;
+      border:1px solid rgba(11,76,255,.13);
+      border-radius:999px;
+      background:#eef3ff;
+      color:var(--accent);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.02em;
+      white-space:nowrap;
+    }
+    .data-hint::before{
+      content:'';
+      width:7px;
+      height:7px;
+      border-radius:999px;
+      background:var(--pos);
+      box-shadow:0 0 0 5px rgba(0,179,15,.10);
+    }
+    .data-workbench .section-nav{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+      margin:0 0 18px;
+      padding:8px;
+      border:1px solid rgba(11,12,22,.075);
+      border-radius:24px;
+      background:#f5f5ff;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+      overflow:visible;
+    }
+    .data-workbench .section-btn{
+      min-width:0;
+      width:100%;
+      min-height:92px;
+      justify-content:flex-start;
+      align-items:center;
+      gap:13px;
+      margin:0;
+      padding:15px;
+      border:1px solid transparent;
+      border-radius:18px;
+      background:transparent;
+      color:var(--text-2);
+      text-align:left;
+      box-shadow:none;
+      transition:background .18s,border-color .18s,box-shadow .18s,color .18s,transform .18s;
+    }
+    .data-workbench .section-btn:hover{
+      transform:translateY(-1px);
+      color:var(--text);
+      background:#fff;
+      border-color:rgba(11,76,255,.12);
+      box-shadow:0 16px 36px rgba(11,12,22,.055);
+    }
+    .data-workbench .section-btn.active{
+      color:#fff;
+      background:linear-gradient(135deg,#0b4cff 0%,#2563eb 100%);
+      border-color:transparent;
+      box-shadow:0 18px 42px rgba(11,76,255,.24);
+    }
+    .tab-index{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+      width:34px;
+      height:34px;
+      border-radius:13px;
+      background:#fff;
+      color:var(--accent);
+      font:900 12px/1 var(--sans);
+      box-shadow:0 10px 22px rgba(11,12,22,.05);
+    }
+    .section-btn.active .tab-index{
+      background:rgba(255,255,255,.18);
+      color:#fff;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);
+    }
+    .tab-copy{
+      display:grid;
+      gap:5px;
+      min-width:0;
+      flex:1;
+    }
+    .tab-label{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      color:inherit;
+      font-size:15px;
+      font-weight:900;
+      line-height:1.05;
+      letter-spacing:-.025em;
+    }
+    .tab-desc{
+      display:block;
+      color:var(--text-3);
+      font-size:12px;
+      font-weight:700;
+      line-height:1.35;
+      white-space:normal;
+    }
+    .section-btn.active .tab-desc{color:rgba(255,255,255,.78)}
+    .data-workbench .section-btn .count{
+      flex:none;
+      min-width:31px;
+      height:24px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:0 8px;
+      border-radius:999px;
+      background:rgba(11,76,255,.08);
+      color:var(--accent);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:-.02em;
+    }
+    .data-workbench .section-btn.active .count{
+      background:rgba(255,255,255,.18);
+      color:#fff;
+    }
+    .data-workbench .panel{
+      padding:24px;
+      border:1px solid rgba(11,12,22,.075);
+      border-radius:26px;
+      background:#fff;
+      box-shadow:0 22px 58px rgba(11,12,22,.055);
+    }
+    .data-workbench .panel-head{
+      align-items:flex-start;
+      margin-bottom:22px;
+      padding-bottom:18px;
+      border-bottom:1px solid rgba(11,12,22,.07);
+    }
+    .data-workbench .panel-title{
+      font-size:clamp(28px,2.1vw,36px);
+    }
+    .data-workbench .panel-sub{
+      max-width:720px;
+      color:var(--text-2);
+    }
+    .data-workbench .panel-meta{
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+    }
+    .data-workbench .panel-count,
+    .data-workbench .panel-status{
+      min-height:36px;
+      display:inline-flex;
+      align-items:center;
+      padding:0 12px;
+      border:1px solid rgba(11,12,22,.075);
+      border-radius:999px;
+      background:#f8faff;
+      font-weight:900;
+    }
+    .data-workbench .panel-status::before{
+      width:6px;
+      height:6px;
+    }
+    .data-workbench .filter-input{
+      width:260px;
+      height:42px;
+      border-radius:999px;
+      background-color:#fff;
+      border:1px solid rgba(11,12,22,.09);
+      box-shadow:0 12px 28px rgba(11,12,22,.035);
+      font-weight:700;
+    }
+    .data-workbench .panel-summary{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .data-workbench .panel-summary > div{
+      min-height:116px;
+      padding:18px;
+      border:1px solid rgba(11,12,22,.07)!important;
+      border-radius:18px;
+      background:linear-gradient(180deg,#fff,#f8faff);
+      box-shadow:none;
+    }
+    .data-workbench .panel-summary .key{
+      color:var(--accent);
+      font-size:11px;
+      letter-spacing:.02em!important;
+      text-transform:none;
+    }
+    .data-workbench .panel-summary .val{
+      font-size:24px;
+      margin-top:8px;
+    }
+    .data-workbench .panel-summary .note{
+      color:var(--text-2);
+      font-size:12px;
+    }
+    .data-workbench .table-container{
+      max-height:560px;
+      border-radius:22px;
+      background:#fff;
+      border:1px solid rgba(11,12,22,.075);
+      box-shadow:none;
+      overflow:auto;
+      scrollbar-color:rgba(11,76,255,.30) transparent;
+    }
+    #panel-bonds .table-container,
+    #panel-exits .table-container{max-height:520px}
+    .data-workbench table{
+      min-width:980px;
+      table-layout:fixed;
+      border-spacing:0;
+    }
+    .data-workbench table[data-table="bonds"]{min-width:780px}
+    .data-workbench table[data-table="exits"]{min-width:920px}
+    .data-workbench table[data-table="exits"] th:nth-child(1),
+    .data-workbench table[data-table="exits"] td:nth-child(1){width:154px}
+    .data-workbench thead th{
+      top:0;
+      padding:15px 18px;
+      background:#f5f5ff;
+      color:var(--text);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.015em;
+      text-transform:none;
+      border-bottom:1px solid rgba(11,12,22,.075);
+      z-index:4;
+    }
+    .data-workbench tbody td{
+      padding:18px;
+      border-bottom:1px solid rgba(11,12,22,.065);
+      background:#fff;
+      font-size:13.5px;
+    }
+    .data-workbench tbody tr:nth-child(even) td{background:#fbfcff}
+    .data-workbench tbody tr:hover td{background:#f3f6ff}
+    .data-workbench .sticky-col{
+      position:sticky;
+      left:0;
+      z-index:3;
+      background:inherit;
+      box-shadow:12px 0 22px -18px rgba(11,12,22,.35);
+    }
+    .data-workbench thead th:first-child{
+      position:sticky;
+      left:0;
+      z-index:5;
+      box-shadow:12px 0 22px -18px rgba(11,12,22,.35);
+    }
+    .data-workbench table[data-table="bonds"] thead th:nth-child(2){
+      position:sticky;
+      left:48px;
+      z-index:5;
+      box-shadow:12px 0 22px -18px rgba(11,12,22,.35);
+    }
+    .data-workbench table[data-table="bonds"] td.row-num{
+      position:sticky;
+      left:0;
+      z-index:3;
+      background:inherit;
+      box-shadow:12px 0 22px -18px rgba(11,12,22,.35);
+    }
+    .data-workbench table[data-table="bonds"] td.primary-cell{left:48px}
+    .data-workbench table[data-table="exits"] thead th:nth-child(2){
+      position:sticky;
+      left:154px;
+      z-index:5;
+      box-shadow:12px 0 22px -18px rgba(11,12,22,.35);
+    }
+    .data-workbench table[data-table="exits"] td:first-child{
+      position:sticky;
+      left:0;
+      z-index:3;
+      background:inherit;
+      box-shadow:12px 0 22px -18px rgba(11,12,22,.35);
+    }
+    .data-workbench table[data-table="exits"] td.primary-cell{left:154px}
+    .data-workbench .th-sort{
+      min-height:30px;
+      padding:0 8px;
+      border-radius:999px;
+      font-weight:900;
+      transition:background .16s,color .16s;
+    }
+    .data-workbench .th-sort:hover,
+    .data-workbench .th-sort.active{
+      background:rgba(11,76,255,.08);
+      color:var(--accent);
+    }
+    .data-workbench .sort-indicator{
+      min-width:18px;
+      height:18px;
+      border-radius:999px;
+      background:#fff;
+      color:var(--accent);
+      font-weight:900;
+    }
+    .data-workbench .node-addr,
+    .data-workbench .deposited,
+    .data-workbench .current-val,
+    .data-workbench .bond-amount,
+    .data-workbench .growth-pos,
+    .data-workbench .growth-neg{
+      font-size:13px;
+      font-weight:800;
+    }
+    .data-workbench .cell-sub{
+      color:var(--text-2);
+      font-size:11.5px;
+    }
+    @media(max-width:1180px){
+      .data-workbench .section-nav{grid-template-columns:1fr}
+      .data-workbench .section-btn{min-height:74px}
+      .data-workbench .panel-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .data-workbench .panel-head{gap:16px}
+      .data-workbench .panel-meta{width:100%;justify-content:flex-start}
+    }
+    @media(max-width:760px){
+      .data-workbench{
+        margin-left:-4px;
+        margin-right:-4px;
+        padding:12px;
+        border-radius:24px;
+      }
+      .data-workbench-head{
+        align-items:flex-start;
+        padding:8px 6px 14px;
+        flex-direction:column;
+        gap:14px;
+      }
+      .data-workbench-head h2{font-size:28px}
+      .data-workbench-head p{font-size:13px}
+      .data-hint{width:100%;justify-content:center}
+      .data-workbench .section-nav{
+        display:flex;
+        gap:10px;
+        padding:6px;
+        overflow-x:auto;
+        scroll-snap-type:x mandatory;
+      }
+      .data-workbench .section-nav::-webkit-scrollbar{display:none}
+      .data-workbench .section-btn{
+        flex:0 0 235px;
+        min-height:96px;
+        scroll-snap-align:start;
+      }
+      .data-workbench .panel{
+        padding:18px;
+        border-radius:22px;
+      }
+      .data-workbench .panel-title{font-size:26px}
+      .data-workbench .panel-meta{display:grid;grid-template-columns:1fr;align-items:stretch}
+      .data-workbench .panel-count,
+      .data-workbench .panel-status,
+      .data-workbench .filter-input{width:100%;justify-content:center}
+      .data-workbench .panel-summary{grid-template-columns:1fr}
+      .data-workbench .panel-summary > div{min-height:0}
+      .data-workbench .table-container{
+        max-height:none;
+        overflow:visible;
+        border:0;
+        background:transparent;
+        box-shadow:none;
+      }
+      #panel-bonds .table-container,
+      #panel-exits .table-container{
+        max-height:680px;
+        overflow:auto;
+        padding:2px 4px 8px;
+        scrollbar-color:rgba(11,76,255,.30) transparent;
+      }
+      .data-workbench table,
+      .data-workbench table[data-table="bonds"],
+      .data-workbench table[data-table="exits"]{
+        display:block;
+        width:100%;
+        min-width:0;
+      }
+      .data-workbench tbody{
+        gap:12px;
+        width:100%;
+      }
+      .data-workbench tbody tr{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        width:100%;
+        gap:12px;
+        padding:15px;
+        border:1px solid rgba(11,12,22,.075);
+        border-radius:18px;
+        background:#fff;
+        box-shadow:0 16px 38px rgba(11,12,22,.045);
+      }
+      .data-workbench tbody tr td,
+      .data-workbench tbody tr:nth-child(even) td,
+      .data-workbench tbody tr:hover td{
+        background:transparent;
+      }
+      .data-workbench tbody tr td{
+        width:auto!important;
+      }
+      .data-workbench tbody tr td.primary-cell{
+        grid-column:1 / -1;
+        padding-bottom:12px;
+        margin-bottom:2px;
+        border-bottom:1px solid rgba(11,12,22,.075);
+      }
+      .data-workbench .sticky-col,
+      .data-workbench table[data-table="bonds"] td.row-num,
+      .data-workbench table[data-table="bonds"] td.primary-cell,
+      .data-workbench table[data-table="exits"] td:first-child{
+        position:static;
+        box-shadow:none;
+      }
+      .data-workbench tbody tr td[data-label*="Deposited"],
+      .data-workbench tbody tr td[data-label*="Pool share"],
+      .data-workbench tbody tr td[data-label*="Gross"],
+      .data-workbench tbody tr td[data-label*="Investor"],
+      .data-workbench tbody tr td[data-label*="Bond"],
+      .data-workbench tbody tr td[data-label*="Net"],
+      .data-workbench tbody tr td[data-label*="Fee"],
+      .data-workbench tbody tr td[data-label="Status"]{
+        align-items:flex-start;
+      }
+      .data-workbench tbody tr td::before,
+      .data-workbench tbody tr td[data-label*="Deposited"]::before,
+      .data-workbench tbody tr td[data-label*="Pool share"]::before,
+      .data-workbench tbody tr td[data-label*="Gross"]::before,
+      .data-workbench tbody tr td[data-label*="Investor"]::before,
+      .data-workbench tbody tr td[data-label*="Bond"]::before,
+      .data-workbench tbody tr td[data-label*="Net"]::before,
+      .data-workbench tbody tr td[data-label*="Fee"]::before{
+        align-self:flex-start;
+        color:var(--accent);
+        letter-spacing:.04em;
+      }
+      .data-workbench table[data-table="exits"] tbody tr{
+        align-items:stretch;
+      }
+      .data-workbench table[data-table="exits"] tbody tr td[data-label="Time"],
+      .data-workbench table[data-table="exits"] tbody tr td.primary-cell,
+      .data-workbench table[data-table="exits"] tbody tr td[data-label*="Fee"]{
+        grid-column:1 / -1;
+      }
+      .data-workbench table[data-table="exits"] tbody tr td[data-label*="Net"],
+      .data-workbench table[data-table="exits"] tbody tr td[data-label*="Gross"],
+      .data-workbench table[data-table="exits"] tbody tr td[data-label*="Fee"]{
+        padding:12px;
+        border:1px solid rgba(11,12,22,.075);
+        border-radius:14px;
+        background:#f8faff;
+        text-align:left;
+      }
+      .data-workbench table[data-table="exits"] tbody tr td[data-label*="Net"]::before,
+      .data-workbench table[data-table="exits"] tbody tr td[data-label*="Gross"]::before,
+      .data-workbench table[data-table="exits"] tbody tr td[data-label*="Fee"]::before{
+        max-width:none;
+        line-height:1.15;
+        letter-spacing:.02em;
+        white-space:normal;
+      }
+      .data-workbench .share-bar{margin-left:0;width:100%}
+    }
   </style>
 </head>
 <body>
@@ -1847,21 +2364,43 @@
       </div>
     </section>
 
-    <!-- Section nav -->
-    <nav class="section-nav" role="tablist" aria-label="Dashboard sections">
-      <button class="section-btn tab-btn active" role="tab" aria-selected="true" data-tab="investors" type="button">
-        Investors <span class="count" id="tab-count-investors">—</span>
-      </button>
-      <button class="section-btn tab-btn" role="tab" aria-selected="false" data-tab="bonds" type="button">
-        Bonded positions <span class="count" id="tab-count-bonds">—</span>
-      </button>
-      <button class="section-btn tab-btn" role="tab" aria-selected="false" data-tab="exits" type="button">
-        Recent exits <span class="count" id="tab-count-exits">—</span>
-      </button>
-    </nav>
+    <!-- Data workbench -->
+    <section class="data-workbench" id="data-workbench" aria-labelledby="data-workbench-title" data-active="investors">
+      <div class="data-workbench-head">
+        <div>
+          <span class="data-kicker">LP data tables</span>
+          <h2 id="data-workbench-title">Choose the view you need</h2>
+          <p>Switch between investor balances, LP bonded positions and recent bRUNE exits without losing the live APY context.</p>
+        </div>
+        <span class="data-hint">Tap a card to change table</span>
+      </div>
 
-    <!-- INVESTORS panel -->
-    <section class="panel" id="panel-investors" role="tabpanel">
+      <nav class="section-nav" role="tablist" aria-label="Dashboard data views">
+        <button class="section-btn tab-btn active" id="tab-investors" role="tab" aria-selected="true" aria-controls="panel-investors" data-tab="investors" type="button">
+          <span class="tab-index">01</span>
+          <span class="tab-copy">
+            <span class="tab-label">Investor pool <span class="count" id="tab-count-investors">—</span></span>
+            <span class="tab-desc">Deposits, yield share and investor value</span>
+          </span>
+        </button>
+        <button class="section-btn tab-btn" id="tab-bonds" role="tab" aria-selected="false" aria-controls="panel-bonds" data-tab="bonds" type="button">
+          <span class="tab-index">02</span>
+          <span class="tab-copy">
+            <span class="tab-label">LP bonded positions <span class="count" id="tab-count-bonds">—</span></span>
+            <span class="tab-desc">Where the LP bond is parked in nodes</span>
+          </span>
+        </button>
+        <button class="section-btn tab-btn" id="tab-exits" role="tab" aria-selected="false" aria-controls="panel-exits" data-tab="exits" type="button">
+          <span class="tab-index">03</span>
+          <span class="tab-copy">
+            <span class="tab-label">Recent exits <span class="count" id="tab-count-exits">—</span></span>
+            <span class="tab-desc">bRUNE exits, RUNE payouts and 5% fee</span>
+          </span>
+        </button>
+      </nav>
+
+      <!-- INVESTORS panel -->
+      <section class="panel" id="panel-investors" role="tabpanel" aria-labelledby="tab-investors">
       <header class="panel-head">
         <div>
           <h2 class="panel-title">Investor pool</h2>
@@ -1914,13 +2453,13 @@
           </tbody>
         </table>
       </div>
-    </section>
+      </section>
 
-    <!-- BONDS panel -->
-    <section class="panel" id="panel-bonds" role="tabpanel" hidden>
+      <!-- BONDS panel -->
+      <section class="panel" id="panel-bonds" role="tabpanel" aria-labelledby="tab-bonds" hidden>
       <header class="panel-head">
         <div>
-          <h2 class="panel-title">Bonded positions</h2>
+          <h2 class="panel-title">LP bonded positions</h2>
           <p class="panel-sub">Where the LP bond is currently parked. Active nodes earn the bonding APY; standby holds capacity.</p>
         </div>
         <div class="panel-meta">
@@ -1967,10 +2506,10 @@
           </tbody>
         </table>
       </div>
-    </section>
+      </section>
 
-    <!-- EXITS panel -->
-    <section class="panel" id="panel-exits" role="tabpanel" hidden>
+      <!-- EXITS panel -->
+      <section class="panel" id="panel-exits" role="tabpanel" aria-labelledby="tab-exits" hidden>
       <header class="panel-head">
         <div>
           <h2 class="panel-title">Recent exits</h2>
@@ -2021,6 +2560,7 @@
           </tbody>
         </table>
       </div>
+      </section>
     </section>
 
     <!-- Footer -->
@@ -2054,9 +2594,13 @@
         }).toUpperCase();
       }
       // Sync section-btn active class with aria-selected for v3 styling
+      const workbench = document.getElementById('data-workbench');
       const syncActive = () => {
         document.querySelectorAll('.tab-btn').forEach(b => {
-          b.classList.toggle('active', b.getAttribute('aria-selected') === 'true');
+          const active = b.getAttribute('aria-selected') === 'true';
+          b.classList.toggle('active', active);
+          b.tabIndex = active ? 0 : -1;
+          if (active && workbench) workbench.dataset.active = b.dataset.tab || 'investors';
         });
       };
       syncActive();
@@ -2076,7 +2620,15 @@
           b.classList.toggle('active', sel);
           b.tabIndex = sel ? 0 : -1;
         });
+        if (workbench) workbench.dataset.active = target;
         Object.entries(panels).forEach(([k, el]) => { if (el) el.hidden = (k !== target); });
+        if (
+          typeof window.matchMedia === 'function' &&
+          window.matchMedia('(max-width: 760px)').matches &&
+          typeof t.scrollIntoView === 'function'
+        ) {
+          t.scrollIntoView({ block: 'nearest', inline: 'center' });
+        }
       }
       tabs.forEach(t => {
         t.addEventListener('click', () => activateTab(t));
