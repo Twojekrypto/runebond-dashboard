@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Runebond LP Dashboard</title>
-  <meta name="description" content="Live operating view for the Runebond LP — investor APY, gross LP yield, bonded capital and 30-day exit fees.">
+  <title>RUNEBOND LP Dashboard</title>
+  <meta name="description" content="Live operating view for the RUNEBOND LP — investor APY, gross LP yield, bonded capital and 30-day exit fees.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -342,7 +342,7 @@
     .help[data-tip]::after{content:attr(data-tip);position:absolute;left:50%;transform:translateX(-50%) translateY(4px);top:calc(100% + 8px);background:var(--surface-2);border:1px solid var(--line-strong);border-radius:6px;padding:10px 12px;font-size:11px;font-weight:400;letter-spacing:0;text-transform:none;line-height:1.55;color:var(--text-2);width:280px;max-width:80vw;z-index:20;font-family:var(--sans);font-style:normal;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;white-space:normal;text-align:left}
     .help[data-tip]:hover::after,.help[data-tip]:focus-visible::after,.help[data-tip].open::after{opacity:1;transform:translateX(-50%) translateY(0)}
 
-    /* Runebond brand layer */
+    /* RUNEBOND brand layer */
     :root{
       --bg:#07090f;
       --bg-deep:#05070b;
@@ -531,7 +531,7 @@
       *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
     }
 
-    /* Official Runebond light skin */
+    /* Official RUNEBOND light skin */
     :root{
       --bg:#efeee7;
       --bg-deep:#e7e5dc;
@@ -695,7 +695,7 @@
       .table-container{box-shadow:none}
     }
 
-    /* Official Runebond composition pass */
+    /* Official RUNEBOND composition pass */
     .container{max-width:1240px}
     body{
       background:
@@ -855,7 +855,7 @@
       backdrop-filter:blur(14px);
     }
     .hero-spark::before{
-      content:'Runebond yield monitor';
+      content:'RUNEBOND yield monitor';
       display:block;
       color:var(--text);
       font-size:20px;
@@ -1640,7 +1640,7 @@
       }
     }
 
-    /* Yield monitor polish: keep data dominant and use Runebond brand colors */
+    /* Yield monitor polish: keep data dominant and use RUNEBOND brand colors */
     :root{
       --chart-line:#0b4cff;
       --chart-end:#00b30f;
@@ -2214,8 +2214,8 @@
     <div class="container">
       <div class="topbar-inner">
         <div class="brand">
-          <a class="brand-logo" href="https://runebond.com/" target="_blank" rel="noopener" aria-label="Open Runebond website">
-            <img class="brand-logo-img" src="assets/runebond-logo-horizontal.svg" alt="Runebond">
+          <a class="brand-logo" href="https://runebond.com/" target="_blank" rel="noopener" aria-label="Open RUNEBOND website">
+            <img class="brand-logo-img" src="assets/runebond-logo-horizontal.svg" alt="RUNEBOND">
             <span class="brand-dashboard-label">LP Dashboard</span>
           </a>
         </div>
@@ -2244,7 +2244,7 @@
       <div class="display-lead">Investor APY after split</div>
       <div class="display-num" id="investors-apy"><span class="apy-loading"><span class="apy-loading-line"></span><span class="apy-loading-text">Syncing live APY…</span></span></div>
       <div class="display-trail"><span class="accent-text">Shown APY = investor half</span> of the full LP yield.</div>
-      <p class="hero-summary">Full LP APY is calculated from bonding plus bRUNE exit fees, then split 50% to investors and 50% to Runebond.</p>
+      <p class="hero-summary">Full LP APY is calculated from bonding plus bRUNE exit fees, then split 50% to investors and 50% to RUNEBOND.</p>
       <span class="est-badge" title="Derived from 30-day bonding earnings and inferred 5% exit fees, not forward guidance.">30 day · estimate</span>
 
       <div class="hero-spark">
@@ -2566,7 +2566,7 @@
     <!-- Footer -->
     <div class="footer">
       <div class="footer-left">
-        <span class="footer-mark">Runebond</span>
+        <span class="footer-mark">RUNEBOND</span>
         <span>·</span>
         <span class="panel-status" id="yield-status" data-tone="loading" style="border:0;background:transparent;padding:0">Syncing yield</span>
         <span>·</span>
@@ -2965,7 +2965,7 @@
       setText('split-investor-note', 'Investor APY appears only after capital and fee inputs are aligned.');
       setText('apy-note', 'Loading complete LP capital before showing APY');
       setText('proj-capital', '—');
-      document.title = 'Runebond LP Dashboard';
+      document.title = 'RUNEBOND LP Dashboard';
     }
 
     function formatPercent(value, digits = 2) {
@@ -3686,9 +3686,9 @@
         setText('investors-apy', investorsAPY > 0 ? formatPercent(investorsAPY) : '—');
         setText('runebond-apy', runebondAPY > 0 ? formatPercent(runebondAPY) : '—');
         setText('split-gross', lpEffectiveAPY > 0 ? formatPercent(lpEffectiveAPY) : '—');
-        setText('split-gross-note', 'Total LP yield before the 50 / 50 Runebond split.');
+        setText('split-gross-note', 'Total LP yield before the 50 / 50 RUNEBOND split.');
         setText('split-investor', investorsAPY > 0 ? formatPercent(investorsAPY) : '—');
-        setText('split-investor-note', `50% to investors; Runebond retains ${runebondAPY > 0 ? formatPercent(runebondAPY) : '0.00%'}.`);
+        setText('split-investor-note', `50% to investors; RUNEBOND retains ${runebondAPY > 0 ? formatPercent(runebondAPY) : '0.00%'}.`);
       } else if (redemptionStatus === 'error') {
         setText('lp-effective-apy', bondingYieldOnTotal !== null ? formatPercent(bondingYieldOnTotal) : '—');
         setText('investors-apy', bondingYieldOnTotal !== null ? formatPercent(investorTake(bondingYieldOnTotal)) : '—');
@@ -3716,8 +3716,8 @@
             ? formatPercent(investorTake(bondingYieldOnTotal))
             : null);
       document.title = headline
-        ? `Runebond LP · ${headline} APY`
-        : 'Runebond LP Dashboard';
+        ? `RUNEBOND LP · ${headline} APY`
+        : 'RUNEBOND LP Dashboard';
     }
 
     async function fetchAll() {
@@ -4153,14 +4153,14 @@
       setText('split-gross', `${grossLPapy.toFixed(2)}%`);
       setText('split-gross-note', 'Bonding contribution plus the 30-day fee contribution.');
       setText('split-investor', `${investorAPY.toFixed(2)}%`);
-      setText('split-investor-note', '50% of positive LP APY. Runebond captures 11.43%.');
+      setText('split-investor-note', '50% of positive LP APY. RUNEBOND captures 11.43%.');
 
       setText('lp-effective-apy', `${grossLPapy.toFixed(2)}%`);
       setText('investors-apy', `${investorAPY.toFixed(2)}%`);
       setText('runebond-apy', `${investorAPY.toFixed(2)}%`);
       setText('apy-note', 'Gross LP yield from bonding + payout fees before the 50/50 split');
       setText('proj-capital', formatRune(totalE8));
-      document.title = `Runebond LP · ${investorAPY.toFixed(2)}% APY · DEMO`;
+      document.title = `RUNEBOND LP · ${investorAPY.toFixed(2)}% APY · DEMO`;
 
       // ─── Sparkline (investor APY build-up after split) ───
       const days = 30;
