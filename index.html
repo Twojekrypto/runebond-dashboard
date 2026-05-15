@@ -984,21 +984,31 @@
     .icon-btn:hover{background:var(--text);color:#fff;border-color:transparent}
     .hero{
       display:grid;
-      grid-template-columns:minmax(0,.92fr) minmax(390px,.78fr);
-      column-gap:58px;
-      align-items:center;
-      min-height:620px;
-      padding:88px 0 64px;
+      grid-template-columns:minmax(0,.98fr) minmax(420px,.84fr);
+      gap:18px;
+      align-items:stretch;
+      min-height:0;
+      margin:34px 0 46px;
+      padding:18px;
       text-align:left;
+      border:1px solid rgba(11,12,22,.075);
+      border-radius:34px;
+      background:
+        radial-gradient(circle at 82% 8%,rgba(11,76,255,.13),rgba(11,76,255,0) 32%),
+        linear-gradient(180deg,rgba(255,255,255,.92),rgba(248,250,255,.86));
+      box-shadow:0 34px 96px rgba(11,12,22,.08);
+      backdrop-filter:blur(16px);
       isolation:isolate;
     }
     .hero::before{
-      left:0;
-      top:74px;
+      left:34px;
+      top:34px;
       width:86px;
-      height:5px;
+      height:4px;
+      border-radius:999px;
       transform:none;
       opacity:1;
+      z-index:1;
     }
     .hero::after{
       display:block;
@@ -1015,7 +1025,34 @@
       filter:saturate(1.03);
       pointer-events:none;
     }
-    .hero > :not(.hero-spark):not(.sr){grid-column:1}
+    .hero > :not(.hero-spark):not(.sr):not(.hero-copy){grid-column:1}
+    .hero-copy{
+      position:relative;
+      z-index:1;
+      grid-column:1;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:flex-start;
+      min-height:560px;
+      padding:54px 42px 46px;
+      border:1px solid rgba(11,12,22,.065);
+      border-radius:28px;
+      background:linear-gradient(180deg,rgba(255,255,255,.84),rgba(255,255,255,.58));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.82);
+      overflow:hidden;
+    }
+    .hero-copy::after{
+      content:"";
+      position:absolute;
+      left:-120px;
+      bottom:-150px;
+      width:360px;
+      height:360px;
+      border-radius:999px;
+      background:radial-gradient(circle,rgba(11,76,255,.11),rgba(11,76,255,0) 68%);
+      pointer-events:none;
+    }
     .eyebrow{
       justify-content:flex-start;
       margin:0 0 24px;
@@ -1029,7 +1066,7 @@
       max-width:640px;
       margin:0 0 6px;
       color:var(--text);
-      font-size:clamp(36px,4.4vw,58px);
+      font-size:clamp(34px,3.4vw,50px);
       line-height:1.02;
       font-weight:800;
       letter-spacing:-.05em!important;
@@ -1075,11 +1112,11 @@
     }
     .hero-spark{
       grid-column:2;
-      grid-row:1 / span 7;
-      align-self:center;
+      grid-row:auto;
+      align-self:stretch;
       width:100%;
       max-width:none;
-      min-height:360px;
+      min-height:560px;
       margin:0;
       padding:34px 34px 28px;
       border-radius:24px;
@@ -1989,16 +2026,20 @@
       }
       .topbar-inner{min-height:74px}
       .hero{
-        grid-template-columns:minmax(0,.88fr) minmax(660px,.86fr);
-        column-gap:76px;
-        min-height:660px;
-        padding-top:94px;
-        padding-bottom:50px;
+        grid-template-columns:minmax(0,.96fr) minmax(640px,.90fr);
+        gap:22px;
+        margin-top:38px;
+        padding:20px;
+      }
+      .hero-copy{
+        min-height:590px;
+        padding:62px 54px 54px;
       }
       .hero-spark{
         width:100%;
-        max-width:720px;
+        max-width:none;
         justify-self:stretch;
+        min-height:590px;
         padding:42px 44px 34px;
       }
       .hero-spark::after{
@@ -2041,6 +2082,7 @@
       }
       .formula .op{display:none}
       .hero-spark{order:8}
+      .hero-copy{grid-column:1;min-height:0}
       .formula{order:7}
       .simple-explainer{
         grid-template-columns:1fr;
@@ -2077,7 +2119,9 @@
       .lp-label,.copy-btn{display:none}
       .hero{
         row-gap:22px;
-        padding:46px 0 34px;
+        margin:18px 0 30px;
+        padding:12px;
+        border-radius:24px;
       }
       .hero::after{
         width:270px;
@@ -2105,6 +2149,17 @@
         margin-top:12px;
         font-size:13px;
         line-height:1.55;
+      }
+      .hero-copy{
+        width:100%;
+        padding:32px 20px 24px;
+        border-radius:20px;
+      }
+      .hero-copy::after{
+        width:260px;
+        height:260px;
+        left:-150px;
+        bottom:-140px;
       }
       .est-badge{margin-top:12px}
       .formula{
@@ -3032,16 +3087,18 @@
 
     <!-- Hero -->
     <section class="hero">
-      <div class="eyebrow">
-        <span class="sep"></span>
-        <span>LIVE LP YIELD VIEW · <span id="hero-date">—</span></span>
-        <span class="sep"></span>
-      </div>
+      <div class="hero-copy">
+        <div class="eyebrow">
+          <span class="sep"></span>
+          <span>LIVE LP YIELD VIEW · <span id="hero-date">—</span></span>
+          <span class="sep"></span>
+        </div>
 
-      <div class="display-lead">Investor APY after split</div>
-      <div class="display-num" id="investors-apy"><span class="apy-loading"><span class="apy-loading-line"></span><span class="apy-loading-text">Syncing live APY…</span></span></div>
-      <p class="hero-summary">Full LP APY is calculated from bonding plus bRUNE exit fees, then split 50% to investors and 50% to RUNEBOND.</p>
-      <span class="est-badge" title="Derived from 30-day bonding earnings and inferred 5% exit fees, not forward guidance.">30 day · estimate</span>
+        <div class="display-lead">Investor APY after split</div>
+        <div class="display-num" id="investors-apy"><span class="apy-loading"><span class="apy-loading-line"></span><span class="apy-loading-text">Syncing live APY…</span></span></div>
+        <p class="hero-summary">Full LP APY is calculated from bonding plus bRUNE exit fees, then split 50% to investors and 50% to RUNEBOND.</p>
+        <span class="est-badge" title="Derived from 30-day bonding earnings and inferred 5% exit fees, not forward guidance.">30 day · estimate</span>
+      </div>
 
       <div class="hero-spark">
         <div class="spark-label">30-day investor APY after split</div>
