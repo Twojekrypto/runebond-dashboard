@@ -193,7 +193,7 @@ function collectDomSnapshot(window) {
     },
     runeUnit: {
       visibleGlyphs: countVisibleRuneGlyphs(doc),
-      logoCount: doc.querySelectorAll('.rune-logo-unit img[src$="thorchain-mark.png"]').length,
+      logoCount: doc.querySelectorAll('.rune-logo-unit img[src$="rune-logo-coingecko.png"]').length,
       sourceGlyphs: countRawRuneGlyphsInSources()
     },
     dataWorkbench: {
