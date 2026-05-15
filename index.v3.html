@@ -3498,6 +3498,9 @@
     const nodeSort = { key: 'bond', direction: 'desc' };
     const swapSort = { key: 'dateMs', direction: 'desc' };
     const RUNE_LOGO_SRC = 'assets/thorchain-mark.png';
+    const RUNE_UNIT_TOKEN = '[[RUNE]]';
+    const LEGACY_RUNE_GLYPH = String.fromCharCode(0x16b1);
+    const RUNE_UNIT_PATTERN = new RegExp(`${RUNE_UNIT_TOKEN.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}|${LEGACY_RUNE_GLYPH}`, 'g');
 
     function setText(id, text) {
       const el = document.getElementById(id);
@@ -3527,7 +3530,11 @@
       if (!root || !root.ownerDocument) return;
       const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
         acceptNode(node) {
-          if (!node.nodeValue || !node.nodeValue.includes('ᚱ')) return NodeFilter.FILTER_REJECT;
+          if (!node.nodeValue || !RUNE_UNIT_PATTERN.test(node.nodeValue)) {
+            RUNE_UNIT_PATTERN.lastIndex = 0;
+            return NodeFilter.FILTER_REJECT;
+          }
+          RUNE_UNIT_PATTERN.lastIndex = 0;
           const parent = node.parentElement;
           if (!parent || parent.closest('script,style,textarea,template,.rune-logo-unit')) {
             return NodeFilter.FILTER_REJECT;
@@ -3538,18 +3545,24 @@
       const nodes = [];
       while (walker.nextNode()) nodes.push(walker.currentNode);
       nodes.forEach((node) => {
-        const parts = node.nodeValue.split('ᚱ');
         const fragment = document.createDocumentFragment();
-        parts.forEach((part, index) => {
-          if (part) fragment.appendChild(document.createTextNode(part));
-          if (index < parts.length - 1) fragment.appendChild(createRuneLogoUnit());
+        let lastIndex = 0;
+        node.nodeValue.replace(RUNE_UNIT_PATTERN, (match, offset) => {
+          const text = node.nodeValue.slice(lastIndex, offset);
+          if (text) fragment.appendChild(document.createTextNode(text));
+          fragment.appendChild(createRuneLogoUnit());
+          lastIndex = offset + match.length;
+          return match;
         });
+        const tail = node.nodeValue.slice(lastIndex);
+        if (tail) fragment.appendChild(document.createTextNode(tail));
         node.parentNode.replaceChild(fragment, node);
       });
+      RUNE_UNIT_PATTERN.lastIndex = 0;
     }
 
     function formatRuneTitle(amountE8) {
-      return formatRune(amountE8).replace(/ᚱ/g, 'RUNE');
+      return formatRune(amountE8).replaceAll(RUNE_UNIT_TOKEN, 'RUNE');
     }
 
     function setLoadingMetric(id, message = 'Loading…') {
@@ -3735,19 +3748,19 @@
 
     function formatRune(amountE8) {
       const val = Number(amountE8) / 1e8;
-      if (val >= 1000) return val.toLocaleString('en-US', { maximumFractionDigits: 0 }) + ' ᚱ';
-      if (val >= 1) return val.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' ᚱ';
-      return val.toLocaleString('en-US', { maximumFractionDigits: 4 }) + ' ᚱ';
+      if (val >= 1000) return `${val.toLocaleString('en-US', { maximumFractionDigits: 0 })} ${RUNE_UNIT_TOKEN}`;
+      if (val >= 1) return `${val.toLocaleString('en-US', { maximumFractionDigits: 2 })} ${RUNE_UNIT_TOKEN}`;
+      return `${val.toLocaleString('en-US', { maximumFractionDigits: 4 })} ${RUNE_UNIT_TOKEN}`;
     }
 
     function formatRuneShort(amountE8) {
       const val = Number(amountE8) / 1e8;
       if (!Number.isFinite(val)) return '—';
       const abs = Math.abs(val);
-      if (abs >= 1e6) return (val / 1e6).toFixed(2) + 'M ᚱ';
-      if (abs >= 1e3) return (val / 1e3).toFixed(1) + 'K ᚱ';
-      if (abs >= 1) return val.toFixed(2) + ' ᚱ';
-      return val.toFixed(4) + ' ᚱ';
+      if (abs >= 1e6) return `${(val / 1e6).toFixed(2)}M ${RUNE_UNIT_TOKEN}`;
+      if (abs >= 1e3) return `${(val / 1e3).toFixed(1)}K ${RUNE_UNIT_TOKEN}`;
+      if (abs >= 1) return `${val.toFixed(2)} ${RUNE_UNIT_TOKEN}`;
+      return `${val.toFixed(4)} ${RUNE_UNIT_TOKEN}`;
     }
 
     function setKPIRune(id, amountE8) {
@@ -3766,9 +3779,9 @@
     function formatSignedRune(amountE8, digits = 1) {
       const val = Number(amountE8) / 1e8;
       if (!Number.isFinite(val)) return '—';
-      if (val === 0) return '0 ᚱ';
+      if (val === 0) return `0 ${RUNE_UNIT_TOKEN}`;
       const sign = val > 0 ? '+' : '';
-      return `${sign}${val.toLocaleString('en-US', { maximumFractionDigits: Math.abs(val) >= 1000 ? 0 : digits })} ᚱ`;
+      return `${sign}${val.toLocaleString('en-US', { maximumFractionDigits: Math.abs(val) >= 1000 ? 0 : digits })} ${RUNE_UNIT_TOKEN}`;
     }
 
     function formatDateTime(dateMs) {
@@ -3877,11 +3890,11 @@
       }
 
       setText('swap-count', `${swaps.length} exits · ${uniqueWallets} wallet${uniqueWallets === 1 ? '' : 's'}`);
-      setText('swap-summary-gross', grossExitTotalE8 > 0 ? formatRune(grossExitTotalE8) : '0 ᚱ');
+      setText('swap-summary-gross', grossExitTotalE8 > 0 ? formatRune(grossExitTotalE8) : `0 ${RUNE_UNIT_TOKEN}`);
       setText('swap-summary-gross-note', `${swaps.length} inferred gross exit${swaps.length === 1 ? '' : 's'} over the last 30 days.`);
-      setText('swap-summary-net', netPayoutTotalE8 > 0 ? formatRune(netPayoutTotalE8) : '0 ᚱ');
+      setText('swap-summary-net', netPayoutTotalE8 > 0 ? formatRune(netPayoutTotalE8) : `0 ${RUNE_UNIT_TOKEN}`);
       setText('swap-summary-net-note', 'RUNE that actually left the LP and reached user wallets.');
-      setText('swap-summary-fee', feeRetainedTotalE8 > 0 ? formatRune(feeRetainedTotalE8) : '0 ᚱ');
+      setText('swap-summary-fee', feeRetainedTotalE8 > 0 ? formatRune(feeRetainedTotalE8) : `0 ${RUNE_UNIT_TOKEN}`);
       setText('swap-summary-fee-note', 'The retained 5% inferred from those same LP payouts.');
       setText('swap-summary-wallets', `${uniqueWallets}`);
       setText('swap-summary-wallets-note', 'Distinct recipient wallets seen in the last 30 days.');
@@ -3910,7 +3923,7 @@
             <div class="cell-sub">Implied by the 95% user payout</div>
           </td>
           <td data-label="Fee retained">
-            <div class="growth-pos">+${(swap.feeRetainedE8 / 1e8).toFixed(2)} ᚱ</div>
+            <div class="growth-pos">+${(swap.feeRetainedE8 / 1e8).toFixed(2)} ${RUNE_UNIT_TOKEN}</div>
             <div class="cell-sub">LP retained ~5% on this exit</div>
           </td>
         </tr>`).join('');
@@ -4109,7 +4122,7 @@
               </a>
             </div>
           </td>
-          <td class="${bond > 0 ? 'bond-amount' : 'bond-zero'}" data-label="Bond">${bond > 0 ? formatRune(n.bond) : '0 ᚱ'}</td>
+          <td class="${bond > 0 ? 'bond-amount' : 'bond-zero'}" data-label="Bond">${bond > 0 ? formatRune(n.bond) : `0 ${RUNE_UNIT_TOKEN}`}</td>
           <td data-label="Status"><span class="badge ${statusClass}">${n.status}</span></td>
         </tr>`;
       }).join('');
@@ -4376,7 +4389,7 @@
         const bondingEarningsAnnual = bondedRune * bondingAPY;
         bondingYieldOnTotal = (bondingEarningsAnnual / totalRune) * 100;
         setText('bonding-yield-pct', formatPercent(bondingYieldOnTotal));
-        setText('bonding-yield-rune', `~${bondingEarningsAnnual.toFixed(0)} ᚱ/yr from ${bondedRune.toFixed(0)} ᚱ bonded in nodes`);
+        setText('bonding-yield-rune', `~${bondingEarningsAnnual.toFixed(0)} ${RUNE_UNIT_TOKEN}/yr from ${bondedRune.toFixed(0)} ${RUNE_UNIT_TOKEN} bonded in nodes`);
         setText('hero-bonding-yield', formatPercent(bondingYieldOnTotal));
         setText('hero-bonding-note', `LP bonding is a gross input; the chart line uses the investor half after the 50 / 50 split.`);
         setText('split-bonding', formatPercent(bondingYieldOnTotal));
@@ -4400,7 +4413,7 @@
         setText('fee-yield-pct', formatPercent(feeYieldOnTotal));
         setText(
           'fee-yield-rune',
-          `${feeIncome30d.toFixed(2)} ᚱ retained last 30d · ~${(payoutVolume30dE8 / 1e8).toFixed(2)} ᚱ paid out net${usingCachedFeeFeed ? ' · cached snapshot' : ''}`
+          `${feeIncome30d.toFixed(2)} ${RUNE_UNIT_TOKEN} retained last 30d · ~${(payoutVolume30dE8 / 1e8).toFixed(2)} ${RUNE_UNIT_TOKEN} paid out net${usingCachedFeeFeed ? ' · cached snapshot' : ''}`
         );
         setText('hero-fee-yield', formatPercent(feeYieldOnTotal));
         setText(
@@ -4740,11 +4753,11 @@
             <div class="share-bar"><div class="fill" style="width:${sharePct}%"></div></div>
           </td>
           <td data-label="Gross yield">
-            <div class="${grossGrowthClass}">${grossGrowthSign}${grossGrowthRune.toFixed(1)} ᚱ</div>
+            <div class="${grossGrowthClass}">${grossGrowthSign}${grossGrowthRune.toFixed(1)} ${RUNE_UNIT_TOKEN}</div>
             <div class="cell-sub">${grossGrowthSign}${p.grossGrowthPct.toFixed(1)}% gross</div>
           </td>
           <td data-label="Investor yield">
-            <div class="${investorGrowthClass}">${investorGrowthSign}${investorGrowthRune.toFixed(1)} ᚱ</div>
+            <div class="${investorGrowthClass}">${investorGrowthSign}${investorGrowthRune.toFixed(1)} ${RUNE_UNIT_TOKEN}</div>
             <div class="cell-sub">${investorGrowthSign}${p.investorGrowthPct.toFixed(1)}% investor</div>
           </td>
           <td class="current-val" data-label="Investor value">${formatRune(Math.round(p.currentValueE8))}</td>
@@ -4830,7 +4843,7 @@
       // Y-axis labels (3): max, mid, min
       const fmtVal = v => unit === '%'
         ? v.toFixed(2) + '%'
-        : (v >= 1000 ? (v / 1000).toFixed(1) + 'K ᚱ' : v.toFixed(0) + ' ᚱ');
+        : (v >= 1000 ? `${(v / 1000).toFixed(1)}K ${RUNE_UNIT_TOKEN}` : `${v.toFixed(0)} ${RUNE_UNIT_TOKEN}`);
       if (yAxis) {
         const spans = yAxis.querySelectorAll('span');
         spans[0].textContent = fmtVal(niceMax);
@@ -4912,11 +4925,11 @@
       setText('network-apy', '14.50%');
       setText('network-apy-note', 'Midgard reported network APY');
       setText('bonding-yield-pct', `${bondingPart.toFixed(2)}%`);
-      setText('bonding-yield-rune', `~272,860 ᚱ/yr from 1,920,000 ᚱ bonded at 14.50%`);
+      setText('bonding-yield-rune', `~272,860 ${RUNE_UNIT_TOKEN}/yr from 1,920,000 ${RUNE_UNIT_TOKEN} bonded at 14.50%`);
       setText('hero-bonding-yield', `${bondingPart.toFixed(2)}%`);
       setText('hero-bonding-note', 'LP bonding is a gross input; the chart line uses the investor half after the 50 / 50 split.');
       setText('fee-yield-pct', `${feesPart.toFixed(2)}%`);
-      setText('fee-yield-rune', '142 payouts · 165K ᚱ gross volume in 30d');
+      setText('fee-yield-rune', `142 payouts · 165K ${RUNE_UNIT_TOKEN} gross volume in 30d`);
       setText('hero-fee-yield', `${feesPart.toFixed(2)}%`);
       setText('hero-fee-note', '142 payouts add retained 5% fees as a gross input; the chart line shows the investor half.');
       setText('redemption-volume', formatRuneShort(16_500_000_000_000));
@@ -4925,7 +4938,7 @@
       setText('split-bonding', `${bondingPart.toFixed(2)}%`);
       setText('split-bonding-note', '79.7% of LP capital earns the network bond rate.');
       setText('split-fees', `${feesPart.toFixed(2)}%`);
-      setText('split-fees-note', '142 payouts drove 165K ᚱ of gross exits.');
+      setText('split-fees-note', `142 payouts drove 165K ${RUNE_UNIT_TOKEN} of gross exits.`);
       setText('split-gross', `${grossLPapy.toFixed(2)}%`);
       setText('split-gross-note', 'Bonding contribution plus the 30-day fee contribution.');
       setText('split-investor', `${investorAPY.toFixed(2)}%`);

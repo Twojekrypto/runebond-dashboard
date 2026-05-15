@@ -56,20 +56,31 @@ function parseRune(text) {
 }
 
 function countVisibleRuneGlyphs(doc) {
+  const runeGlyph = String.fromCharCode(0x16b1);
   const nodeFilter = doc.defaultView.NodeFilter;
   const walker = doc.createTreeWalker(doc.body, nodeFilter.SHOW_TEXT, {
     acceptNode(node) {
-      if (!node.nodeValue || !node.nodeValue.includes('ᚱ')) return nodeFilter.FILTER_REJECT;
+      if (!node.nodeValue || !node.nodeValue.includes(runeGlyph)) return nodeFilter.FILTER_REJECT;
       const parent = node.parentElement;
       if (!parent || parent.closest('script,style,textarea,template')) return nodeFilter.FILTER_REJECT;
       return nodeFilter.FILTER_ACCEPT;
     }
   });
   let count = 0;
+  const runeGlyphPattern = new RegExp(runeGlyph, 'g');
   while (walker.nextNode()) {
-    count += (walker.currentNode.nodeValue.match(/ᚱ/g) || []).length;
+    count += (walker.currentNode.nodeValue.match(runeGlyphPattern) || []).length;
   }
   return count;
+}
+
+function countRawRuneGlyphsInSources() {
+  const runeGlyph = String.fromCharCode(0x16b1);
+  return ['index.html', 'index.v3.html', 'scripts/dashboard-audit.js'].reduce((count, file) => {
+    const fullPath = path.join(ROOT, file);
+    if (!fs.existsSync(fullPath)) return count;
+    return count + (fs.readFileSync(fullPath, 'utf8').match(new RegExp(runeGlyph, 'g')) || []).length;
+  }, 0);
 }
 
 function approxEqual(a, b, tolerance = 0.03) {
@@ -147,7 +158,8 @@ function collectDomSnapshot(window) {
     },
     runeUnit: {
       visibleGlyphs: countVisibleRuneGlyphs(doc),
-      logoCount: doc.querySelectorAll('.rune-logo-unit img[src$="thorchain-mark.png"]').length
+      logoCount: doc.querySelectorAll('.rune-logo-unit img[src$="thorchain-mark.png"]').length,
+      sourceGlyphs: countRawRuneGlyphsInSources()
     },
     dataWorkbench: {
       hintText: doc.querySelector('.data-hint')?.textContent?.trim() || '',
@@ -238,8 +250,10 @@ function validateSnapshot(snapshot) {
   });
 
   checks.push({
-    ok: snapshot.runeUnit.visibleGlyphs === 0 && snapshot.runeUnit.logoCount >= 20,
-    message: `RUNE amounts use logo units instead of raw ᚱ glyphs (${snapshot.runeUnit.logoCount} logos)`
+    ok: snapshot.runeUnit.visibleGlyphs === 0 &&
+      snapshot.runeUnit.sourceGlyphs === 0 &&
+      snapshot.runeUnit.logoCount >= 20,
+    message: `RUNE amounts use logo units instead of raw glyphs (${snapshot.runeUnit.logoCount} logos)`
   });
 
   checks.push({
