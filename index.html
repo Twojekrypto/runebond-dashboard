@@ -174,7 +174,6 @@
 
     .panel-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:24px}
     .panel-title{font-family:var(--serif);font-style:italic;font-weight:400;font-size:24px;letter-spacing:-.2px;color:var(--text);line-height:1.2}
-    .panel-sub{margin-top:6px;font-size:13px;color:var(--text-2);max-width:520px;line-height:1.55}
     .panel-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;flex:none}
     .filter-input{font-size:12px;font-family:var(--sans);color:var(--text);background:transparent;border:0;border-bottom:1px solid var(--line-2);padding:6px 4px 6px 22px;min-width:200px;width:240px;letter-spacing:.2px;transition:border-color .15s;background-image:url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2714%27%20height%3D%2714%27%20viewBox%3D%270%200%2014%2014%27%20fill%3D%27none%27%20stroke%3D%27%2362604f%27%20stroke-width%3D%271.5%27%3E%3Ccircle%20cx%3D%276%27%20cy%3D%276%27%20r%3D%274.5%27%2F%3E%3Cpath%20d%3D%27M9.5%209.5%2013%2013%27/%3E%3C%2Fsvg%3E");background-repeat:no-repeat;background-position:left center;background-size:14px}
     .filter-input::placeholder{color:var(--text-3);font-style:italic}
@@ -679,7 +678,6 @@
     .section-btn:hover{color:var(--text-2)}
     .section-btn.active{color:var(--text);background:rgba(0,179,15,.08);border-bottom-color:var(--accent)}
     .panel-title{color:var(--text);font-size:25px}
-    .panel-sub{color:var(--text-2)}
     .filter-input{color:var(--text);border-bottom-color:rgba(0,71,60,.18)}
     .filter-input::placeholder{color:var(--text-3)}
     .filter-input:focus{border-bottom-color:var(--accent)}
@@ -1026,7 +1024,6 @@
       line-height:1.15;
       letter-spacing:-.055em!important;
     }
-    .panel-sub{font-size:15px;line-height:1.75;max-width:640px}
     .filter-input{
       height:42px;
       min-width:220px;
@@ -1900,10 +1897,6 @@
     .data-workbench .panel-title{
       font-size:clamp(28px,2.1vw,36px);
     }
-    .data-workbench .panel-sub{
-      max-width:720px;
-      color:var(--text-2);
-    }
     .data-workbench .panel-meta{
       align-items:center;
       justify-content:flex-end;
@@ -2427,7 +2420,6 @@
       <header class="panel-head">
         <div>
           <h2 class="panel-title">Investor pool</h2>
-          <p class="panel-sub">What each wallet holds, the share of the pool, and what their position is worth after the 50/50 split on positive yield.</p>
         </div>
         <div class="panel-meta">
           <span class="panel-status" id="providers-sync-status" data-tone="loading">Syncing</span>
@@ -2483,7 +2475,6 @@
       <header class="panel-head">
         <div>
           <h2 class="panel-title">LP bonded positions</h2>
-          <p class="panel-sub">Where the LP bond is currently parked. Active nodes earn the bonding APY; standby holds capacity.</p>
         </div>
         <div class="panel-meta">
           <span class="panel-count" id="node-count">—</span>
@@ -2536,7 +2527,6 @@
       <header class="panel-head">
         <div>
           <h2 class="panel-title">Recent exits</h2>
-          <p class="panel-sub">30-day bRUNE → RUNE redemptions served by the LP. Net out leaves the pool; the inferred 5% spread stays as fee income.</p>
         </div>
         <div class="panel-meta">
           <span class="panel-count" id="swap-count">—</span>
