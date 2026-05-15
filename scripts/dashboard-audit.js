@@ -83,6 +83,24 @@ function countRawRuneGlyphsInSources() {
   }, 0);
 }
 
+function visibleTextFrom(element) {
+  if (!element) return '';
+  const doc = element.ownerDocument;
+  const nodeFilter = doc.defaultView.NodeFilter;
+  const walker = doc.createTreeWalker(element, nodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const parent = node.parentElement;
+      if (!parent || parent.closest('script,style,textarea,template,.sr,[hidden],[aria-hidden="true"]')) {
+        return nodeFilter.FILTER_REJECT;
+      }
+      return node.nodeValue.trim() ? nodeFilter.FILTER_ACCEPT : nodeFilter.FILTER_REJECT;
+    }
+  });
+  const parts = [];
+  while (walker.nextNode()) parts.push(walker.currentNode.nodeValue);
+  return parts.join(' ').replace(/\s+/g, ' ').trim();
+}
+
 function approxEqual(a, b, tolerance = 0.03) {
   return a !== null && b !== null && Math.abs(a - b) <= tolerance;
 }
@@ -152,10 +170,22 @@ function collectDomSnapshot(window) {
       oldVitals: !!doc.querySelector('section.vitals'),
       oldHowcalc: !!doc.querySelector('section.howcalc'),
       headlineBadge: !!doc.querySelector('.apy-build-badge'),
+      driverCard: !!doc.querySelector('.apy-drivers-card'),
+      driverCards: doc.querySelectorAll('.apy-driver').length,
+      hiddenDriverIds: [
+        'network-apy',
+        'network-apy-note',
+        'bonding-yield-pct',
+        'bonding-yield-rune',
+        'fee-yield-pct',
+        'fee-yield-rune',
+        'redemption-volume',
+        'redemption-count'
+      ].filter((id) => doc.getElementById(id)?.classList.contains('sr')).length,
       flowSteps: doc.querySelectorAll('.apy-flow-step').length,
       flowConnectors: doc.querySelectorAll('.apy-flow-step[data-op]').length,
       investorStep: !!doc.querySelector('.apy-flow-step.is-investor'),
-      text: doc.querySelector('.apy-build-panel')?.textContent?.replace(/\s+/g, ' ').trim() || ''
+      text: visibleTextFrom(doc.querySelector('.apy-build-panel'))
     },
     runeUnit: {
       visibleGlyphs: countVisibleRuneGlyphs(doc),
@@ -232,18 +262,21 @@ function validateSnapshot(snapshot) {
       !snapshot.apyBuildPanel.oldSimpleExplainer &&
       !snapshot.apyBuildPanel.oldVitals &&
       !snapshot.apyBuildPanel.oldHowcalc &&
-      /Two live inputs/i.test(snapshot.apyBuildPanel.text) &&
+      /Full LP yield comes from two sources/i.test(snapshot.apyBuildPanel.text) &&
       /APY logic/i.test(snapshot.apyBuildPanel.text) &&
       /Gross LP yield/i.test(snapshot.apyBuildPanel.text) &&
       /Bonding yield/i.test(snapshot.apyBuildPanel.text) &&
       /5% exit fees/i.test(snapshot.apyBuildPanel.text) &&
       /Investor APY/i.test(snapshot.apyBuildPanel.text) &&
       !snapshot.apyBuildPanel.headlineBadge &&
+      !snapshot.apyBuildPanel.driverCard &&
+      snapshot.apyBuildPanel.driverCards === 0 &&
+      snapshot.apyBuildPanel.hiddenDriverIds === 8 &&
       snapshot.apyBuildPanel.flowSteps === 4 &&
       snapshot.apyBuildPanel.flowConnectors === 3 &&
       snapshot.apyBuildPanel.investorStep &&
-      /Live inputs/i.test(snapshot.apyBuildPanel.text),
-    message: 'APY explanation is a premium bonding + fee -> gross LP -> investor APY flow without the headline badge'
+      !/Live inputs|The values below|Updated from THORChain data|THORChain bond APY|LP bonding yield|Exit fee yield|bRUNE exits 30d/i.test(snapshot.apyBuildPanel.text),
+    message: 'APY explanation is a premium bonding + fee -> gross LP -> investor APY flow without visible raw input cards'
   });
 
   checks.push({
