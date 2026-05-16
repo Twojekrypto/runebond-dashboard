@@ -129,6 +129,10 @@ function collectDomSnapshot(window) {
       noteCount: doc.querySelectorAll('.spark-notes span').length,
       text: doc.querySelector('.hero')?.textContent?.replace(/\s+/g, ' ').trim() || ''
     },
+    favicon: {
+      iconHrefs: Array.from(doc.querySelectorAll('link[rel~="icon"]')).map((link) => link.getAttribute('href') || ''),
+      iconTypes: Array.from(doc.querySelectorAll('link[rel~="icon"]')).map((link) => link.getAttribute('type') || '')
+    },
     statuses: {
       providers: text('providers-sync-status')
     },
@@ -303,6 +307,12 @@ function validateSnapshot(snapshot) {
   checks.push({
     ok: !snapshot.hero.displayTrail && !/Shown APY/i.test(snapshot.hero.text),
     message: 'hero APY area does not show the extra Shown APY caption'
+  });
+
+  checks.push({
+    ok: snapshot.favicon.iconHrefs.some((href) => /assets\/runebond-isologo\.svg(?:\?|$)/i.test(href)) &&
+      snapshot.favicon.iconTypes.some((type) => type === 'image/svg+xml'),
+    message: 'browser tab favicon uses the RUNEBOND isologo'
   });
 
   checks.push({
