@@ -127,6 +127,9 @@ function collectDomSnapshot(window) {
       splitFull: text('hero-full-lp-apy'),
       splitInvestor: text('hero-investor-split-apy'),
       noteCount: doc.querySelectorAll('.spark-notes span').length,
+      infoTipCount: doc.querySelectorAll('.apy-info-tip').length,
+      monitorLogo: doc.querySelector('.spark-title-logo')?.getAttribute('src') || '',
+      monitorTitleLabel: doc.querySelector('.spark-title')?.getAttribute('aria-label') || '',
       text: doc.querySelector('.hero')?.textContent?.replace(/\s+/g, ' ').trim() || ''
     },
     favicon: {
@@ -202,6 +205,7 @@ function collectDomSnapshot(window) {
     },
     dataWorkbench: {
       hintText: doc.querySelector('.data-hint')?.textContent?.trim() || '',
+      updatedChipText: doc.getElementById('data-updated-chip')?.textContent?.trim() || '',
       panelTitles: Array.from(doc.querySelectorAll('.data-workbench .panel-title')).map(el => el.textContent.trim()),
       metaOnlyHeaders: doc.querySelectorAll('.data-workbench .panel-head.panel-head-meta-only').length,
       liveStatusInHead: !!doc.querySelector('.data-workbench-head #providers-sync-status'),
@@ -310,6 +314,13 @@ function validateSnapshot(snapshot) {
   });
 
   checks.push({
+    ok: snapshot.hero.infoTipCount === 0 &&
+      /runebond-logo-horizontal\.svg$/i.test(snapshot.hero.monitorLogo) &&
+      snapshot.hero.monitorTitleLabel === 'RUNEBOND Yield Monitor',
+    message: 'hero has no extra info icon and RUNEBOND Yield Monitor wordmark is present'
+  });
+
+  checks.push({
     ok: snapshot.favicon.iconHrefs.some((href) => /assets\/runebond-isologo\.svg(?:\?|$)/i.test(href)) &&
       snapshot.favicon.iconTypes.some((type) => type === 'image/svg+xml'),
     message: 'browser tab favicon uses the RUNEBOND isologo'
@@ -327,6 +338,7 @@ function validateSnapshot(snapshot) {
       snapshot.dataWorkbench.panelTitles.length === 0 &&
       snapshot.dataWorkbench.metaOnlyHeaders === 3 &&
       snapshot.dataWorkbench.liveStatusInHead &&
+      /^Updated\s|^Demo data$|^Update failed$/.test(snapshot.dataWorkbench.updatedChipText) &&
       snapshot.dataWorkbench.nodeCountHidden &&
       snapshot.dataWorkbench.swapCountHidden &&
       !/deposited capital/i.test(snapshot.dataWorkbench.providerCountText) &&
@@ -511,6 +523,9 @@ function validateColumnFilters(window) {
     const shell = input.closest('.column-filter');
     const trigger = shell?.querySelector('.column-filter-trigger');
     const tools = shell?.closest('.th-inline-tools');
+    const clearButtonsReady = inputs.every(candidate =>
+      !!candidate.closest('.column-filter, .mobile-panel-filter')?.querySelector('.column-filter-clear, .mobile-filter-clear')
+    );
     const searchSitsBeforeColumnLabel = !tools || tools.firstElementChild === shell;
     const startsCollapsed = shell && !shell.classList.contains('is-open') && !shell.classList.contains('has-value');
     if (trigger) trigger.click();
@@ -529,8 +544,8 @@ function validateColumnFilters(window) {
       inputs.every(candidate => candidate.value === '');
 
     checks.push({
-      ok: searchSitsBeforeColumnLabel && startsCollapsed && opensAfterClick && emptyShown && inputsSynced && staysExpandedWithValue && cleared,
-      message: `${label} column filter sits before the column label, opens on search click, syncs desktop/mobile inputs, and clears rows`
+      ok: searchSitsBeforeColumnLabel && clearButtonsReady && startsCollapsed && opensAfterClick && emptyShown && inputsSynced && staysExpandedWithValue && cleared,
+      message: `${label} column filter has aligned search/clear controls, opens on search click, syncs desktop/mobile inputs, and clears rows`
     });
   });
 

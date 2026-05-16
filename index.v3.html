@@ -626,7 +626,7 @@
       min-width:0;
       border-radius:10px;
     }
-    .brand-logo:focus-visible,.addr-mono:focus-visible,.address-pill:focus-visible,.copy-address-action:focus-visible,.tx-link-pill:focus-visible,.cell-sub a:focus-visible,.th-sort:focus-visible,.section-btn:focus-visible,.icon-btn:focus-visible,.column-filter-trigger:focus-visible,.column-filter-clear:focus-visible{
+    .brand-logo:focus-visible,.addr-mono:focus-visible,.address-pill:focus-visible,.copy-address-action:focus-visible,.tx-link-pill:focus-visible,.cell-sub a:focus-visible,.th-sort:focus-visible,.section-btn:focus-visible,.icon-btn:focus-visible,.column-filter-trigger:focus-visible,.column-filter-clear:focus-visible,.mobile-filter-clear:focus-visible{
       outline:2px solid rgba(96,165,250,.52);
       outline-offset:4px;
     }
@@ -836,7 +836,7 @@
       white-space:nowrap;
     }
     .brand-logo-mark,.brand-word{display:none}
-    .brand-logo:focus-visible,.addr-mono:focus-visible,.address-pill:focus-visible,.copy-address-action:focus-visible,.tx-link-pill:focus-visible,.cell-sub a:focus-visible,.th-sort:focus-visible,.section-btn:focus-visible,.icon-btn:focus-visible,.column-filter-trigger:focus-visible,.column-filter-clear:focus-visible{
+    .brand-logo:focus-visible,.addr-mono:focus-visible,.address-pill:focus-visible,.copy-address-action:focus-visible,.tx-link-pill:focus-visible,.cell-sub a:focus-visible,.th-sort:focus-visible,.section-btn:focus-visible,.icon-btn:focus-visible,.column-filter-trigger:focus-visible,.column-filter-clear:focus-visible,.mobile-filter-clear:focus-visible{
       outline:2px solid rgba(0,179,15,.45);
       outline-offset:4px;
     }
@@ -1133,8 +1133,11 @@
     }
     .spark-title{
       display:flex;
+      flex-direction:row;
       align-items:center;
-      gap:9px;
+      gap:12px;
+      width:max-content;
+      max-width:100%;
       color:var(--text);
       font-size:20px;
       line-height:1.2;
@@ -1143,13 +1146,19 @@
       margin:0 0 6px;
     }
     .spark-title::before{
-      content:"";
-      width:9px;
-      height:9px;
+      content:none;
+      display:none;
+    }
+    .spark-title-logo{
+      display:block;
+      width:184px;
+      max-width:min(62vw,210px);
+      height:auto;
       flex:0 0 auto;
-      border-radius:999px;
-      background:linear-gradient(135deg,var(--accent),var(--chart-end));
-      box-shadow:0 0 0 6px rgba(11,76,255,.07);
+      border-radius:0;
+      padding:0;
+      background:transparent;
+      box-shadow:none;
     }
     .spark-title-brand{
       display:inline-block;
@@ -1161,10 +1170,22 @@
       text-transform:none;
     }
     .spark-title-text{
-      display:inline-block;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
       min-width:0;
       white-space:nowrap;
-      font-weight:850;
+      min-height:28px;
+      padding:0 11px;
+      border:1px solid rgba(11,76,255,.10);
+      border-radius:999px;
+      background:rgba(11,76,255,.05);
+      color:var(--accent);
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.16em;
+      line-height:1;
+      text-transform:uppercase;
     }
     .hero-spark::after{
       content:'Gross LP inputs are shown above; the line and headline already show investor APY after the 50 / 50 split.';
@@ -1663,7 +1684,10 @@
       white-space:nowrap;
     }
     .display-lead{
+      display:block;
+      width:auto;
       max-width:760px;
+      padding-right:0;
     }
     .hero-spark{
       display:flex;
@@ -2254,9 +2278,20 @@
       }
       .display-lead{font-size:30px}
       .display-lead{
+        width:100%;
         max-width:330px;
+        padding-right:0;
         line-height:1.08;
         overflow-wrap:normal;
+      }
+      .spark-title{
+        align-items:center;
+        gap:9px;
+        flex-wrap:wrap;
+      }
+      .spark-title-logo{
+        width:148px;
+        max-width:62vw;
       }
       .display-num{font-size:68px}
       .apy-loading-line{height:62px;width:min(310px,78vw);border-radius:18px}
@@ -2497,6 +2532,15 @@
       gap:24px;
       padding:10px 10px 16px;
     }
+    .data-workbench-head-actions{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:8px;
+      flex-wrap:wrap;
+      flex:0 0 auto;
+      padding-top:2px;
+    }
     .data-kicker{
       display:block;
       color:var(--accent);
@@ -2557,6 +2601,22 @@
       box-shadow:0 12px 30px rgba(11,12,22,.035);
       font-weight:900;
     }
+    .data-updated-chip{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:36px;
+      padding:0 13px;
+      border:1px solid rgba(11,12,22,.08);
+      border-radius:999px;
+      background:#fff;
+      color:#596278;
+      font-size:11px;
+      font-weight:850;
+      line-height:1;
+      white-space:nowrap;
+      box-shadow:0 10px 24px rgba(11,12,22,.04);
+    }
     .data-workbench .section-nav{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
@@ -2568,6 +2628,10 @@
       background:#f5f5ff;
       box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
       overflow:visible;
+      position:sticky;
+      top:84px;
+      z-index:12;
+      backdrop-filter:blur(14px);
     }
     .data-workbench .section-btn{
       min-width:0;
@@ -2721,11 +2785,11 @@
       font-weight:700;
     }
     .data-workbench .mobile-panel-filter{display:none}
-    .data-workbench .column-filter-cell{min-width:260px}
+    .data-workbench .column-filter-cell{min-width:292px}
     .data-workbench .th-inline-tools{
       display:flex;
       align-items:center;
-      gap:7px;
+      gap:10px;
       min-width:0;
     }
     .data-workbench .column-filter,
@@ -2733,33 +2797,38 @@
       position:relative;
       color:var(--accent);
     }
+    .data-workbench .mobile-panel-filter .filter-input{
+      background-image:none;
+      padding:0 42px 0 44px;
+    }
     .data-workbench .column-filter{
-      flex:0 0 28px;
-      width:28px;
-      height:28px;
+      flex:0 0 32px;
+      width:32px;
+      height:32px;
       display:inline-flex;
       align-items:center;
       border-radius:999px;
-      background:rgba(11,76,255,.06);
-      border:1px solid rgba(11,76,255,.12);
-      box-shadow:inset 0 0 0 1px rgba(255,255,255,.76);
+      background:linear-gradient(180deg,#fff,rgba(245,248,255,.96));
+      border:1px solid rgba(11,76,255,.16);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.86),0 10px 24px rgba(11,76,255,.055);
       overflow:hidden;
-      transition:width .2s ease,flex-basis .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease;
+      transition:width .22s ease,flex-basis .22s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
     }
     .data-workbench .column-filter:hover,
     .data-workbench .column-filter.is-open,
     .data-workbench .column-filter.has-value{
       background:#fff;
-      border-color:rgba(11,76,255,.28);
-      box-shadow:inset 0 0 0 1px rgba(255,255,255,.82),0 10px 24px rgba(11,76,255,.10);
+      border-color:rgba(11,76,255,.30);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.92),0 14px 30px rgba(11,76,255,.11);
     }
     .data-workbench .column-filter.is-open,
     .data-workbench .column-filter.has-value{
-      width:166px;
-      flex-basis:166px;
+      width:196px;
+      flex-basis:196px;
     }
     .data-workbench .column-filter-trigger,
-    .data-workbench .column-filter-clear{
+    .data-workbench .column-filter-clear,
+    .data-workbench .mobile-filter-clear{
       position:absolute;
       top:50%;
       display:inline-flex;
@@ -2771,42 +2840,64 @@
       color:var(--accent);
       cursor:pointer;
       transform:translateY(-50%);
-      transition:background .16s,color .16s,opacity .16s,transform .16s;
+      transition:background .16s,color .16s,opacity .16s,transform .16s,box-shadow .16s;
       z-index:2;
     }
     .data-workbench .column-filter-trigger{
       left:0;
-      width:28px;
-      height:28px;
+      width:32px;
+      height:32px;
     }
     .data-workbench .column-filter-trigger:hover{
-      background:rgba(11,76,255,.08);
+      background:rgba(11,76,255,.075);
     }
-    .data-workbench .column-filter-clear{
-      right:6px;
-      width:24px;
-      height:24px;
+    .data-workbench .column-filter-clear,
+    .data-workbench .mobile-filter-clear{
+      right:5px;
+      width:26px;
+      height:26px;
       color:rgba(24,31,54,.58);
-      font-size:16px;
+      font-size:0;
       line-height:1;
       opacity:0;
       pointer-events:none;
     }
-    .data-workbench .column-filter.has-value .column-filter-clear{
+    .data-workbench .column-filter-clear::before,
+    .data-workbench .column-filter-clear::after,
+    .data-workbench .mobile-filter-clear::before,
+    .data-workbench .mobile-filter-clear::after{
+      content:"";
+      position:absolute;
+      width:10px;
+      height:2px;
+      border-radius:999px;
+      background:currentColor;
+    }
+    .data-workbench .column-filter-clear::before,
+    .data-workbench .mobile-filter-clear::before{
+      transform:rotate(45deg);
+    }
+    .data-workbench .column-filter-clear::after,
+    .data-workbench .mobile-filter-clear::after{
+      transform:rotate(-45deg);
+    }
+    .data-workbench .column-filter.has-value .column-filter-clear,
+    .data-workbench .mobile-panel-filter.has-value .mobile-filter-clear{
       opacity:1;
       pointer-events:auto;
     }
-    .data-workbench .column-filter-clear:hover{
+    .data-workbench .column-filter-clear:hover,
+    .data-workbench .mobile-filter-clear:hover{
       background:rgba(11,76,255,.08);
       color:var(--accent);
     }
     .data-workbench .filter-lens{
       position:absolute;
-      left:10px;
+      left:13px;
       top:50%;
-      width:11px;
-      height:11px;
-      border:1.8px solid currentColor;
+      width:12px;
+      height:12px;
+      border:2px solid currentColor;
       border-radius:999px;
       transform:translateY(-50%);
       pointer-events:none;
@@ -2817,7 +2908,7 @@
       right:-5px;
       bottom:-2px;
       width:6px;
-      height:1.8px;
+      height:2px;
       border-radius:999px;
       background:currentColor;
       transform:rotate(45deg);
@@ -2837,9 +2928,9 @@
       outline:0;
       background:transparent;
       color:var(--text);
-      font-size:12px;
+      font-size:12.5px;
       font-weight:800;
-      padding:0 32px 0 32px;
+      padding:0 36px 0 40px;
       opacity:0;
       pointer-events:none;
       transition:opacity .16s ease;
@@ -2891,6 +2982,28 @@
       box-shadow:0 1px 0 rgba(255,255,255,.96) inset,0 18px 44px rgba(11,12,22,.04);
       overflow:auto;
       scrollbar-color:rgba(11,76,255,.30) transparent;
+    }
+    .data-workbench tbody tr.table-message.is-loading td{
+      position:relative;
+      padding:30px 24px;
+      color:#596278;
+      font-family:var(--sans);
+      font-size:13px;
+      font-style:normal;
+      font-weight:750;
+      text-align:center;
+      background:#fff;
+    }
+    .data-workbench tbody tr.table-message.is-loading td::before{
+      content:"";
+      display:block;
+      width:min(340px,72%);
+      height:13px;
+      margin:0 auto 14px;
+      border-radius:999px;
+      background:linear-gradient(90deg,rgba(11,76,255,.08),rgba(11,76,255,.20),rgba(11,76,255,.08));
+      background-size:240% 100%;
+      animation:loadingSweep 1.45s ease-in-out infinite;
     }
     #panel-bonds .table-container,
     #panel-exits .table-container{max-height:520px}
@@ -3069,8 +3182,16 @@
       .data-workbench-head h2{font-size:28px}
       .data-workbench-head p{font-size:13px}
       .data-hint{width:100%;justify-content:center}
+      .data-workbench-head-actions{
+        width:100%;
+        justify-content:space-between;
+      }
+      .data-updated-chip{
+        flex:1;
+      }
       .data-workbench-head .panel-status{
-        align-self:flex-end;
+        flex:1;
+        justify-content:center;
         margin-top:0;
       }
       .data-workbench .section-nav{
@@ -3079,6 +3200,9 @@
         padding:6px;
         overflow-x:auto;
         scroll-snap-type:x mandatory;
+        position:sticky;
+        top:74px;
+        z-index:14;
       }
       .data-workbench .section-nav::-webkit-scrollbar{display:none}
       .data-workbench .section-btn{
@@ -3101,11 +3225,15 @@
       .data-workbench .mobile-panel-filter{display:block;width:100%}
       .data-workbench .mobile-panel-filter .filter-input{
         padding-left:44px;
+        padding-right:42px;
         text-align:left;
         justify-content:flex-start;
       }
       .data-workbench .mobile-panel-filter .filter-lens{
         left:18px;
+      }
+      .data-workbench .mobile-filter-clear{
+        right:10px;
       }
       .data-workbench .panel-summary{grid-template-columns:1fr}
       .data-workbench .panel-summary > div{min-height:0}
@@ -3285,7 +3413,7 @@
       </div>
 
       <div class="hero-spark">
-        <div class="spark-title" aria-label="RUNEBOND Yield Monitor"><span class="spark-title-brand" aria-hidden="true">RUNEBOND</span><span class="spark-title-text" aria-hidden="true">Yield Monitor</span></div>
+        <div class="spark-title" aria-label="RUNEBOND Yield Monitor"><img class="spark-title-logo" src="assets/runebond-logo-horizontal.svg" alt="RUNEBOND"><span class="spark-title-text">Yield Monitor</span></div>
         <div class="spark-label">30-day investor APY after split</div>
         <div class="spark-metrics" aria-label="Yield components">
           <div>
@@ -3421,7 +3549,10 @@
           <h2 id="data-workbench-title">LP data tables</h2>
           <p>Start with the pool snapshot, then switch the exact table directly above its columns.</p>
         </div>
-        <span class="panel-status" id="providers-sync-status" data-tone="loading">Syncing</span>
+        <div class="data-workbench-head-actions" aria-label="LP data freshness">
+          <span class="data-updated-chip" id="data-updated-chip">Updated —</span>
+          <span class="panel-status" id="providers-sync-status" data-tone="loading">Syncing</span>
+        </div>
       </div>
 
       <!-- INVESTORS panel -->
@@ -3429,10 +3560,11 @@
       <header class="panel-head panel-head-meta-only" aria-label="Investor pool status">
         <div class="panel-meta">
           <span class="sr" id="providers-count">—</span>
-          <label class="mobile-panel-filter" aria-label="Search investor address">
+          <div class="mobile-panel-filter" role="search" aria-label="Search investor address">
             <span class="filter-lens" aria-hidden="true"></span>
             <input class="filter-input" id="filter-investors-mobile" type="search" placeholder="Search address…" autocomplete="off" />
-          </label>
+            <button class="mobile-filter-clear" type="button" aria-label="Clear investor address search">&times;</button>
+          </div>
         </div>
       </header>
 
@@ -3505,7 +3637,7 @@
             </tr>
           </thead>
           <tbody id="providers-tbody">
-            <tr class="table-message"><td colspan="6">Loading provider data…</td></tr>
+            <tr class="table-message is-loading"><td colspan="6">Loading provider data…</td></tr>
           </tbody>
         </table>
       </div>
@@ -3516,10 +3648,11 @@
       <header class="panel-head panel-head-meta-only" aria-label="LP bonded positions status">
         <div class="panel-meta">
           <span class="sr" id="node-count">—</span>
-          <label class="mobile-panel-filter" aria-label="Search node address">
+          <div class="mobile-panel-filter" role="search" aria-label="Search node address">
             <span class="filter-lens" aria-hidden="true"></span>
             <input class="filter-input" id="filter-bonds-mobile" type="search" placeholder="Search node…" autocomplete="off" />
-          </label>
+            <button class="mobile-filter-clear" type="button" aria-label="Clear node address search">&times;</button>
+          </div>
         </div>
       </header>
 
@@ -3565,7 +3698,7 @@
             </tr>
           </thead>
           <tbody id="nodes-tbody">
-            <tr class="table-message"><td colspan="3">Loading node data…</td></tr>
+            <tr class="table-message is-loading"><td colspan="3">Loading node data…</td></tr>
           </tbody>
         </table>
       </div>
@@ -3576,10 +3709,11 @@
       <header class="panel-head panel-head-meta-only" aria-label="Recent exits status">
         <div class="panel-meta">
           <span class="sr" id="swap-count">—</span>
-          <label class="mobile-panel-filter" aria-label="Search exit wallet">
+          <div class="mobile-panel-filter" role="search" aria-label="Search exit wallet">
             <span class="filter-lens" aria-hidden="true"></span>
             <input class="filter-input" id="filter-exits-mobile" type="search" placeholder="Search wallet…" autocomplete="off" />
-          </label>
+            <button class="mobile-filter-clear" type="button" aria-label="Clear wallet search">&times;</button>
+          </div>
         </div>
       </header>
 
@@ -3627,7 +3761,7 @@
             </tr>
           </thead>
           <tbody id="swaps-tbody">
-            <tr class="table-message"><td colspan="5">Loading recent swap activity…</td></tr>
+            <tr class="table-message is-loading"><td colspan="5">Loading recent swap activity…</td></tr>
           </tbody>
         </table>
       </div>
@@ -3823,8 +3957,9 @@
         }
         inputs.forEach(input => {
           const shell = input.closest('.column-filter');
+          const inputShell = input.closest('.column-filter, .mobile-panel-filter');
           const trigger = shell ? shell.querySelector('.column-filter-trigger') : null;
-          const clearButton = shell ? shell.querySelector('.column-filter-clear') : null;
+          const clearButton = inputShell ? inputShell.querySelector('.column-filter-clear, .mobile-filter-clear') : null;
           if (trigger) {
             trigger.addEventListener('click', e => {
               e.preventDefault();
@@ -4016,11 +4151,27 @@
     const LEGACY_RUNE_GLYPH = String.fromCharCode(0x16b1);
     const RUNE_UNIT_PATTERN = new RegExp(`${RUNE_UNIT_TOKEN.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}|${LEGACY_RUNE_GLYPH}`, 'g');
 
+    function getDataUpdatedLabel(text) {
+      if (!text || text === '—') return 'Updated —';
+      if (/^Last updated/i.test(text)) return text.replace(/^Last updated\s*/i, 'Updated ');
+      if (/Refreshing|syncing|finishing|ready/i.test(text)) return 'Updating…';
+      if (/Update failed/i.test(text)) return 'Update failed';
+      if (/Demo data/i.test(text)) return 'Demo data';
+      return text;
+    }
+
+    function syncDataUpdatedChip(text) {
+      const chip = document.getElementById('data-updated-chip');
+      if (!chip) return;
+      chip.textContent = getDataUpdatedLabel(text);
+    }
+
     function setText(id, text) {
       const el = document.getElementById(id);
       if (!el) return;
       el.textContent = text;
       hydrateRuneUnits(el);
+      if (id === 'last-update') syncDataUpdatedChip(text);
     }
 
     function createRuneLogoUnit() {
