@@ -1126,14 +1126,43 @@
       backdrop-filter:blur(14px);
     }
     .hero-spark::before{
-      content:'RUNEBOND yield monitor';
-      display:block;
+      content:none;
+      display:none;
+    }
+    .spark-title{
+      display:flex;
+      align-items:center;
+      gap:9px;
       color:var(--text);
       font-size:20px;
       line-height:1.2;
-      font-weight:800;
-      letter-spacing:-.04em!important;
-      margin-bottom:4px;
+      font-weight:900;
+      letter-spacing:-.035em!important;
+      margin:0 0 6px;
+    }
+    .spark-title::before{
+      content:"";
+      width:9px;
+      height:9px;
+      flex:0 0 auto;
+      border-radius:999px;
+      background:linear-gradient(135deg,var(--accent),var(--chart-end));
+      box-shadow:0 0 0 6px rgba(11,76,255,.07);
+    }
+    .spark-title-brand{
+      display:inline-block;
+      margin-right:5px;
+      color:var(--text);
+      font-size:1em;
+      font-weight:950;
+      letter-spacing:-.035em;
+      text-transform:none;
+    }
+    .spark-title-text{
+      display:inline-block;
+      min-width:0;
+      white-space:nowrap;
+      font-weight:850;
     }
     .hero-spark::after{
       content:'Gross LP inputs are shown above; the line and headline already show investor APY after the 50 / 50 split.';
@@ -2453,11 +2482,11 @@
       position:relative;
       margin:0 0 58px;
       padding:18px;
-      border:1px solid rgba(11,12,22,.075);
+      border:1px solid rgba(11,12,22,.095);
       border-radius:30px;
-      background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(248,250,255,.86));
-      box-shadow:0 32px 90px rgba(11,12,22,.075);
-      backdrop-filter:blur(16px);
+      background:linear-gradient(180deg,rgba(255,255,255,.99),rgba(248,250,255,.96));
+      box-shadow:0 28px 74px rgba(11,12,22,.068);
+      backdrop-filter:blur(8px);
     }
     .data-workbench-head{
       display:flex;
@@ -2486,10 +2515,10 @@
     .data-workbench-head p{
       max-width:610px;
       margin:10px 0 0;
-      color:var(--text-2);
+      color:#4f5a72;
       font-size:14px;
       line-height:1.65;
-      font-weight:600;
+      font-weight:650;
     }
     .data-hint{
       flex:none;
@@ -2831,10 +2860,10 @@
     .data-workbench .panel-summary > div{
       min-height:104px;
       padding:16px;
-      border:1px solid rgba(11,12,22,.07)!important;
+      border:1px solid rgba(11,12,22,.09)!important;
       border-radius:18px;
-      background:linear-gradient(180deg,#fff,#f8faff);
-      box-shadow:none;
+      background:#fff;
+      box-shadow:0 10px 28px rgba(11,12,22,.035);
     }
     .data-workbench .panel-summary .key{
       color:var(--accent);
@@ -2847,15 +2876,17 @@
       margin-top:8px;
     }
     .data-workbench .panel-summary .note{
-      color:var(--text-2);
+      color:#596278;
       font-size:12px;
+      font-weight:650;
+      line-height:1.46;
     }
     .data-workbench .table-container{
       max-height:560px;
       border-radius:22px;
       background:#fff;
-      border:1px solid rgba(11,12,22,.075);
-      box-shadow:none;
+      border:1px solid rgba(11,12,22,.10);
+      box-shadow:0 1px 0 rgba(255,255,255,.96) inset,0 18px 44px rgba(11,12,22,.04);
       overflow:auto;
       scrollbar-color:rgba(11,76,255,.30) transparent;
     }
@@ -2873,30 +2904,31 @@
     .data-workbench thead th{
       top:0;
       padding:15px 18px;
-      background:#f5f5ff;
-      color:var(--text);
+      background:#eef3ff;
+      color:#26324b;
       font-size:11px;
       font-weight:900;
       letter-spacing:.015em;
       text-transform:none;
-      border-bottom:1px solid rgba(11,12,22,.075);
+      border-bottom:1px solid rgba(11,12,22,.105);
       z-index:4;
     }
     .data-workbench tbody tr{
       background:#fff;
       transition:background .16s ease;
     }
-    .data-workbench tbody tr:nth-child(even){background:#fbfcff}
-    .data-workbench tbody tr:hover{background:#f3f6ff}
+    .data-workbench tbody tr:nth-child(even){background:#f8faff}
+    .data-workbench tbody tr:hover{background:#eef3ff}
     .data-workbench tbody td{
       padding:18px;
-      border-bottom:1px solid rgba(11,12,22,.065);
+      border-bottom:1px solid rgba(11,12,22,.075);
       background:#fff;
+      color:#181f36;
       font-size:14px;
       transition:background .16s ease,box-shadow .16s ease;
     }
-    .data-workbench tbody tr:nth-child(even) td{background:#fbfcff}
-    .data-workbench tbody tr:hover td{background:#f3f6ff}
+    .data-workbench tbody tr:nth-child(even) td{background:#f8faff}
+    .data-workbench tbody tr:hover td{background:#eef3ff}
     .data-workbench .sticky-col{
       position:sticky;
       left:0;
@@ -2923,7 +2955,7 @@
     .data-workbench tbody tr:hover .sticky-col,
     .data-workbench table[data-table="exits"] tbody tr:hover td:first-child,
     .data-workbench table[data-table="exits"] tbody tr:hover td.primary-cell{
-      background:#f3f6ff;
+      background:#eef3ff;
     }
     .data-workbench tbody tr:hover .address-pill{
       color:var(--accent);
@@ -2988,8 +3020,10 @@
       flex:0 0 auto;
     }
     .data-workbench .cell-sub{
-      color:var(--text-2);
-      font-size:11.5px;
+      color:#586174;
+      font-size:12px;
+      font-weight:600;
+      line-height:1.48;
     }
     .data-workbench .node-addr.address-stack{
       font-size:13px;
@@ -3249,6 +3283,7 @@
       </div>
 
       <div class="hero-spark">
+        <div class="spark-title" aria-label="RUNEBOND Yield Monitor"><span class="spark-title-brand" aria-hidden="true">RUNEBOND</span><span class="spark-title-text" aria-hidden="true">Yield Monitor</span></div>
         <div class="spark-label">30-day investor APY after split</div>
         <div class="spark-metrics" aria-label="Yield components">
           <div>
