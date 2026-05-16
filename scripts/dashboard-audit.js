@@ -408,9 +408,9 @@ function validateSnapshot(snapshot) {
     ok: /runebond-logo-horizontal\.svg$/i.test(snapshot.footer.brandLogo) &&
       /^https:\/\/runebond\.com\/?$/i.test(snapshot.footer.brandHref) &&
       snapshot.footer.textMarkCount === 0 &&
-      snapshot.footer.statusCount === 2 &&
+      snapshot.footer.statusCount === 1 &&
       !!snapshot.footer.lastUpdate,
-    message: 'footer uses RUNEBOND wordmark logo with two status chips and last-updated text'
+    message: 'footer uses RUNEBOND wordmark logo with one status chip and last-updated text'
   });
 
   checks.push({
