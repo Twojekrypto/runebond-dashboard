@@ -485,11 +485,12 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      width:.9em;
-      height:.9em;
-      margin-left:.12em;
-      vertical-align:-.13em;
-      line-height:1;
+      width:.78em;
+      height:.78em;
+      margin-left:.14em;
+      vertical-align:-.08em;
+      line-height:0;
+      transform:translateY(.015em);
     }
     .rune-logo-unit img{
       display:block;
@@ -1468,6 +1469,12 @@
     }
     @media(max-width:760px){
       .topbar-inner{gap:10px}
+      .buy-rune-link{
+        margin-left:auto;
+        min-height:38px;
+        padding:0 13px;
+        font-size:10px;
+      }
       .topbar-meta{display:grid;grid-template-columns:minmax(0,1fr);position:relative;flex:0 0 calc(100vw - 36px);width:calc(100vw - 36px);max-width:calc(100vw - 36px);align-items:center;overflow:visible;gap:8px;padding:8px 12px}
       .topbar-meta > *:not(:last-child)::after{display:none}
       .addr-mono{justify-self:center;max-width:150px;font-size:10px}
@@ -1634,6 +1641,41 @@
     .topbar-meta{
       gap:10px;
       padding:7px 8px 7px 14px;
+    }
+    .buy-rune-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      flex:0 0 auto;
+      min-height:42px;
+      padding:0 15px;
+      border:1px solid rgba(11,76,255,.18);
+      border-radius:999px;
+      background:linear-gradient(135deg,#0b4cff 0%,#2563eb 100%);
+      color:#fff;
+      box-shadow:0 16px 36px rgba(11,76,255,.22);
+      font:900 11px/1 var(--sans);
+      letter-spacing:.05em!important;
+      text-transform:uppercase;
+      white-space:nowrap;
+      transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+    }
+    .buy-rune-link::after{
+      content:"↗";
+      font-size:12px;
+      line-height:1;
+      opacity:.84;
+      transform:translateY(-1px);
+    }
+    .buy-rune-link:hover{
+      transform:translateY(-1px);
+      background:linear-gradient(135deg,#0b0c16 0%,#111827 100%);
+      box-shadow:0 18px 40px rgba(11,12,22,.18);
+    }
+    .buy-rune-link:focus-visible{
+      outline:2px solid rgba(11,76,255,.38);
+      outline-offset:4px;
     }
     .lp-label{
       color:var(--text-3);
@@ -2088,6 +2130,9 @@
       color:rgba(255,255,255,.78);
     }
     .apy-metric-value{
+      display:flex;
+      align-items:center;
+      gap:5px;
       margin-top:10px;
       color:var(--text);
       font-size:clamp(24px,2vw,32px);
@@ -2098,10 +2143,11 @@
     }
     .apy-metric.is-primary .apy-metric-value{color:#fff}
     .apy-metric-value .rune-logo-unit{
-      width:.7em;
-      height:.7em;
-      margin-left:.12em;
-      vertical-align:-.045em;
+      width:.66em;
+      height:.66em;
+      margin-left:0;
+      vertical-align:-.04em;
+      transform:translateY(.01em);
     }
     .apy-metric.is-primary .rune-logo-unit img{
       background:#fff;
@@ -3189,12 +3235,17 @@
     }
     .data-workbench .growth-pos,
     .data-workbench .growth-neg,
+    .data-workbench .rune-amount,
     .data-workbench .panel-summary .val{
       display:inline-flex;
-      align-items:baseline;
+      align-items:center;
       justify-content:flex-end;
-      gap:2px;
+      gap:3px;
       line-height:1.08;
+    }
+    .data-workbench .rune-amount{
+      vertical-align:middle;
+      white-space:nowrap;
     }
     .data-workbench td.deposited,
     .data-workbench td.current-val,
@@ -3202,11 +3253,26 @@
       white-space:nowrap;
     }
     .data-workbench .rune-logo-unit{
-      width:.98em;
-      height:.98em;
-      margin-left:.1em;
-      vertical-align:-.15em;
+      width:.78em;
+      height:.78em;
+      margin-left:.12em;
+      vertical-align:-.08em;
+      transform:translateY(.01em);
       flex:0 0 auto;
+    }
+    .data-workbench .panel-summary .rune-logo-unit{
+      width:.72em;
+      height:.72em;
+      margin-left:0;
+      vertical-align:-.06em;
+    }
+    .data-workbench .growth-pos .rune-logo-unit,
+    .data-workbench .growth-neg .rune-logo-unit,
+    .data-workbench .rune-amount .rune-logo-unit{
+      margin-left:0;
+    }
+    .data-workbench .rune-logo-unit img{
+      box-shadow:0 0 0 1px rgba(11,76,255,.08),0 2px 6px rgba(11,12,22,.08);
     }
     .data-workbench .cell-sub{
       color:#586174;
@@ -3447,6 +3513,7 @@
           </a>
         </div>
         <div class="topbar-spacer"></div>
+        <a class="buy-rune-link" href="https://swap.runebond.com/" target="_blank" rel="noopener" aria-label="Buy RUNE on RUNEBOND swap">Buy RUNE</a>
         <div class="topbar-meta">
           <span class="stale-flag" id="stale-chip" hidden>Stale</span>
           <span class="lp-label">LP address</span>
@@ -4225,6 +4292,29 @@
     const RUNE_UNIT_TOKEN = '[[RUNE]]';
     const LEGACY_RUNE_GLYPH = String.fromCharCode(0x16b1);
     const RUNE_UNIT_PATTERN = new RegExp(`${RUNE_UNIT_TOKEN.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}|${LEGACY_RUNE_GLYPH}`, 'g');
+    const COUNT_UP_IDS = new Set([
+      'investors-apy',
+      'hero-full-lp-apy',
+      'hero-investor-split-apy',
+      'hero-bonding-yield',
+      'hero-fee-yield',
+      'hero-chart-yield',
+      'provider-summary-deposited',
+      'provider-summary-gross',
+      'provider-summary-investor-yield',
+      'provider-summary-value',
+      'node-summary-bonded',
+      'node-summary-activity',
+      'node-summary-largest',
+      'node-summary-with-bond',
+      'swap-summary-gross',
+      'swap-summary-net',
+      'swap-summary-fee',
+      'swap-summary-wallets',
+      'proj-capital'
+    ]);
+    const completedCountUps = new Set();
+    const activeCountUps = new Map();
 
     function getDataUpdatedLabel(text) {
       if (!text || text === '—') return 'Updated —';
@@ -4241,12 +4331,78 @@
       chip.textContent = getDataUpdatedLabel(text);
     }
 
+    function parseCountUpText(text) {
+      const source = String(text || '');
+      const match = source.match(/([+-]?)(\d[\d,]*(?:\.\d+)?)/);
+      if (!match) return null;
+      const numberText = match[2];
+      const value = Number(numberText.replace(/,/g, ''));
+      if (!Number.isFinite(value)) return null;
+      return {
+        prefix: source.slice(0, match.index),
+        sign: match[1] || '',
+        value,
+        decimals: numberText.includes('.') ? numberText.split('.')[1].length : 0,
+        useGrouping: numberText.includes(',') || Math.abs(value) >= 1000,
+        suffix: source.slice(match.index + match[0].length)
+      };
+    }
+
+    function shouldAnimateCountUp(id, text) {
+      if (!COUNT_UP_IDS.has(id) || completedCountUps.has(id)) return false;
+      if (/Loading|Syncing|Fetching|Source warning|Error|—/.test(String(text))) return false;
+      if (/jsdom/i.test(navigator.userAgent || '')) return false;
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+      return !!parseCountUpText(text) && typeof requestAnimationFrame === 'function';
+    }
+
+    function formatCountUpValue(parsed, progress) {
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = parsed.value * eased;
+      const formatter = new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: parsed.decimals,
+        maximumFractionDigits: parsed.decimals,
+        useGrouping: parsed.useGrouping
+      });
+      return `${parsed.prefix}${parsed.sign}${formatter.format(current)}${parsed.suffix}`;
+    }
+
+    function animateMetricText(id, el, finalText) {
+      if (!shouldAnimateCountUp(id, finalText)) return false;
+      const parsed = parseCountUpText(finalText);
+      if (!parsed) return false;
+      completedCountUps.add(id);
+      const active = activeCountUps.get(id);
+      if (active) cancelAnimationFrame(active);
+      const startedAt = performance.now();
+      const duration = id === 'investors-apy' ? 1100 : 850;
+      el.classList.add('is-counting');
+
+      const tick = (now) => {
+        const progress = Math.min(1, (now - startedAt) / duration);
+        el.textContent = formatCountUpValue(parsed, progress);
+        hydrateRuneUnits(el);
+        if (progress < 1) {
+          activeCountUps.set(id, requestAnimationFrame(tick));
+          return;
+        }
+        activeCountUps.delete(id);
+        el.classList.remove('is-counting');
+        el.textContent = finalText;
+        hydrateRuneUnits(el);
+      };
+
+      activeCountUps.set(id, requestAnimationFrame(tick));
+      return true;
+    }
+
     function setText(id, text) {
       const el = document.getElementById(id);
       if (!el) return;
+      if (id === 'last-update') syncDataUpdatedChip(text);
+      if (animateMetricText(id, el, text)) return;
       el.textContent = text;
       hydrateRuneUnits(el);
-      if (id === 'last-update') syncDataUpdatedChip(text);
     }
 
     function createRuneLogoUnit() {
@@ -4724,9 +4880,9 @@
               className: 'exit-address-block'
             })}
           </td>
-          <td class="deposited" data-label="Net RUNE out">${formatRune(swap.netPayoutE8)}</td>
+          <td class="deposited" data-label="Net RUNE out"><span class="rune-amount">${formatRune(swap.netPayoutE8)}</span></td>
           <td data-label="Gross exit">
-            <div>${formatRune(swap.grossExitE8)}</div>
+            <div class="rune-amount">${formatRune(swap.grossExitE8)}</div>
             <div class="cell-sub">Implied by the 95% user payout</div>
           </td>
           <td data-label="Fee retained">
@@ -4934,7 +5090,7 @@
               className: 'node-address-block'
             })}
           </td>
-          <td class="${bond > 0 ? 'bond-amount' : 'bond-zero'}" data-label="Bond">${bond > 0 ? formatRune(n.bond) : `0 ${RUNE_UNIT_TOKEN}`}</td>
+          <td class="${bond > 0 ? 'bond-amount' : 'bond-zero'}" data-label="Bond"><span class="rune-amount">${bond > 0 ? formatRune(n.bond) : `0 ${RUNE_UNIT_TOKEN}`}</span></td>
           <td data-label="Status"><span class="badge ${statusClass}">${n.status}</span></td>
         </tr>`;
       }).join('');
@@ -5570,7 +5726,7 @@
               className: 'investor-address-block'
             })}
           </td>
-          <td class="deposited" data-label="Deposited">${formatRune(p.totalE8)}</td>
+          <td class="deposited" data-label="Deposited"><span class="rune-amount">${formatRune(p.totalE8)}</span></td>
           <td data-label="Pool share">
             <div class="share-pct">${sharePct}%</div>
             <div class="share-bar"><div class="fill" style="width:${sharePct}%"></div></div>
@@ -5583,7 +5739,7 @@
             <div class="${investorGrowthClass}">${investorGrowthSign}${investorGrowthRune.toFixed(1)} ${RUNE_UNIT_TOKEN}</div>
             <div class="cell-sub">${investorGrowthSign}${p.investorGrowthPct.toFixed(1)}% investor</div>
           </td>
-          <td class="current-val" data-label="Investor value">${formatRune(Math.round(p.currentValueE8))}</td>
+          <td class="current-val" data-label="Investor value"><span class="rune-amount">${formatRune(Math.round(p.currentValueE8))}</span></td>
         </tr>`;
       }).join('');
       hydrateRuneUnits(tbody);

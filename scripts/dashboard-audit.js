@@ -132,6 +132,12 @@ function collectDomSnapshot(window) {
       monitorTitleLabel: doc.querySelector('.spark-title')?.getAttribute('aria-label') || '',
       text: doc.querySelector('.hero')?.textContent?.replace(/\s+/g, ' ').trim() || ''
     },
+    topbar: {
+      buyRuneHref: doc.querySelector('.buy-rune-link')?.getAttribute('href') || '',
+      buyRuneText: doc.querySelector('.buy-rune-link')?.textContent?.trim() || '',
+      buyRuneTarget: doc.querySelector('.buy-rune-link')?.getAttribute('target') || '',
+      buyRuneRel: doc.querySelector('.buy-rune-link')?.getAttribute('rel') || ''
+    },
     favicon: {
       iconHrefs: Array.from(doc.querySelectorAll('link[rel~="icon"]')).map((link) => link.getAttribute('href') || ''),
       iconTypes: Array.from(doc.querySelectorAll('link[rel~="icon"]')).map((link) => link.getAttribute('type') || '')
@@ -233,6 +239,13 @@ function collectDomSnapshot(window) {
       yieldStatus: text('yield-status'),
       sourceStatus: text('source-health-status'),
       lastUpdate: text('last-update')
+    },
+    countUp: {
+      scriptPresent: Array.from(doc.scripts).some((script) =>
+        /COUNT_UP_IDS/.test(script.textContent || '') &&
+        /animateMetricText/.test(script.textContent || '') &&
+        /prefers-reduced-motion/.test(script.textContent || '')
+      )
     }
   };
 }
@@ -330,6 +343,14 @@ function validateSnapshot(snapshot) {
   });
 
   checks.push({
+    ok: snapshot.topbar.buyRuneHref === 'https://swap.runebond.com/' &&
+      snapshot.topbar.buyRuneText === 'Buy RUNE' &&
+      snapshot.topbar.buyRuneTarget === '_blank' &&
+      /noopener/.test(snapshot.topbar.buyRuneRel),
+    message: 'topbar includes a Buy RUNE link to RUNEBOND swap'
+  });
+
+  checks.push({
     ok: snapshot.favicon.iconHrefs.some((href) => /assets\/runebond-isologo\.svg(?:\?|$)/i.test(href)) &&
       snapshot.favicon.iconTypes.some((type) => type === 'image/svg+xml'),
     message: 'browser tab favicon uses the RUNEBOND isologo'
@@ -342,6 +363,11 @@ function validateSnapshot(snapshot) {
       snapshot.footer.statusCount === 2 &&
       !!snapshot.footer.lastUpdate,
     message: 'footer uses RUNEBOND wordmark logo with two status chips and last-updated text'
+  });
+
+  checks.push({
+    ok: snapshot.countUp.scriptPresent,
+    message: 'entry metrics use a reduced-motion-safe count-up animation'
   });
 
   checks.push({
