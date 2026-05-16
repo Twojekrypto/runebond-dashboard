@@ -1455,6 +1455,330 @@
       line-height:1;
       white-space:nowrap;
     }
+    .comparison-panel{
+      position:relative;
+      overflow:hidden;
+      margin:34px 0 0;
+      padding:32px;
+      border:1px solid rgba(11,12,22,.10);
+      border-radius:34px;
+      background:
+        radial-gradient(circle at 10% 8%,rgba(11,76,255,.12),transparent 30%),
+        radial-gradient(circle at 92% 86%,rgba(0,179,15,.13),transparent 34%),
+        linear-gradient(135deg,#ffffff 0%,#f8faff 48%,#eef3ff 100%);
+      box-shadow:0 34px 90px rgba(11,12,22,.085),0 1px 0 rgba(255,255,255,.96) inset;
+    }
+    .comparison-panel::before{
+      content:"";
+      position:absolute;
+      inset:1px;
+      border-radius:33px;
+      background:
+        linear-gradient(90deg,rgba(11,76,255,.045) 1px,transparent 1px),
+        linear-gradient(180deg,rgba(11,76,255,.04) 1px,transparent 1px);
+      background-size:46px 46px;
+      mask-image:linear-gradient(135deg,rgba(0,0,0,.34),transparent 64%);
+      pointer-events:none;
+    }
+    .comparison-panel::after{
+      content:"";
+      position:absolute;
+      right:-120px;
+      bottom:-160px;
+      width:340px;
+      height:340px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(0,179,15,.12),transparent 68%);
+      pointer-events:none;
+    }
+    .comparison-head{
+      position:relative;
+      z-index:1;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:24px;
+      margin-bottom:22px;
+    }
+    .comparison-brand-lockup{
+      display:inline-flex;
+      align-items:center;
+      gap:12px;
+      width:max-content;
+      max-width:100%;
+      min-height:44px;
+      margin-bottom:15px;
+      padding:6px 8px 6px 12px;
+      border:1px solid rgba(11,76,255,.12);
+      border-radius:999px;
+      background:rgba(255,255,255,.78);
+      box-shadow:0 14px 34px rgba(11,12,22,.045),0 1px 0 rgba(255,255,255,.9) inset;
+      backdrop-filter:blur(12px);
+    }
+    .comparison-brand-logo{
+      display:block;
+      width:164px;
+      max-width:46vw;
+      height:auto;
+    }
+    .comparison-brand-chip{
+      display:inline-flex;
+      align-items:center;
+      min-height:30px;
+      padding:0 11px;
+      border-radius:999px;
+      background:linear-gradient(135deg,rgba(11,76,255,.09),rgba(0,179,15,.08));
+      color:var(--accent);
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .comparison-brand-chip::before{
+      content:"";
+      flex:0 0 auto;
+      width:8px;
+      height:8px;
+      margin-right:8px;
+      border-radius:50%;
+      background:var(--pos);
+      box-shadow:0 0 0 6px rgba(0,179,15,.10);
+    }
+    .comparison-head h2{
+      margin:0;
+      color:var(--text);
+      font-size:clamp(34px,4vw,58px);
+      line-height:.98;
+      letter-spacing:-.075em!important;
+    }
+    .comparison-head p{
+      max-width:660px;
+      margin:12px 0 0;
+      color:#596278;
+      font-size:14px;
+      font-weight:700;
+      line-height:1.6;
+    }
+    .comparison-window{
+      flex:0 0 auto;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      min-height:36px;
+      padding:0 13px;
+      border:1px solid rgba(11,76,255,.12);
+      border-radius:999px;
+      background:rgba(255,255,255,.82);
+      color:#26324b;
+      box-shadow:0 12px 28px rgba(11,12,22,.045);
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .comparison-window::before{
+      content:"";
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:var(--accent);
+    }
+    .comparison-grid{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns:minmax(0,.78fr) minmax(420px,1.22fr);
+      gap:18px;
+      align-items:stretch;
+    }
+    .comparison-stats{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+    }
+    .comparison-stat,
+    .comparison-chart-card{
+      border:1px solid rgba(11,12,22,.09);
+      border-radius:24px;
+      background:rgba(255,255,255,.88);
+      box-shadow:0 18px 48px rgba(11,12,22,.05),0 1px 0 rgba(255,255,255,.9) inset;
+      backdrop-filter:blur(10px);
+    }
+    .comparison-stat{
+      position:relative;
+      overflow:hidden;
+      min-height:112px;
+      padding:18px;
+    }
+    .comparison-stat span{
+      display:block;
+      color:#596278;
+      font-size:11px;
+      font-weight:950;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+    .comparison-stat strong{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      margin-top:9px;
+      color:var(--text);
+      font-size:clamp(28px,2.7vw,40px);
+      font-weight:950;
+      letter-spacing:-.06em!important;
+      line-height:1;
+      font-variant-numeric:tabular-nums;
+    }
+    .comparison-stat small{
+      display:block;
+      margin-top:9px;
+      color:#596278;
+      font-size:12px;
+      font-weight:700;
+      line-height:1.45;
+    }
+    .comparison-stat.is-primary{
+      background:linear-gradient(135deg,#0b4cff 0%,#1f5dff 58%,#0b0c16 100%);
+      color:#fff;
+      border-color:rgba(255,255,255,.18);
+      box-shadow:0 24px 58px rgba(11,76,255,.20);
+    }
+    .comparison-stat.is-primary::after{
+      content:"";
+      position:absolute;
+      right:-44px;
+      bottom:-58px;
+      width:170px;
+      height:170px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(255,255,255,.16),transparent 66%);
+      pointer-events:none;
+    }
+    .comparison-stat.is-primary span,
+    .comparison-stat.is-primary small{
+      color:rgba(255,255,255,.76);
+    }
+    .comparison-stat.is-primary strong{color:#fff}
+    .comparison-stat.is-context strong{font-size:clamp(24px,2.2vw,32px)}
+    .comparison-chart-card{
+      display:flex;
+      flex-direction:column;
+      padding:22px;
+    }
+    .comparison-chart-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:20px;
+    }
+    .comparison-chart-title{
+      color:var(--text);
+      font-size:16px;
+      font-weight:950;
+      letter-spacing:-.02em;
+    }
+    .comparison-chart-title small{
+      display:block;
+      margin-top:4px;
+      color:#7b8498;
+      font-size:11px;
+      font-weight:750;
+      letter-spacing:0;
+    }
+    .comparison-delta{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      min-height:34px;
+      padding:0 12px;
+      border-radius:999px;
+      background:rgba(0,179,15,.08);
+      color:var(--pos);
+      font-size:11px;
+      font-weight:950;
+      white-space:nowrap;
+    }
+    .comparison-delta[data-state="negative"]{
+      background:rgba(239,68,68,.08);
+      color:#dc2626;
+    }
+    .comparison-delta[data-state="neutral"]{
+      background:rgba(11,76,255,.08);
+      color:var(--accent);
+    }
+    .comparison-bars{
+      display:grid;
+      gap:16px;
+      margin-top:auto;
+    }
+    .comparison-row{
+      display:grid;
+      grid-template-columns:minmax(130px,.36fr) minmax(0,1fr) minmax(70px,.18fr);
+      gap:14px;
+      align-items:center;
+    }
+    .comparison-label{
+      color:#26324b;
+      font-size:13px;
+      font-weight:900;
+      line-height:1.25;
+    }
+    .comparison-label small{
+      display:block;
+      margin-top:3px;
+      color:#7b8498;
+      font-size:11px;
+      font-weight:750;
+    }
+    .comparison-track{
+      position:relative;
+      overflow:hidden;
+      height:18px;
+      border-radius:999px;
+      background:rgba(11,12,22,.07);
+      box-shadow:inset 0 1px 3px rgba(11,12,22,.06);
+    }
+    .comparison-fill{
+      position:absolute;
+      inset:0 auto 0 0;
+      width:var(--bar-width,0%);
+      min-width:6px;
+      border-radius:inherit;
+      background:linear-gradient(90deg,#0b4cff,#00b30f);
+      box-shadow:0 10px 26px rgba(11,76,255,.14);
+      transition:width .7s cubic-bezier(.2,.8,.2,1);
+    }
+    .comparison-row.is-classic .comparison-fill{
+      background:linear-gradient(90deg,#8b95aa,#26324b);
+      box-shadow:0 10px 24px rgba(38,50,75,.12);
+    }
+    .comparison-row.is-gross .comparison-fill{
+      background:linear-gradient(90deg,#bfdbfe,#0b4cff);
+      opacity:.62;
+      box-shadow:none;
+    }
+    .comparison-value{
+      color:var(--text);
+      font-size:14px;
+      font-weight:950;
+      text-align:right;
+      font-variant-numeric:tabular-nums;
+    }
+    .comparison-note{
+      margin-top:20px;
+      padding:14px 15px;
+      border:1px solid rgba(11,76,255,.10);
+      border-radius:18px;
+      background:rgba(255,255,255,.72);
+      color:#596278;
+      font-size:12.5px;
+      font-weight:700;
+      line-height:1.55;
+    }
     @media(max-width:980px){
       .hero{
         grid-template-columns:1fr;
@@ -1466,6 +1790,13 @@
       .hero-spark{grid-row:auto}
       .hero::after{right:-160px;top:120px;width:420px;height:420px;opacity:.18}
       .vitals{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .comparison-head{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+      .comparison-grid{
+        grid-template-columns:1fr;
+      }
     }
     @media(max-width:760px){
       .topbar-inner{gap:10px}
@@ -1507,6 +1838,51 @@
       tbody tr{padding:18px}
       .footer{
         align-items:stretch;
+      }
+      .comparison-panel{
+        margin-top:24px;
+        padding:18px;
+        border-radius:24px;
+      }
+      .comparison-head{
+        margin-bottom:18px;
+      }
+      .comparison-head h2{
+        font-size:34px;
+      }
+      .comparison-brand-lockup{
+        width:100%;
+        justify-content:space-between;
+      }
+      .comparison-brand-logo{
+        width:146px;
+      }
+      .comparison-brand-chip{
+        padding:0 10px;
+        font-size:9px;
+      }
+      .comparison-window{
+        width:100%;
+        justify-content:center;
+      }
+      .comparison-stat,
+      .comparison-chart-card{
+        border-radius:18px;
+      }
+      .comparison-chart-card{
+        padding:18px;
+      }
+      .comparison-chart-top{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:10px;
+      }
+      .comparison-row{
+        grid-template-columns:1fr;
+        gap:8px;
+      }
+      .comparison-value{
+        text-align:left;
       }
       .footer-left,
       .footer-right{
@@ -3908,6 +4284,65 @@
       </section>
     </section>
 
+    <section class="comparison-panel" id="comparison-panel" aria-labelledby="comparison-title">
+      <div class="comparison-head">
+        <div>
+          <div class="comparison-brand-lockup" aria-label="RUNEBOND LP comparison">
+            <img class="comparison-brand-logo" src="assets/runebond-logo-horizontal.svg" alt="RUNEBOND">
+            <span class="comparison-brand-chip">LP comparison</span>
+          </div>
+          <h2 id="comparison-title">LP vs Classic Bonding</h2>
+          <p>Investor APY after the RUNEBOND split is compared with live THORChain bonding. Full LP APY stays visible as context before the 50 / 50 split.</p>
+        </div>
+        <span class="comparison-window">Live · 30D estimate</span>
+      </div>
+
+      <div class="comparison-grid">
+        <div class="comparison-stats" aria-label="Comparison headline values">
+          <div class="comparison-stat is-primary">
+            <span>RUNEBOND investor APY</span>
+            <strong id="comparison-investor-apy">—</strong>
+            <small>What investors receive after the positive-yield split.</small>
+          </div>
+          <div class="comparison-stat">
+            <span>Classic bonding APY</span>
+            <strong id="comparison-classic-apy">—</strong>
+            <small>Live THORChain network bond APY used as the baseline.</small>
+          </div>
+          <div class="comparison-stat is-context">
+            <span>Full LP APY before split</span>
+            <strong id="comparison-gross-apy">—</strong>
+            <small>Bonding plus retained 5% bRUNE exit fees before RUNEBOND split.</small>
+          </div>
+        </div>
+
+        <div class="comparison-chart-card">
+          <div class="comparison-chart-top">
+            <div class="comparison-chart-title">Live APY comparison<small>Investor result vs network baseline</small></div>
+            <div class="comparison-delta" id="comparison-delta" data-state="neutral">Waiting for data</div>
+          </div>
+          <div class="comparison-bars" aria-label="RUNEBOND LP and classic bonding APY bars">
+            <div class="comparison-row is-runebond">
+              <div class="comparison-label">Investor receives<small>RUNEBOND LP after split</small></div>
+              <div class="comparison-track"><span class="comparison-fill" id="comparison-investor-bar"></span></div>
+              <div class="comparison-value" id="comparison-investor-bar-value">—</div>
+            </div>
+            <div class="comparison-row is-classic">
+              <div class="comparison-label">Classic bonding<small>THORChain network APY</small></div>
+              <div class="comparison-track"><span class="comparison-fill" id="comparison-classic-bar"></span></div>
+              <div class="comparison-value" id="comparison-classic-bar-value">—</div>
+            </div>
+            <div class="comparison-row is-gross">
+              <div class="comparison-label">Full LP context<small>Before 50 / 50 split</small></div>
+              <div class="comparison-track"><span class="comparison-fill" id="comparison-gross-bar"></span></div>
+              <div class="comparison-value" id="comparison-gross-bar-value">—</div>
+            </div>
+          </div>
+          <div class="comparison-note" id="comparison-note">Waiting for live APY data before comparing RUNEBOND LP with classic bonding.</div>
+        </div>
+      </div>
+    </section>
+
     <!-- Footer -->
     <div class="footer">
       <div class="footer-left">
@@ -4311,6 +4746,12 @@
       'swap-summary-net',
       'swap-summary-fee',
       'swap-summary-wallets',
+      'comparison-investor-apy',
+      'comparison-classic-apy',
+      'comparison-gross-apy',
+      'comparison-investor-bar-value',
+      'comparison-classic-bar-value',
+      'comparison-gross-bar-value',
       'proj-capital'
     ]);
     const completedCountUps = new Set();
@@ -4614,6 +5055,95 @@
       renderSparkline('hero-sparkline', values, { unit: '%', dates: chartDates });
     }
 
+    function formatPointDelta(value) {
+      const sign = value > 0 ? '+' : '';
+      return `${sign}${value.toFixed(2)} pp`;
+    }
+
+    function setComparisonBar(id, value, maxValue) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const safeValue = Number.isFinite(value) && value > 0 ? value : 0;
+      const safeMax = Number.isFinite(maxValue) && maxValue > 0 ? maxValue : 1;
+      const width = Math.max(0, Math.min(100, (safeValue / safeMax) * 100));
+      el.style.setProperty('--bar-width', `${width.toFixed(2)}%`);
+    }
+
+    function setComparisonLoading(message = 'Waiting for live APY data before comparing RUNEBOND LP with classic bonding.') {
+      [
+        'comparison-investor-apy',
+        'comparison-classic-apy',
+        'comparison-gross-apy',
+        'comparison-investor-bar-value',
+        'comparison-classic-bar-value',
+        'comparison-gross-bar-value'
+      ].forEach(id => setText(id, '—'));
+      ['comparison-investor-bar', 'comparison-classic-bar', 'comparison-gross-bar'].forEach(id => setComparisonBar(id, 0, 1));
+      const delta = document.getElementById('comparison-delta');
+      if (delta) {
+        delta.dataset.state = 'neutral';
+        delta.textContent = 'Waiting for data';
+      }
+      setText('comparison-note', message);
+    }
+
+    function updateComparisonPanel({ investorApy, classicApy, grossApy }) {
+      const investorReady = Number.isFinite(investorApy) && investorApy > 0;
+      const grossReady = Number.isFinite(grossApy) && grossApy > 0;
+      const classicReady = Number.isFinite(classicApy) && classicApy > 0;
+
+      if (!investorReady && !classicReady && !grossReady) {
+        setComparisonLoading();
+        return;
+      }
+
+      const values = [investorApy, classicApy, grossApy].filter(value => Number.isFinite(value) && value > 0);
+      const maxValue = Math.max(...values, 1);
+
+      setText('comparison-investor-apy', investorReady ? formatPercent(investorApy) : '—');
+      setText('comparison-classic-apy', classicReady ? formatPercent(classicApy) : '—');
+      setText('comparison-gross-apy', grossReady ? formatPercent(grossApy) : '—');
+      setText('comparison-investor-bar-value', investorReady ? formatPercent(investorApy) : '—');
+      setText('comparison-classic-bar-value', classicReady ? formatPercent(classicApy) : '—');
+      setText('comparison-gross-bar-value', grossReady ? formatPercent(grossApy) : '—');
+      setComparisonBar('comparison-investor-bar', investorApy, maxValue);
+      setComparisonBar('comparison-classic-bar', classicApy, maxValue);
+      setComparisonBar('comparison-gross-bar', grossApy, maxValue);
+
+      const delta = document.getElementById('comparison-delta');
+      if (delta && investorReady && classicReady) {
+        const diff = investorApy - classicApy;
+        if (Math.abs(diff) < 0.05) {
+          delta.dataset.state = 'neutral';
+          delta.textContent = 'Nearly equal to classic';
+        } else if (diff > 0) {
+          delta.dataset.state = 'positive';
+          delta.textContent = `RUNEBOND higher ${formatPointDelta(diff)}`;
+        } else {
+          delta.dataset.state = 'negative';
+          delta.textContent = `Classic higher ${Math.abs(diff).toFixed(2)} pp`;
+        }
+      } else if (delta) {
+        delta.dataset.state = 'neutral';
+        delta.textContent = classicReady ? 'Investor APY syncing' : 'Classic baseline unavailable';
+      }
+
+      if (investorReady && classicReady && grossReady) {
+        const diff = investorApy - classicApy;
+        const comparison = Math.abs(diff) < 0.05
+          ? 'almost the same as classic bonding'
+          : diff > 0
+            ? `${formatPointDelta(diff)} above classic bonding`
+            : `${Math.abs(diff).toFixed(2)} pp below classic bonding`;
+        setText(
+          'comparison-note',
+          `Comparison uses the investor APY after the RUNEBOND split versus live THORChain network bonding APY. Full LP APY is ${formatPercent(grossApy)} before the 50 / 50 split, so it is shown as context only. Investor APY is currently ${comparison}.`
+        );
+      } else {
+        setText('comparison-note', 'Comparison is waiting for the full RUNEBOND investor APY and the live THORChain bonding baseline.');
+      }
+    }
+
     function hasCapitalInputsReady() {
       return bondsLoaded && balanceLoaded && (lpBondedE8 + lpBalanceE8) > 0;
     }
@@ -4637,6 +5167,7 @@
       setText('hero-investor-split-apy', 'Loading…');
       setText('apy-note', 'Loading complete LP capital before showing APY');
       setText('proj-capital', '—');
+      setComparisonLoading('Syncing LP capital before comparing RUNEBOND LP with classic bonding.');
       document.title = 'RUNEBOND LP Dashboard';
     }
 
@@ -5430,6 +5961,7 @@
       const lpEffectiveAPY = (bondingYieldOnTotal || 0) + (feeYieldOnTotal || 0);
       const investorsAPY = investorTake(lpEffectiveAPY);
       const runebondAPY = runebondTake(lpEffectiveAPY);
+      const classicBondingAPY = bondingAPY > 0 ? bondingAPY * 100 : null;
       if (redemptionsLoaded && bondingYieldOnTotal !== null) {
         renderInvestorYieldBuildUpChart(bondingYieldOnTotal, totalRune);
       }
@@ -5444,6 +5976,11 @@
         setText('split-gross-note', 'Total LP yield before the 50 / 50 RUNEBOND split.');
         setText('split-investor', investorsAPY > 0 ? formatPercent(investorsAPY) : '—');
         setText('split-investor-note', `50% to investors; RUNEBOND retains ${runebondAPY > 0 ? formatPercent(runebondAPY) : '0.00%'}.`);
+        updateComparisonPanel({
+          investorApy: investorsAPY,
+          classicApy: classicBondingAPY,
+          grossApy: lpEffectiveAPY
+        });
       } else if (redemptionStatus === 'error') {
         setText('lp-effective-apy', bondingYieldOnTotal !== null ? formatPercent(bondingYieldOnTotal) : '—');
         setText('investors-apy', bondingYieldOnTotal !== null ? formatPercent(investorTake(bondingYieldOnTotal)) : '—');
@@ -5455,6 +5992,11 @@
         setText('split-gross-note', 'Temporary bonding-only fallback while fee history is unavailable.');
         setText('split-investor', bondingYieldOnTotal !== null ? formatPercent(investorTake(bondingYieldOnTotal)) : '—');
         setText('split-investor-note', 'Investor side shown on the bonding-only fallback.');
+        updateComparisonPanel({
+          investorApy: bondingYieldOnTotal !== null ? investorTake(bondingYieldOnTotal) : null,
+          classicApy: classicBondingAPY,
+          grossApy: bondingYieldOnTotal
+        });
       } else {
         setLoadingMetric('lp-effective-apy');
         setHeroApyLoading('Syncing 30d exit fees…');
@@ -5466,6 +6008,7 @@
         setText('split-gross-note', 'Waiting for fee history to finish syncing.');
         setText('split-investor', 'Loading…');
         setText('split-investor-note', 'Investor side updates when gross LP APY is ready.');
+        setComparisonLoading('Classic bonding baseline loaded; waiting for RUNEBOND LP fee history.');
       }
       setText('proj-capital', formatRune(totalCapitalE8));
       updateYieldStatus();
@@ -5947,6 +6490,11 @@
         new Date(today.getTime() - (days - 1 - i) * 24 * 60 * 60 * 1000)
       );
       renderSparkline('hero-sparkline', dailyAPYHistoryDemo, { unit: '%', dates: dailyDatesDemo });
+      updateComparisonPanel({
+        investorApy: investorAPY,
+        classicApy: bondingAPY * 100,
+        grossApy: grossLPapy
+      });
 
       // ─── Investors table ───
       const now = Date.now();

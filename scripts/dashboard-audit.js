@@ -119,6 +119,7 @@ function collectDomSnapshot(window) {
     splitInvestor: text('split-investor'),
     splitBonding: text('split-bonding'),
     splitFees: text('split-fees'),
+    networkApy: text('network-apy'),
     feeYield: text('fee-yield-pct'),
     heroChartYield: text('hero-chart-yield'),
     hero: {
@@ -173,6 +174,24 @@ function collectDomSnapshot(window) {
       last: chart?.dataset?.last || '',
       unit: chart?.dataset?.unit || '',
       lineStroke: chart?.querySelector('.spark-line polyline')?.getAttribute('stroke') || ''
+    },
+    comparison: {
+      exists: !!doc.querySelector('.comparison-panel'),
+      title: doc.getElementById('comparison-title')?.textContent?.trim() || '',
+      brandLogo: doc.querySelector('.comparison-brand-logo')?.getAttribute('src') || '',
+      investor: text('comparison-investor-apy'),
+      classic: text('comparison-classic-apy'),
+      gross: text('comparison-gross-apy'),
+      investorBar: text('comparison-investor-bar-value'),
+      classicBar: text('comparison-classic-bar-value'),
+      grossBar: text('comparison-gross-bar-value'),
+      investorBarWidth: doc.getElementById('comparison-investor-bar')?.style?.getPropertyValue('--bar-width') || '',
+      classicBarWidth: doc.getElementById('comparison-classic-bar')?.style?.getPropertyValue('--bar-width') || '',
+      grossBarWidth: doc.getElementById('comparison-gross-bar')?.style?.getPropertyValue('--bar-width') || '',
+      delta: text('comparison-delta'),
+      deltaState: doc.getElementById('comparison-delta')?.getAttribute('data-state') || '',
+      note: text('comparison-note'),
+      text: visibleTextFrom(doc.querySelector('.comparison-panel'))
     },
     links: {
       firstSwap: doc.querySelector('#swaps-tbody a')?.getAttribute('href') || '',
@@ -261,6 +280,10 @@ function validateSnapshot(snapshot) {
   const heroChartYield = parsePercent(snapshot.heroChartYield);
   const splitGross = parsePercent(snapshot.splitGross);
   const splitInvestor = parsePercent(snapshot.splitInvestor);
+  const networkApy = parsePercent(snapshot.networkApy);
+  const comparisonInvestor = parsePercent(snapshot.comparison.investor);
+  const comparisonClassic = parsePercent(snapshot.comparison.classic);
+  const comparisonGross = parsePercent(snapshot.comparison.gross);
   const chartLast = parsePercent(snapshot.chart.last);
   const chartMin = parsePercent(snapshot.chart.min);
   const chartMax = parsePercent(snapshot.chart.max);
@@ -328,6 +351,22 @@ function validateSnapshot(snapshot) {
   checks.push({
     ok: approxEqual(investorsApy, lpApy / 2) && approxEqual(runebondApy, investorsApy),
     message: `50 / 50 split holds (${snapshot.lpApy} -> ${snapshot.investorsApy} / ${snapshot.runebondApy})`
+  });
+
+  checks.push({
+    ok: snapshot.comparison.exists &&
+      /LP vs Classic Bonding/i.test(snapshot.comparison.title) &&
+      /runebond-logo-horizontal\.svg$/i.test(snapshot.comparison.brandLogo) &&
+      approxEqual(comparisonInvestor, investorsApy) &&
+      approxEqual(comparisonGross, lpApy) &&
+      approxEqual(comparisonClassic, networkApy, 0.06) &&
+      parseFloat(snapshot.comparison.investorBarWidth) > 0 &&
+      parseFloat(snapshot.comparison.classicBarWidth) > 0 &&
+      parseFloat(snapshot.comparison.grossBarWidth) > 0 &&
+      /investor APY after the RUNEBOND split/i.test(snapshot.comparison.note) &&
+      /THORChain network bonding APY/i.test(snapshot.comparison.note) &&
+      /context only/i.test(snapshot.comparison.note),
+    message: `bottom comparison chart matches investor APY, classic bonding baseline, and full LP context (${snapshot.comparison.investor} vs ${snapshot.comparison.classic})`
   });
 
   checks.push({
