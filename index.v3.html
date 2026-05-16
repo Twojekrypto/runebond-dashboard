@@ -3526,6 +3526,8 @@
     .data-workbench .panel-summary .val{
       font-size:24px;
       margin-top:8px;
+      gap:5px;
+      white-space:nowrap;
     }
     .data-workbench .panel-summary .note{
       color:var(--rb-muted);
@@ -3682,6 +3684,10 @@
       gap:3px;
       line-height:1.08;
     }
+    .data-workbench .panel-summary .val{
+      justify-content:flex-start;
+      gap:5px;
+    }
     .data-workbench .rune-amount{
       vertical-align:middle;
       white-space:nowrap;
@@ -3700,10 +3706,14 @@
       flex:0 0 auto;
     }
     .data-workbench .panel-summary .rune-logo-unit{
-      width:.72em;
-      height:.72em;
-      margin-left:0;
-      vertical-align:-.06em;
+      width:.62em;
+      height:.62em;
+      margin-left:.02em;
+      vertical-align:-.03em;
+      transform:translateY(.025em);
+    }
+    .data-workbench .panel-summary .rune-logo-unit img{
+      box-shadow:0 0 0 1px rgba(11,76,255,.07),0 2px 5px rgba(11,12,22,.06);
     }
     .data-workbench .growth-pos .rune-logo-unit,
     .data-workbench .growth-neg .rune-logo-unit,
