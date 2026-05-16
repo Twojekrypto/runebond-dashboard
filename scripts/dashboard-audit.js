@@ -191,6 +191,10 @@ function collectDomSnapshot(window) {
       delta: text('comparison-delta'),
       deltaState: doc.getElementById('comparison-delta')?.getAttribute('data-state') || '',
       note: text('comparison-note'),
+      rowCount: doc.querySelectorAll('.comparison-row[data-comparison-key]').length,
+      activeKey: doc.querySelector('.comparison-row.is-active')?.getAttribute('data-comparison-key') || '',
+      activePressedCount: doc.querySelectorAll('.comparison-row[aria-pressed="true"]').length,
+      tabbableRows: doc.querySelectorAll('.comparison-row[data-comparison-key][tabindex="0"][role="button"]').length,
       text: visibleTextFrom(doc.querySelector('.comparison-panel'))
     },
     links: {
@@ -363,10 +367,13 @@ function validateSnapshot(snapshot) {
       parseFloat(snapshot.comparison.investorBarWidth) > 0 &&
       parseFloat(snapshot.comparison.classicBarWidth) > 0 &&
       parseFloat(snapshot.comparison.grossBarWidth) > 0 &&
-      /investor APY after the RUNEBOND split/i.test(snapshot.comparison.note) &&
-      /THORChain network bonding APY/i.test(snapshot.comparison.note) &&
-      /context only/i.test(snapshot.comparison.note),
-    message: `bottom comparison chart matches investor APY, classic bonding baseline, and full LP context (${snapshot.comparison.investor} vs ${snapshot.comparison.classic})`
+      snapshot.comparison.rowCount === 3 &&
+      snapshot.comparison.tabbableRows === 3 &&
+      snapshot.comparison.activeKey === 'investor' &&
+      snapshot.comparison.activePressedCount === 1 &&
+      /headline result/i.test(snapshot.comparison.note) &&
+      /retained 5% bRUNE exit-fee/i.test(snapshot.comparison.note),
+    message: `bottom comparison chart is interactive and matches investor APY, classic bonding baseline, and full LP context (${snapshot.comparison.investor} vs ${snapshot.comparison.classic})`
   });
 
   checks.push({
@@ -635,6 +642,48 @@ function validateColumnFilters(window) {
   return checks;
 }
 
+function validateComparisonInteraction(window) {
+  const doc = window.document;
+  const rows = Array.from(doc.querySelectorAll('.comparison-row[data-comparison-key]'));
+  const note = doc.getElementById('comparison-note');
+  const checks = [];
+  const targets = [
+    ['classic', /THORChain network bond APY/i],
+    ['gross', /context only/i],
+    ['investor', /headline result/i]
+  ];
+
+  targets.forEach(([key, notePattern]) => {
+    const row = rows.find(candidate => candidate.getAttribute('data-comparison-key') === key);
+    if (row) row.click();
+    const activeRows = rows.filter(candidate => candidate.classList.contains('is-active'));
+    const pressedRows = rows.filter(candidate => candidate.getAttribute('aria-pressed') === 'true');
+    checks.push({
+      ok: !!row &&
+        activeRows.length === 1 &&
+        pressedRows.length === 1 &&
+        activeRows[0] === row &&
+        pressedRows[0] === row &&
+        notePattern.test(note?.textContent || ''),
+      message: `comparison row interaction selects ${key} and updates the explanation`
+    });
+  });
+
+  const keyboardRow = rows.find(candidate => candidate.getAttribute('data-comparison-key') === 'classic');
+  if (keyboardRow) {
+    keyboardRow.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+  }
+  checks.push({
+    ok: !!keyboardRow &&
+      keyboardRow.classList.contains('is-active') &&
+      keyboardRow.getAttribute('aria-pressed') === 'true' &&
+      /THORChain network bond APY/i.test(note?.textContent || ''),
+    message: 'comparison rows can be selected from the keyboard'
+  });
+
+  return checks;
+}
+
 async function waitForDashboard(window) {
   const start = Date.now();
   while (Date.now() - start < 90000) {
@@ -676,7 +725,8 @@ async function run() {
     const checks = [
       ...validateSnapshot(snapshot),
       ...validateTabs(dom.window),
-      ...validateColumnFilters(dom.window)
+      ...validateColumnFilters(dom.window),
+      ...validateComparisonInteraction(dom.window)
     ];
     const failures = checks.filter((check) => !check.ok);
 

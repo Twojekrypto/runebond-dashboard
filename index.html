@@ -1716,10 +1716,48 @@
       margin-top:auto;
     }
     .comparison-row{
+      position:relative;
       display:grid;
       grid-template-columns:minmax(130px,.36fr) minmax(0,1fr) minmax(70px,.18fr);
       gap:14px;
       align-items:center;
+      padding:10px 12px;
+      border:1px solid transparent;
+      border-radius:18px;
+      cursor:pointer;
+      transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+    }
+    .comparison-row::before{
+      content:none;
+    }
+    .comparison-row:hover,
+    .comparison-row:focus-visible,
+    .comparison-row.is-active{
+      background:rgba(255,255,255,.86);
+      border-color:rgba(11,76,255,.13);
+      box-shadow:0 14px 30px rgba(11,12,22,.055),0 1px 0 rgba(255,255,255,.95) inset;
+      transform:translateY(-1px);
+    }
+    .comparison-row:focus-visible{
+      outline:2px solid rgba(11,76,255,.30);
+      outline-offset:3px;
+    }
+    .comparison-row.is-active .comparison-label,
+    .comparison-row.is-active .comparison-value{
+      color:var(--accent);
+    }
+    .comparison-row.is-classic.is-active .comparison-label,
+    .comparison-row.is-classic.is-active .comparison-value{
+      color:#26324b;
+    }
+    .comparison-row.is-gross.is-active .comparison-label,
+    .comparison-row.is-gross.is-active .comparison-value{
+      color:#0b4cff;
+    }
+    .comparison-row.is-active .comparison-track{
+      height:20px;
+      background:rgba(11,76,255,.09);
+      box-shadow:inset 0 1px 3px rgba(11,12,22,.08),0 10px 24px rgba(11,76,255,.08);
     }
     .comparison-label{
       color:#26324b;
@@ -1750,7 +1788,11 @@
       border-radius:inherit;
       background:linear-gradient(90deg,#0b4cff,#00b30f);
       box-shadow:0 10px 26px rgba(11,76,255,.14);
-      transition:width .7s cubic-bezier(.2,.8,.2,1);
+      transition:width .7s cubic-bezier(.2,.8,.2,1),filter .18s ease,box-shadow .18s ease;
+    }
+    .comparison-row.is-active .comparison-fill{
+      filter:saturate(1.16);
+      box-shadow:0 14px 30px rgba(11,76,255,.22);
     }
     .comparison-row.is-classic .comparison-fill{
       background:linear-gradient(90deg,#8b95aa,#26324b);
@@ -3124,9 +3166,9 @@
       background:#f5f5ff;
       box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
       overflow:visible;
-      position:sticky;
-      top:84px;
-      z-index:12;
+      position:relative;
+      top:auto;
+      z-index:2;
       backdrop-filter:blur(14px);
     }
     .data-workbench .section-btn{
@@ -3716,9 +3758,9 @@
         padding:6px;
         overflow-x:auto;
         scroll-snap-type:x mandatory;
-        position:sticky;
-        top:74px;
-        z-index:14;
+        position:relative;
+        top:auto;
+        z-index:2;
       }
       .data-workbench .section-nav::-webkit-scrollbar{display:none}
       .data-workbench .section-btn{
@@ -4322,17 +4364,17 @@
             <div class="comparison-delta" id="comparison-delta" data-state="neutral">Waiting for data</div>
           </div>
           <div class="comparison-bars" aria-label="RUNEBOND LP and classic bonding APY bars">
-            <div class="comparison-row is-runebond">
+            <div class="comparison-row is-runebond is-active" role="button" tabindex="0" data-comparison-key="investor" aria-pressed="true" aria-describedby="comparison-note" aria-label="Explain RUNEBOND investor APY after split">
               <div class="comparison-label">Investor receives<small>RUNEBOND LP after split</small></div>
               <div class="comparison-track"><span class="comparison-fill" id="comparison-investor-bar"></span></div>
               <div class="comparison-value" id="comparison-investor-bar-value">—</div>
             </div>
-            <div class="comparison-row is-classic">
+            <div class="comparison-row is-classic" role="button" tabindex="0" data-comparison-key="classic" aria-pressed="false" aria-describedby="comparison-note" aria-label="Explain classic THORChain bonding APY">
               <div class="comparison-label">Classic bonding<small>THORChain network APY</small></div>
               <div class="comparison-track"><span class="comparison-fill" id="comparison-classic-bar"></span></div>
               <div class="comparison-value" id="comparison-classic-bar-value">—</div>
             </div>
-            <div class="comparison-row is-gross">
+            <div class="comparison-row is-gross" role="button" tabindex="0" data-comparison-key="gross" aria-pressed="false" aria-describedby="comparison-note" aria-label="Explain full LP APY before split">
               <div class="comparison-label">Full LP context<small>Before 50 / 50 split</small></div>
               <div class="comparison-track"><span class="comparison-fill" id="comparison-gross-bar"></span></div>
               <div class="comparison-value" id="comparison-gross-bar-value">—</div>
@@ -5035,6 +5077,18 @@
       return value > 0 ? value * (1 - INVESTOR_SHARE) : 0;
     }
 
+    const COMPARISON_KEYS = new Set(['investor', 'classic', 'gross']);
+    let activeComparisonKey = 'investor';
+    let latestComparisonValues = {
+      investorApy: null,
+      classicApy: null,
+      grossApy: null,
+      investorReady: false,
+      classicReady: false,
+      grossReady: false,
+      loadingMessage: 'Waiting for live APY data before comparing RUNEBOND LP with classic bonding.'
+    };
+
     function renderInvestorYieldBuildUpChart(bondingYieldOnTotal, totalRune) {
       if (!redemptionsLoaded || bondingYieldOnTotal === null || !Number.isFinite(totalRune) || totalRune <= 0) return;
 
@@ -5069,7 +5123,77 @@
       el.style.setProperty('--bar-width', `${width.toFixed(2)}%`);
     }
 
+    function getComparisonValueLabel(value, fallback = 'not ready yet') {
+      return Number.isFinite(value) && value > 0 ? formatPercent(value) : fallback;
+    }
+
+    function getComparisonDeltaText(values) {
+      if (!values.investorReady || !values.classicReady) return 'the baseline is still syncing';
+      const diff = values.investorApy - values.classicApy;
+      if (Math.abs(diff) < 0.05) return 'nearly equal to classic bonding';
+      return diff > 0
+        ? `${formatPointDelta(diff)} above classic bonding`
+        : `${Math.abs(diff).toFixed(2)} pp below classic bonding`;
+    }
+
+    function getComparisonDetailText(key) {
+      const values = latestComparisonValues;
+      if (!values.investorReady && !values.classicReady && !values.grossReady) {
+        return values.loadingMessage || 'Waiting for live APY data before comparing RUNEBOND LP with classic bonding.';
+      }
+
+      const investor = getComparisonValueLabel(values.investorApy);
+      const classic = getComparisonValueLabel(values.classicApy);
+      const gross = getComparisonValueLabel(values.grossApy);
+
+      if (key === 'classic') {
+        return `Classic bonding shows the live THORChain network bond APY: ${classic}. It is the baseline for this comparison and does not include the retained 5% bRUNE exit-fee flow.`;
+      }
+
+      if (key === 'gross') {
+        return `Full LP APY is ${gross} before the 50 / 50 RUNEBOND split. This is context only: the investor-facing number is ${investor} after the split.`;
+      }
+
+      return `Investor receives shows the headline result: ${investor} after the RUNEBOND split. It includes the LP bonding contribution plus retained 5% bRUNE exit-fee contribution, then shows only the investor share. It is currently ${getComparisonDeltaText(values)}.`;
+    }
+
+    function renderActiveComparisonState() {
+      document.querySelectorAll('.comparison-row[data-comparison-key]').forEach((row) => {
+        const isActive = row.dataset.comparisonKey === activeComparisonKey;
+        row.classList.toggle('is-active', isActive);
+        row.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+      setText('comparison-note', getComparisonDetailText(activeComparisonKey));
+    }
+
+    function setActiveComparisonRow(key) {
+      if (!COMPARISON_KEYS.has(key)) return;
+      activeComparisonKey = key;
+      renderActiveComparisonState();
+    }
+
+    function wireComparisonRows() {
+      document.querySelectorAll('.comparison-row[data-comparison-key]').forEach((row) => {
+        row.addEventListener('click', () => setActiveComparisonRow(row.dataset.comparisonKey));
+        row.addEventListener('keydown', (event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          event.preventDefault();
+          setActiveComparisonRow(row.dataset.comparisonKey);
+        });
+      });
+      renderActiveComparisonState();
+    }
+
     function setComparisonLoading(message = 'Waiting for live APY data before comparing RUNEBOND LP with classic bonding.') {
+      latestComparisonValues = {
+        investorApy: null,
+        classicApy: null,
+        grossApy: null,
+        investorReady: false,
+        classicReady: false,
+        grossReady: false,
+        loadingMessage: message
+      };
       [
         'comparison-investor-apy',
         'comparison-classic-apy',
@@ -5085,6 +5209,7 @@
         delta.textContent = 'Waiting for data';
       }
       setText('comparison-note', message);
+      renderActiveComparisonState();
     }
 
     function updateComparisonPanel({ investorApy, classicApy, grossApy }) {
@@ -5097,6 +5222,7 @@
         return;
       }
 
+      latestComparisonValues = { investorApy, classicApy, grossApy, investorReady, classicReady, grossReady };
       const values = [investorApy, classicApy, grossApy].filter(value => Number.isFinite(value) && value > 0);
       const maxValue = Math.max(...values, 1);
 
@@ -5128,20 +5254,7 @@
         delta.textContent = classicReady ? 'Investor APY syncing' : 'Classic baseline unavailable';
       }
 
-      if (investorReady && classicReady && grossReady) {
-        const diff = investorApy - classicApy;
-        const comparison = Math.abs(diff) < 0.05
-          ? 'almost the same as classic bonding'
-          : diff > 0
-            ? `${formatPointDelta(diff)} above classic bonding`
-            : `${Math.abs(diff).toFixed(2)} pp below classic bonding`;
-        setText(
-          'comparison-note',
-          `Comparison uses the investor APY after the RUNEBOND split versus live THORChain network bonding APY. Full LP APY is ${formatPercent(grossApy)} before the 50 / 50 split, so it is shown as context only. Investor APY is currently ${comparison}.`
-        );
-      } else {
-        setText('comparison-note', 'Comparison is waiting for the full RUNEBOND investor APY and the live THORChain bonding baseline.');
-      }
+      renderActiveComparisonState();
     }
 
     function hasCapitalInputsReady() {
@@ -6613,6 +6726,7 @@
       fetchAll = function demoFetch() { populateDemo(); return Promise.resolve(); };
     }
 
+    wireComparisonRows();
     setInterval(updateStaleChip, 30 * 1000);
     fetchAll();
     setInterval(fetchAll, REFRESH_INTERVAL_MS);
