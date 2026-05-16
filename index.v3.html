@@ -483,10 +483,10 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      width:.86em;
-      height:.86em;
-      margin-left:.08em;
-      vertical-align:-.1em;
+      width:.9em;
+      height:.9em;
+      margin-left:.12em;
+      vertical-align:-.13em;
       line-height:1;
     }
     .rune-logo-unit img{
@@ -1615,6 +1615,21 @@
       font-size:14px!important;
       letter-spacing:0!important;
       text-transform:none!important;
+    }
+    .hero-window-chip{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:24px;
+      padding:0 10px;
+      border:1px solid rgba(11,76,255,.13);
+      border-radius:999px;
+      background:rgba(11,76,255,.055);
+      color:var(--accent);
+      font-size:9px;
+      font-weight:900;
+      letter-spacing:.12em;
+      white-space:nowrap;
     }
     .display-lead{
       max-width:760px;
@@ -2828,7 +2843,7 @@
       text-transform:none;
     }
     .data-workbench .panel-summary .val{
-      font-size:23px;
+      font-size:24px;
       margin-top:8px;
     }
     .data-workbench .panel-summary .note{
@@ -2877,7 +2892,7 @@
       padding:18px;
       border-bottom:1px solid rgba(11,12,22,.065);
       background:#fff;
-      font-size:13.5px;
+      font-size:14px;
       transition:background .16s ease,box-shadow .16s ease;
     }
     .data-workbench tbody tr:nth-child(even) td{background:#fbfcff}
@@ -2948,8 +2963,29 @@
     .data-workbench .bond-amount,
     .data-workbench .growth-pos,
     .data-workbench .growth-neg{
-      font-size:13px;
+      font-size:14px;
       font-weight:800;
+    }
+    .data-workbench .growth-pos,
+    .data-workbench .growth-neg,
+    .data-workbench .panel-summary .val{
+      display:inline-flex;
+      align-items:baseline;
+      justify-content:flex-end;
+      gap:2px;
+      line-height:1.08;
+    }
+    .data-workbench td.deposited,
+    .data-workbench td.current-val,
+    .data-workbench td.bond-amount{
+      white-space:nowrap;
+    }
+    .data-workbench .rune-logo-unit{
+      width:.98em;
+      height:.98em;
+      margin-left:.1em;
+      vertical-align:-.15em;
+      flex:0 0 auto;
     }
     .data-workbench .cell-sub{
       color:var(--text-2);
@@ -3192,6 +3228,7 @@
         <div class="eyebrow">
           <span class="sep"></span>
           <span>LIVE LP YIELD VIEW · <span id="hero-date">—</span></span>
+          <span class="hero-window-chip" title="Rolling 30-day bonding and retained 5% exit-fee model.">30D APY WINDOW</span>
           <span class="sep"></span>
         </div>
 
@@ -3209,7 +3246,6 @@
             <strong id="hero-investor-split-apy">—</strong>
           </div>
         </div>
-        <span class="est-badge" title="Derived from 30-day bonding earnings and inferred 5% exit fees, not forward guidance.">30 day · estimate</span>
       </div>
 
       <div class="hero-spark">
