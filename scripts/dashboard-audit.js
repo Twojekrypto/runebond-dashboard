@@ -234,6 +234,8 @@ function collectDomSnapshot(window) {
     },
     dataWorkbench: {
       hintText: doc.querySelector('.data-hint')?.textContent?.trim() || '',
+      brandLogo: doc.querySelector('.data-workbench-brand-logo')?.getAttribute('src') || '',
+      brandChip: doc.querySelector('.data-workbench-brand-chip')?.textContent?.trim() || '',
       updatedChipText: doc.getElementById('data-updated-chip')?.textContent?.trim() || '',
       panelTitles: Array.from(doc.querySelectorAll('.data-workbench .panel-title')).map(el => el.textContent.trim()),
       metaOnlyHeaders: doc.querySelectorAll('.data-workbench .panel-head.panel-head-meta-only').length,
@@ -425,6 +427,8 @@ function validateSnapshot(snapshot) {
 
   checks.push({
     ok: !snapshot.dataWorkbench.hintText &&
+      /runebond-logo-horizontal\.svg$/i.test(snapshot.dataWorkbench.brandLogo) &&
+      /LP data tables/i.test(snapshot.dataWorkbench.brandChip) &&
       snapshot.dataWorkbench.panelTitles.length === 0 &&
       snapshot.dataWorkbench.metaOnlyHeaders === 3 &&
       snapshot.dataWorkbench.liveStatusInHead &&

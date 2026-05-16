@@ -1500,7 +1500,8 @@
       gap:24px;
       margin-bottom:22px;
     }
-    .comparison-brand-lockup{
+    .comparison-brand-lockup,
+    .data-workbench-brand-lockup{
       display:inline-flex;
       align-items:center;
       gap:12px;
@@ -1515,13 +1516,15 @@
       box-shadow:var(--rb-shadow-soft),0 1px 0 rgba(255,255,255,.92) inset;
       backdrop-filter:blur(12px);
     }
-    .comparison-brand-logo{
+    .comparison-brand-logo,
+    .data-workbench-brand-logo{
       display:block;
       width:164px;
       max-width:46vw;
       height:auto;
     }
-    .comparison-brand-chip{
+    .comparison-brand-chip,
+    .data-workbench-brand-chip{
       display:inline-flex;
       align-items:center;
       min-height:30px;
@@ -1535,7 +1538,8 @@
       text-transform:uppercase;
       white-space:nowrap;
     }
-    .comparison-brand-chip::before{
+    .comparison-brand-chip::before,
+    .data-workbench-brand-chip::before{
       content:"";
       flex:0 0 auto;
       width:8px;
@@ -1544,6 +1548,12 @@
       border-radius:50%;
       background:var(--rb-teal);
       box-shadow:0 0 0 6px rgba(0,168,107,.10);
+    }
+    .data-workbench-brand-lockup{
+      margin-bottom:0;
+    }
+    .data-workbench-brand-logo{
+      width:156px;
     }
     .comparison-head h2{
       margin:0;
@@ -3081,6 +3091,7 @@
     /* Premium data workbench: visible view switcher + responsive table system */
     .data-workbench{
       position:relative;
+      scroll-margin-top:96px;
       margin:0 0 58px;
       padding:18px;
       border:1px solid var(--rb-line);
@@ -4135,7 +4146,11 @@
     <section class="data-workbench" id="data-workbench" aria-labelledby="data-workbench-title" data-active="investors">
       <div class="data-workbench-head">
         <div>
-          <h2 id="data-workbench-title">LP data tables</h2>
+          <div class="data-workbench-brand-lockup" aria-label="RUNEBOND LP data tables">
+            <img class="data-workbench-brand-logo" src="assets/runebond-logo-horizontal.svg" alt="RUNEBOND">
+            <span class="data-workbench-brand-chip">LP data tables</span>
+          </div>
+          <h2 class="sr" id="data-workbench-title">LP data tables</h2>
         </div>
         <div class="data-workbench-head-actions" aria-label="LP data freshness">
           <span class="data-updated-chip" id="data-updated-chip">Updated —</span>
