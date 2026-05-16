@@ -224,6 +224,15 @@ function collectDomSnapshot(window) {
       copyAddressButtons: doc.querySelectorAll('.data-workbench .copy-address-action').length,
       firstCopyValue: doc.querySelector('.data-workbench .copy-address-action')?.getAttribute('data-copy') || '',
       txLinkPills: doc.querySelectorAll('#swaps-tbody .tx-link-pill .external-link-icon').length
+    },
+    footer: {
+      brandLogo: doc.querySelector('.footer-brand-logo')?.getAttribute('src') || '',
+      brandHref: doc.querySelector('.footer-brand')?.getAttribute('href') || '',
+      textMarkCount: doc.querySelectorAll('.footer-mark').length,
+      statusCount: doc.querySelectorAll('.footer-status-group .panel-status').length,
+      yieldStatus: text('yield-status'),
+      sourceStatus: text('source-health-status'),
+      lastUpdate: text('last-update')
     }
   };
 }
@@ -324,6 +333,15 @@ function validateSnapshot(snapshot) {
     ok: snapshot.favicon.iconHrefs.some((href) => /assets\/runebond-isologo\.svg(?:\?|$)/i.test(href)) &&
       snapshot.favicon.iconTypes.some((type) => type === 'image/svg+xml'),
     message: 'browser tab favicon uses the RUNEBOND isologo'
+  });
+
+  checks.push({
+    ok: /runebond-logo-horizontal\.svg$/i.test(snapshot.footer.brandLogo) &&
+      /^https:\/\/runebond\.com\/?$/i.test(snapshot.footer.brandHref) &&
+      snapshot.footer.textMarkCount === 0 &&
+      snapshot.footer.statusCount === 2 &&
+      !!snapshot.footer.lastUpdate,
+    message: 'footer uses RUNEBOND wordmark logo with two status chips and last-updated text'
   });
 
   checks.push({

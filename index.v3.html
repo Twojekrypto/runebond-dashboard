@@ -566,7 +566,6 @@
     .footer{margin-top:64px;padding:28px 0 36px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;font-size:10.5px;color:var(--text-3);letter-spacing:.4px}
     .footer-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
     .footer-right{display:flex;align-items:center;gap:14px;font-variant-numeric:tabular-nums}
-    .footer-mark{font-family:var(--serif);font-style:italic;font-size:11px;color:var(--text-3)}
     .last-update{font-size:10.5px;color:var(--text-3);letter-spacing:.2px}
 
     /* visually hidden — keeps IDs the JS reads */
@@ -747,7 +746,6 @@
     }
     @keyframes loadingSweep{0%{background-position:100% 50%}100%{background-position:0 50%}}
     .footer{border-top-color:var(--line-2)}
-    .footer-mark{font-family:var(--sans);font-style:normal;font-weight:700;color:var(--text-2)}
     @media(max-width:880px){
       .panel-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
       .panel-summary > div:nth-child(odd){border-left:0}
@@ -912,7 +910,6 @@
     .cell-sub,.panel-summary .note,.driver-note,.vital-sub{color:var(--text-3)}
     .cell-sub a{color:var(--text-2);border-bottom-color:rgba(0,71,60,.18)}
     .footer{border-top-color:rgba(0,71,60,.12);color:var(--text-3)}
-    .footer-mark{color:var(--text)}
     .loading{
       background:linear-gradient(90deg,var(--text-mute),var(--accent-2),var(--text-mute));
       background-size:220% 100%;
@@ -1387,7 +1384,75 @@
     .share-bar{height:6px;border-radius:999px}
     .footer{
       margin-top:24px;
-      padding:34px 0 42px;
+      padding:22px 0 42px;
+      border-top-color:rgba(11,76,255,.10);
+      gap:18px;
+    }
+    .footer-left{
+      gap:16px;
+    }
+    .footer-brand{
+      display:inline-flex;
+      align-items:center;
+      min-height:36px;
+      padding:3px 0;
+      text-decoration:none;
+      color:var(--text);
+    }
+    .footer-brand-logo{
+      display:block;
+      width:154px;
+      max-width:42vw;
+      height:auto;
+    }
+    .footer-status-group{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .footer .panel-status{
+      min-height:32px;
+      padding:0 12px;
+      border:1px solid rgba(11,76,255,.10);
+      border-radius:999px;
+      background:#fff;
+      color:var(--text-2);
+      box-shadow:0 12px 26px rgba(11,12,22,.035);
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.08em;
+      line-height:1;
+    }
+    .footer .panel-status::before{
+      width:6px;
+      height:6px;
+    }
+    .footer .panel-status[data-tone="live"]{
+      color:var(--accent);
+      border-color:rgba(0,179,15,.18);
+      background:rgba(0,179,15,.055);
+    }
+    .footer .panel-status[data-tone="cached"],
+    .footer .panel-status[data-tone="warning"]{
+      border-color:rgba(245,158,11,.20);
+      background:rgba(245,158,11,.07);
+    }
+    .footer-right{
+      min-height:38px;
+      padding:0 13px;
+      border:1px solid rgba(11,76,255,.10);
+      border-radius:999px;
+      background:rgba(255,255,255,.78);
+      box-shadow:0 12px 28px rgba(11,12,22,.04);
+    }
+    .footer-right .last-update{
+      color:#596278;
+      font-size:11px;
+      font-weight:850;
+      letter-spacing:.01em;
+      line-height:1;
+      white-space:nowrap;
     }
     @media(max-width:980px){
       .hero{
@@ -1433,6 +1498,25 @@
       .panel-summary > div{min-height:0}
       .table-container{border-radius:18px;background:#fff;border:1px solid rgba(0,71,60,.09);box-shadow:0 18px 45px rgba(0,71,60,.055)}
       tbody tr{padding:18px}
+      .footer{
+        align-items:stretch;
+      }
+      .footer-left,
+      .footer-right{
+        width:100%;
+        justify-content:center;
+      }
+      .footer-left{
+        flex-direction:column;
+        gap:12px;
+      }
+      .footer-status-group{
+        justify-content:center;
+      }
+      .footer-brand-logo{
+        width:150px;
+        max-width:70vw;
+      }
     }
 
     /* Match the live runebond.com render: blue primary, black headings, lavender light */
@@ -3760,11 +3844,13 @@
     <!-- Footer -->
     <div class="footer">
       <div class="footer-left">
-        <span class="footer-mark">RUNEBOND</span>
-        <span>·</span>
-        <span class="panel-status" id="yield-status" data-tone="loading" style="border:0;background:transparent;padding:0">Syncing yield</span>
-        <span>·</span>
-        <span class="panel-status" id="source-health-status" data-tone="loading" style="border:0;background:transparent;padding:0">Verifying sources</span>
+        <a class="footer-brand" href="https://runebond.com/" target="_blank" rel="noopener" aria-label="Open RUNEBOND website">
+          <img class="footer-brand-logo" src="assets/runebond-logo-horizontal.svg" alt="RUNEBOND">
+        </a>
+        <div class="footer-status-group" aria-label="Dashboard status">
+          <span class="panel-status footer-status" id="yield-status" data-tone="loading">Syncing yield</span>
+          <span class="panel-status footer-status" id="source-health-status" data-tone="loading">Verifying sources</span>
+        </div>
       </div>
       <div class="footer-right">
         <span class="last-update" id="last-update">—</span>
