@@ -300,11 +300,6 @@ function validateSnapshot(snapshot) {
   });
 
   checks.push({
-    ok: snapshot.statuses.providers !== 'Syncing',
-    message: `provider status settled (${snapshot.statuses.providers})`
-  });
-
-  checks.push({
     ok: lpApy !== null && investorsApy !== null && runebondApy !== null,
     message: `core APY values present (${snapshot.lpApy} / ${snapshot.investorsApy} / ${snapshot.runebondApy})`
   });
@@ -431,7 +426,7 @@ function validateSnapshot(snapshot) {
       /LP data tables/i.test(snapshot.dataWorkbench.brandChip) &&
       snapshot.dataWorkbench.panelTitles.length === 0 &&
       snapshot.dataWorkbench.metaOnlyHeaders === 3 &&
-      snapshot.dataWorkbench.liveStatusInHead &&
+      !snapshot.dataWorkbench.liveStatusInHead &&
       /^Updated\s|^Demo data$|^Update failed$/.test(snapshot.dataWorkbench.updatedChipText) &&
       snapshot.dataWorkbench.nodeCountHidden &&
       snapshot.dataWorkbench.swapCountHidden &&
@@ -693,9 +688,9 @@ async function waitForDashboard(window) {
   while (Date.now() - start < 90000) {
     const snapshot = collectDomSnapshot(window);
     const settled =
-      snapshot.statuses.providers &&
-      snapshot.statuses.providers !== 'Syncing' &&
-      /Last updated|source warning/.test(snapshot.lastUpdate);
+      /Last updated|source warning/.test(snapshot.lastUpdate) &&
+      snapshot.providerSummary.deposited &&
+      snapshot.providerSummary.deposited !== '—';
 
     if (settled) return snapshot;
     await new Promise((resolve) => setTimeout(resolve, 1000));
