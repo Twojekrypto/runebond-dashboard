@@ -371,8 +371,8 @@ function validateSnapshot(snapshot) {
       snapshot.comparison.tabbableRows === 3 &&
       snapshot.comparison.activeKey === 'investor' &&
       snapshot.comparison.activePressedCount === 1 &&
-      /headline result/i.test(snapshot.comparison.note) &&
-      /retained 5% bRUNE exit-fee/i.test(snapshot.comparison.note),
+      /Investor APY:/i.test(snapshot.comparison.note) &&
+      /after split/i.test(snapshot.comparison.note),
     message: `bottom comparison chart is interactive and matches investor APY, classic bonding baseline, and full LP context (${snapshot.comparison.investor} vs ${snapshot.comparison.classic})`
   });
 
@@ -648,9 +648,9 @@ function validateComparisonInteraction(window) {
   const note = doc.getElementById('comparison-note');
   const checks = [];
   const targets = [
-    ['classic', /THORChain network bond APY/i],
-    ['gross', /context only/i],
-    ['investor', /headline result/i]
+    ['classic', /live THORChain network APY/i],
+    ['gross', /before split/i],
+    ['investor', /Investor APY:/i]
   ];
 
   targets.forEach(([key, notePattern]) => {
@@ -677,7 +677,7 @@ function validateComparisonInteraction(window) {
     ok: !!keyboardRow &&
       keyboardRow.classList.contains('is-active') &&
       keyboardRow.getAttribute('aria-pressed') === 'true' &&
-      /THORChain network bond APY/i.test(note?.textContent || ''),
+      /live THORChain network APY/i.test(note?.textContent || ''),
     message: 'comparison rows can be selected from the keyboard'
   });
 

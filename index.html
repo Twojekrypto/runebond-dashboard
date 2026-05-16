@@ -4136,7 +4136,6 @@
       <div class="data-workbench-head">
         <div>
           <h2 id="data-workbench-title">LP data tables</h2>
-          <p>Start with the pool snapshot, then switch the exact table directly above its columns.</p>
         </div>
         <div class="data-workbench-head-actions" aria-label="LP data freshness">
           <span class="data-updated-chip" id="data-updated-chip">Updated —</span>
@@ -4185,21 +4184,18 @@
           <span class="tab-index">01</span>
           <span class="tab-copy">
             <span class="tab-label">Investor pool <span class="count" id="tab-count-investors">—</span></span>
-            <span class="tab-desc">Deposits, yield share and investor value</span>
           </span>
         </button>
         <button class="section-btn tab-btn" id="tab-bonds" role="tab" aria-selected="false" aria-controls="panel-bonds" data-tab="bonds" type="button">
           <span class="tab-index">02</span>
           <span class="tab-copy">
             <span class="tab-label">LP bonded positions <span class="count" id="tab-count-bonds">—</span></span>
-            <span class="tab-desc">Where the LP bond is parked in nodes</span>
           </span>
         </button>
         <button class="section-btn tab-btn" id="tab-exits" role="tab" aria-selected="false" aria-controls="panel-exits" data-tab="exits" type="button">
           <span class="tab-index">03</span>
           <span class="tab-copy">
             <span class="tab-label">Recent exits <span class="count" id="tab-count-exits">—</span></span>
-            <span class="tab-desc">bRUNE exits, RUNE payouts and 5% fee</span>
           </span>
         </button>
       </nav>
@@ -4365,7 +4361,7 @@
             <span class="comparison-brand-chip">LP comparison</span>
           </div>
           <h2 id="comparison-title">LP vs Classic Bonding</h2>
-          <p>Investor APY after the RUNEBOND split is compared with live THORChain bonding. Full LP APY stays visible as context before the 50 / 50 split.</p>
+          <p>Investor APY compared with classic THORChain bonding.</p>
         </div>
         <span class="comparison-window">Live · 30D estimate</span>
       </div>
@@ -4375,17 +4371,17 @@
           <div class="comparison-stat is-primary">
             <span>RUNEBOND investor APY</span>
             <strong id="comparison-investor-apy">—</strong>
-            <small>What investors receive after the positive-yield split.</small>
+            <small>After the split.</small>
           </div>
           <div class="comparison-stat">
             <span>Classic bonding APY</span>
             <strong id="comparison-classic-apy">—</strong>
-            <small>Live THORChain network bond APY used as the baseline.</small>
+            <small>Network baseline.</small>
           </div>
           <div class="comparison-stat is-context">
             <span>Full LP APY before split</span>
             <strong id="comparison-gross-apy">—</strong>
-            <small>Bonding plus retained 5% bRUNE exit fees before RUNEBOND split.</small>
+            <small>Before split.</small>
           </div>
         </div>
 
@@ -5178,14 +5174,14 @@
       const gross = getComparisonValueLabel(values.grossApy);
 
       if (key === 'classic') {
-        return `Classic bonding shows the live THORChain network bond APY: ${classic}. It is the baseline for this comparison and does not include the retained 5% bRUNE exit-fee flow.`;
+        return `Classic bonding: ${classic} live THORChain network APY.`;
       }
 
       if (key === 'gross') {
-        return `Full LP APY is ${gross} before the 50 / 50 RUNEBOND split. This is context only: the investor-facing number is ${investor} after the split.`;
+        return `Full LP APY: ${gross} before split. Investors see ${investor}.`;
       }
 
-      return `Investor receives shows the headline result: ${investor} after the RUNEBOND split. It includes the LP bonding contribution plus retained 5% bRUNE exit-fee contribution, then shows only the investor share. It is currently ${getComparisonDeltaText(values)}.`;
+      return `Investor APY: ${investor} after split, currently ${getComparisonDeltaText(values)}.`;
     }
 
     function renderActiveComparisonState() {
