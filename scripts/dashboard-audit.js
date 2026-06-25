@@ -7,6 +7,18 @@ const HOST = '127.0.0.1';
 const ROOT = process.cwd();
 const pageArg = process.argv[2] || 'index.html';
 const PAGE_PATH = `/${pageArg.replace(/^\/+/, '')}`;
+const LP_ADDRESS = 'thor1dk9y6ys5eqrcnut9z3ygjsa4al6flvcgxl8x2l';
+const LP_FEE = 0.05;
+const INVESTOR_SHARE = 0.5;
+const E8 = 1e8;
+const MIDGARD_BASES = [
+  'https://gateway.liquify.com/chain/thorchain_midgard/v2',
+  'https://midgard.thorchain.network/v2'
+];
+const THORNODE_BASES = [
+  'https://gateway.liquify.com/chain/thorchain_api',
+  'https://thornode.thorchain.network'
+];
 
 function getContentType(filePath) {
   const ext = path.extname(filePath).toLowerCase();
@@ -103,6 +115,200 @@ function visibleTextFrom(element) {
 
 function approxEqual(a, b, tolerance = 0.03) {
   return a !== null && b !== null && Math.abs(a - b) <= tolerance;
+}
+
+function approxRune(a, b, tolerance = 1) {
+  return a !== null && b !== null && Math.abs(a - b) <= tolerance;
+}
+
+function investorTake(value) {
+  return value > 0 ? value * INVESTOR_SHARE : value;
+}
+
+async function fetchJsonFromBases(bases, path) {
+  const errors = [];
+
+  for (const base of bases) {
+    const url = `${base}${path}`;
+    try {
+      const response = await fetch(url, { headers: { accept: 'application/json' } });
+      if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+      return { data: await response.json(), url };
+    } catch (error) {
+      errors.push(`${url} -> ${error.message}`);
+    }
+  }
+
+  throw new Error(errors.join('\n'));
+}
+
+async function fetchActions(pathBase, cutoffNs = 0n, maxPages = 200) {
+  const actions = [];
+  let nextPageToken = '';
+  let pages = 0;
+
+  do {
+    const path = pathBase + (nextPageToken ? `&nextPageToken=${encodeURIComponent(nextPageToken)}` : '');
+    const { data } = await fetchJsonFromBases(MIDGARD_BASES, path);
+    const pageActions = data.actions || [];
+    pages += 1;
+
+    let reachedCutoff = false;
+    for (const action of pageActions) {
+      if (cutoffNs > 0n && BigInt(action.date) < cutoffNs) {
+        reachedCutoff = true;
+        break;
+      }
+      actions.push(action);
+    }
+
+    if (reachedCutoff || !data.meta?.nextPageToken) break;
+    nextPageToken = data.meta.nextPageToken;
+  } while (pages < maxPages);
+
+  return { actions, pages };
+}
+
+function sumCoinsE8(side) {
+  return (side?.coins || []).reduce((sum, coin) => sum + Number(coin.amount || 0), 0);
+}
+
+function actionTxId(action) {
+  return action.in?.[0]?.txID || action.out?.[0]?.txID || '';
+}
+
+async function collectLiveExpectedMetrics() {
+  const thirtyDaysAgoNs = BigInt(Date.now() - 30 * 24 * 60 * 60 * 1000) * 1000000n;
+  const [
+    { data: network },
+    { data: bonds },
+    { data: balances },
+    recentActionsResult,
+    sendActionsResult
+  ] = await Promise.all([
+    fetchJsonFromBases(MIDGARD_BASES, '/network'),
+    fetchJsonFromBases(MIDGARD_BASES, `/bonds/${LP_ADDRESS}`),
+    fetchJsonFromBases(THORNODE_BASES, `/cosmos/bank/v1beta1/balances/${LP_ADDRESS}`),
+    fetchActions(`/actions?address=${LP_ADDRESS}&limit=50`, thirtyDaysAgoNs),
+    fetchActions(`/actions?address=${LP_ADDRESS}&type=send&limit=50`, 0n)
+  ]);
+
+  const lpBondedE8 = Number(bonds.totalBonded || 0);
+  const lpBalanceE8 = Number((balances.balances || []).find((balance) => balance.denom === 'rune')?.amount || 0);
+  const totalCapitalE8 = lpBondedE8 + lpBalanceE8;
+  const bondingAPY = Number(network.bondingAPY || 0);
+  const nodes = bonds.nodes || [];
+  const nodeBondSumE8 = nodes.reduce((sum, node) => sum + Number(node.bond || 0), 0);
+  const activeNodes = nodes.filter((node) => node.status === 'Active');
+  const standbyNodes = nodes.filter((node) => node.status !== 'Active');
+  const bondedNodes = nodes.filter((node) => Number(node.bond || 0) > 0);
+
+  const outgoingPayouts = recentActionsResult.actions.filter((action) => {
+    if (action.type !== 'send') return false;
+    if (BigInt(action.date) < thirtyDaysAgoNs) return false;
+    if (action.in?.[0]?.address !== LP_ADDRESS) return false;
+    const outAddress = action.out?.[0]?.address;
+    return !!outAddress && outAddress !== LP_ADDRESS;
+  });
+  const netPaidE8 = outgoingPayouts.reduce((sum, action) => sum + sumCoinsE8(action.out?.[0]), 0);
+  const grossExitE8 = Math.round(netPaidE8 / (1 - LP_FEE));
+  const retainedFeeE8 = grossExitE8 - netPaidE8;
+  const uniqueExitWallets = new Set(outgoingPayouts.map((action) => action.out?.[0]?.address).filter(Boolean)).size;
+
+  const incomingDeposits = sendActionsResult.actions.filter((action) => action.out?.[0]?.address === LP_ADDRESS);
+  const now = Date.now();
+  const individualDeposits = incomingDeposits
+    .map((action) => {
+      const sender = action.in?.[0]?.address;
+      const amount = sumCoinsE8(action.in?.[0]);
+      const dateMs = Number(BigInt(action.date) / 1000000n);
+      const daysInLP = Math.max(1, (now - dateMs) / (24 * 60 * 60 * 1000));
+      return { sender, amount, dateMs, daysInLP, txId: actionTxId(action) };
+    })
+    .filter((deposit) => deposit.sender && deposit.amount > 0);
+
+  const totalDepositedE8 = individualDeposits.reduce((sum, deposit) => sum + deposit.amount, 0);
+  const grossProfitE8 = totalCapitalE8 - totalDepositedE8;
+  const investorEarningsPoolE8 = investorTake(grossProfitE8);
+  const totalWeight = individualDeposits.reduce((sum, deposit) => sum + deposit.amount * deposit.daysInLP, 0);
+  const providerMap = new Map();
+
+  individualDeposits.forEach((deposit) => {
+    const row = providerMap.get(deposit.sender) || {
+      totalE8: 0,
+      grossEarningsE8: 0,
+      investorEarningsE8: 0,
+      firstDateMs: deposit.dateMs,
+      lastDateMs: deposit.dateMs,
+      txCount: 0
+    };
+    const earningsShare = totalWeight > 0 ? (deposit.amount * deposit.daysInLP) / totalWeight : 0;
+
+    row.totalE8 += deposit.amount;
+    row.txCount += 1;
+    row.grossEarningsE8 += grossProfitE8 * earningsShare;
+    row.investorEarningsE8 += investorEarningsPoolE8 * earningsShare;
+    row.firstDateMs = Math.min(row.firstDateMs, deposit.dateMs);
+    row.lastDateMs = Math.max(row.lastDateMs, deposit.dateMs);
+    providerMap.set(deposit.sender, row);
+  });
+
+  const providers = Array.from(providerMap.values())
+    .filter((provider) => provider.totalE8 >= E8)
+    .map((provider) => ({
+      ...provider,
+      currentValueE8: provider.totalE8 + provider.investorEarningsE8
+    }));
+
+  const bondingYieldOnTotal = totalCapitalE8 > 0
+    ? (((lpBondedE8 / E8) * bondingAPY) / (totalCapitalE8 / E8)) * 100
+    : 0;
+  const feeYieldOnTotal = totalCapitalE8 > 0
+    ? (((retainedFeeE8 / E8) * (365 / 30)) / (totalCapitalE8 / E8)) * 100
+    : 0;
+  const fullLpApy = bondingYieldOnTotal + feeYieldOnTotal;
+  const investorsApy = investorTake(fullLpApy);
+
+  return {
+    checkedAt: new Date().toISOString(),
+    capital: {
+      lpBondedE8,
+      lpBalanceE8,
+      totalCapitalE8,
+      nodeBondSumE8
+    },
+    nodes: {
+      total: nodes.length,
+      active: activeNodes.length,
+      standby: standbyNodes.length,
+      withBond: bondedNodes.length
+    },
+    recentExits: {
+      count: outgoingPayouts.length,
+      netPaidE8,
+      grossExitE8,
+      retainedFeeE8,
+      wallets: uniqueExitWallets,
+      pagesFetched: recentActionsResult.pages
+    },
+    investorPool: {
+      incomingDepositActions: incomingDeposits.length,
+      providers: providers.length,
+      totalDepositedE8,
+      grossEarningsTotalE8: providers.reduce((sum, provider) => sum + provider.grossEarningsE8, 0),
+      investorYieldTotalE8: providers.reduce((sum, provider) => sum + provider.investorEarningsE8, 0),
+      investorValueTotalE8: providers.reduce((sum, provider) => sum + provider.currentValueE8, 0),
+      pagesFetched: sendActionsResult.pages
+    },
+    apy: {
+      networkApyPct: bondingAPY * 100,
+      bondingYieldOnTotal,
+      feeYieldOnTotal,
+      fullLpApy,
+      investorsApy,
+      runebondApy: fullLpApy > 0 ? fullLpApy * (1 - INVESTOR_SHARE) : 0
+    }
+  };
 }
 
 function collectDomSnapshot(window) {
@@ -275,10 +481,11 @@ function collectDomSnapshot(window) {
   };
 }
 
-function validateSnapshot(snapshot) {
+function validateSnapshot(snapshot, expected = null) {
   const checks = [];
   const sourceWarningCount = Number((snapshot.lastUpdate.match(/(\d+)\s+source warning/) || [])[1] || 0);
   const hasSourceWarnings = sourceWarningCount > 0;
+  const hasNoRecentExits = parseRune(snapshot.swapSummary.count) === 0;
 
   const investorsApy = parsePercent(snapshot.investorsApy);
   const lpApy = parsePercent(snapshot.lpApy);
@@ -303,6 +510,43 @@ function validateSnapshot(snapshot) {
     ok: lpApy !== null && investorsApy !== null && runebondApy !== null,
     message: `core APY values present (${snapshot.lpApy} / ${snapshot.investorsApy} / ${snapshot.runebondApy})`
   });
+
+  if (expected) {
+    checks.push({
+      ok: approxEqual(lpApy, expected.apy.fullLpApy, 0.08) &&
+        approxEqual(investorsApy, expected.apy.investorsApy, 0.08) &&
+        approxEqual(runebondApy, expected.apy.runebondApy, 0.08) &&
+        approxEqual(networkApy, expected.apy.networkApyPct, 0.08) &&
+        approxEqual(parsePercent(snapshot.feeYield), expected.apy.feeYieldOnTotal, 0.08),
+      message: `live APY recomputation matches UI (expected investor ${expected.apy.investorsApy.toFixed(4)}%, UI ${snapshot.investorsApy})`
+    });
+
+    checks.push({
+      ok: approxRune(parseRune(snapshot.nodeSummary.bonded), expected.capital.nodeBondSumE8 / E8) &&
+        expected.capital.nodeBondSumE8 === expected.capital.lpBondedE8 &&
+        parseRune(snapshot.nodeSummary.activity) === expected.nodes.active &&
+        parseRune(snapshot.nodeSummary.withBond) === expected.nodes.withBond,
+      message: `live LP bonded positions match UI (${expected.nodes.withBond} bonded nodes, ${expected.capital.nodeBondSumE8 / E8} RUNE bonded)`
+    });
+
+    checks.push({
+      ok: parseRune(snapshot.swapSummary.count) === expected.recentExits.count &&
+        approxRune(parseRune(snapshot.swapSummary.gross), expected.recentExits.grossExitE8 / E8) &&
+        approxRune(parseRune(snapshot.swapSummary.net), expected.recentExits.netPaidE8 / E8) &&
+        approxRune(parseRune(snapshot.swapSummary.fee), expected.recentExits.retainedFeeE8 / E8) &&
+        parseRune(snapshot.swapSummary.wallets) === expected.recentExits.wallets,
+      message: `live Recent exits match UI (${expected.recentExits.count} payouts, ${expected.recentExits.grossExitE8 / E8} gross RUNE)`
+    });
+
+    checks.push({
+      ok: parseRune(snapshot.dataWorkbench.providerCountText) === expected.investorPool.providers &&
+        approxRune(parseRune(snapshot.providerSummary.deposited), expected.investorPool.totalDepositedE8 / E8) &&
+        approxRune(parseRune(snapshot.providerSummary.gross), expected.investorPool.grossEarningsTotalE8 / E8) &&
+        approxRune(parseRune(snapshot.providerSummary.investor), expected.investorPool.investorYieldTotalE8 / E8) &&
+        approxRune(parseRune(snapshot.providerSummary.value), expected.investorPool.investorValueTotalE8 / E8),
+      message: `live Investor Pool matches UI (${expected.investorPool.providers} providers, ${expected.investorPool.totalDepositedE8 / E8} deposited RUNE)`
+    });
+  }
 
   checks.push({
     ok: approxEqual(lpApy, splitGross),
@@ -520,9 +764,11 @@ function validateSnapshot(snapshot) {
     ok: snapshot.dataWorkbench.addressPills >= 3 &&
       snapshot.dataWorkbench.copyAddressButtons === snapshot.dataWorkbench.addressPills &&
       /^thor1/i.test(snapshot.dataWorkbench.firstCopyValue) &&
-      (hasSourceWarnings || snapshot.dataWorkbench.txLinkPills > 0),
+      (hasSourceWarnings || hasNoRecentExits || snapshot.dataWorkbench.txLinkPills > 0),
     message: hasSourceWarnings
       ? 'premium address rows keep copy controls; tx icon checks skipped because upstream sources warned'
+      : hasNoRecentExits
+        ? 'premium address rows keep copy controls; tx icon checks skipped because there are no Recent exits in the live 30d window'
       : 'premium address rows include copy buttons and Recent exits use external tx icon links'
   });
 
@@ -602,8 +848,10 @@ function validateColumnFilters(window) {
 
     if (!inputs.length || !tbody || realRows.length === 0) {
       checks.push({
-        ok: false,
-        message: `${label} column filter could not be tested`
+        ok: tab === 'exits' && realRows.length === 0,
+        message: tab === 'exits' && realRows.length === 0
+          ? `${label} column filter skipped because live Recent exits has no rows`
+          : `${label} column filter could not be tested`
       });
       return;
     }
@@ -709,6 +957,7 @@ async function run() {
   try {
     const port = server.address().port;
     const pageUrl = `http://lvh.me:${port}${PAGE_PATH}`;
+    const expectedPromise = collectLiveExpectedMetrics();
     const dom = await JSDOM.fromURL(pageUrl, {
       runScripts: 'dangerously',
       resources: 'usable',
@@ -720,9 +969,12 @@ async function run() {
       }
     });
 
-    const snapshot = await waitForDashboard(dom.window);
+    const [snapshot, expected] = await Promise.all([
+      waitForDashboard(dom.window),
+      expectedPromise
+    ]);
     const checks = [
-      ...validateSnapshot(snapshot),
+      ...validateSnapshot(snapshot, expected),
       ...validateTabs(dom.window),
       ...validateColumnFilters(dom.window),
       ...validateComparisonInteraction(dom.window)
@@ -730,6 +982,7 @@ async function run() {
     const failures = checks.filter((check) => !check.ok);
 
     console.log(JSON.stringify({
+      expected,
       snapshot,
       checks
     }, null, 2));
