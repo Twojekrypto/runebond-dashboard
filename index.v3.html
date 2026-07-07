@@ -5066,6 +5066,11 @@
         setText('yield-status-detail', 'Waiting for bonded and liquid LP capital before showing APY.');
         return;
       }
+      if (lpBondedE8 > 0 && bondingAPY <= 0) {
+        setStatusPill('yield-status', 'loading', 'Syncing');
+        setText('yield-status-detail', 'Waiting for THORChain bonding APY before showing the final investor APY.');
+        return;
+      }
       if (redemptionStatus === 'ready') {
         setStatusPill('yield-status', 'live', 'Live');
         setText('yield-status-detail', 'Bonding and 30d fee inputs are both confirmed.');
@@ -6054,6 +6059,7 @@
         setText('split-bonding', '—');
         setText('split-bonding-note', 'Network bonding APY unavailable right now.');
       }
+      const bondingInputReady = lpBondedE8 <= 0 || bondingYieldOnTotal !== null;
 
       let feeYieldOnTotal = null;
 
@@ -6118,7 +6124,7 @@
       if (redemptionsLoaded && bondingYieldOnTotal !== null) {
         renderInvestorYieldBuildUpChart(bondingYieldOnTotal, totalRune);
       }
-      if (redemptionsLoaded) {
+      if (redemptionsLoaded && bondingInputReady) {
         setText('lp-effective-apy', lpEffectiveAPY > 0 ? formatPercent(lpEffectiveAPY) : '—');
         setText('investors-apy', investorsAPY > 0 ? formatPercent(investorsAPY) : '—');
         setText('hero-chart-yield', investorsAPY > 0 ? formatPercent(investorsAPY) : '—');
@@ -6134,6 +6140,19 @@
           classicApy: classicBondingAPY,
           grossApy: lpEffectiveAPY
         });
+      } else if (redemptionsLoaded && !bondingInputReady) {
+        setLoadingMetric('lp-effective-apy');
+        setHeroApyLoading('Syncing THORChain bond APY…');
+        setLoadingMetric('runebond-apy');
+        setText('hero-chart-yield', 'Loading…');
+        setText('hero-full-lp-apy', 'Loading…');
+        setText('hero-investor-split-apy', 'Loading…');
+        setText('split-gross', 'Loading…');
+        setText('split-gross-note', 'Waiting for THORChain bonding APY before combining bonding and fee yield.');
+        setText('split-investor', 'Loading…');
+        setText('split-investor-note', 'Investor APY appears after bonding and fee inputs are both ready.');
+        setText('apy-note', 'Waiting for THORChain bonding APY before showing the final investor APY');
+        setComparisonLoading('Syncing THORChain bonding APY before comparing RUNEBOND LP with classic bonding.');
       } else if (redemptionStatus === 'error') {
         setText('lp-effective-apy', bondingYieldOnTotal !== null ? formatPercent(bondingYieldOnTotal) : '—');
         setText('investors-apy', bondingYieldOnTotal !== null ? formatPercent(investorTake(bondingYieldOnTotal)) : '—');
@@ -6167,7 +6186,7 @@
       updateYieldStatus();
 
       // Reflect headline APY in the document title for tab visibility
-      const headline = (redemptionsLoaded && investorsAPY > 0)
+      const headline = (redemptionsLoaded && bondingInputReady && investorsAPY > 0)
         ? formatPercent(investorsAPY)
         : (bondingYieldOnTotal !== null && investorTake(bondingYieldOnTotal) > 0
             ? formatPercent(investorTake(bondingYieldOnTotal))

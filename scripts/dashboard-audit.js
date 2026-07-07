@@ -931,6 +931,56 @@ function validateComparisonInteraction(window) {
   return checks;
 }
 
+async function validateNetworkApyGuard(pageUrl) {
+  const dom = await JSDOM.fromURL(`${pageUrl}?network-apy-guard=${Date.now()}`, {
+    runScripts: 'dangerously',
+    resources: 'usable',
+    pretendToBeVisual: true,
+    beforeParse(window) {
+      window.fetch = async (url, options) => {
+        const requestUrl = String(url);
+        if (/\/network(?:$|\?)/.test(requestUrl)) {
+          return new Response(JSON.stringify({
+            bondingAPY: '0',
+            bondMetrics: { totalActiveBond: '0' }
+          }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
+        if (/\/history\/earnings(?:\?|$)/.test(requestUrl)) {
+          return new Response(JSON.stringify({ intervals: [] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
+        return fetch(url, options);
+      };
+      window.AbortController = AbortController;
+      window.console = console;
+    }
+  });
+
+  try {
+    const snapshot = await waitForDashboard(dom.window);
+    const investorApy = parsePercent(snapshot.investorsApy);
+    const fullApy = parsePercent(snapshot.lpApy);
+    const feeApy = parsePercent(snapshot.feeYield);
+    const feeOnlyInvestorApy = feeApy !== null ? feeApy / 2 : null;
+    const showsFeeOnlyHeadline =
+      investorApy !== null &&
+      feeOnlyInvestorApy !== null &&
+      approxEqual(investorApy, feeOnlyInvestorApy, 0.03);
+
+    return [{
+      ok: !showsFeeOnlyHeadline && investorApy === null && fullApy === null,
+      message: `network APY guard prevents fee-only headline when bonding APY is unavailable (investor: ${snapshot.investorsApy}, fees: ${snapshot.feeYield})`
+    }];
+  } finally {
+    dom.window.close();
+  }
+}
+
 async function waitForDashboard(window) {
   const start = Date.now();
   while (Date.now() - start < 90000) {
@@ -977,7 +1027,8 @@ async function run() {
       ...validateSnapshot(snapshot, expected),
       ...validateTabs(dom.window),
       ...validateColumnFilters(dom.window),
-      ...validateComparisonInteraction(dom.window)
+      ...validateComparisonInteraction(dom.window),
+      ...await validateNetworkApyGuard(pageUrl)
     ];
     const failures = checks.filter((check) => !check.ok);
 
